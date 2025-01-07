@@ -48,8 +48,7 @@ if $UPDATE; then
     gcloud alpha compute tpus tpu-vm ssh $TPU_VM_NAME --zone=us-central2-b --command="bash update.sh"
 fi
 
-gcloud alpha compute tpus tpu-vm ssh $TPU_VM_NAME --zone=us-central2-b --command="source ~/miniconda/bin/activate && 
-                                                                                  conda activate bigvision && 
+gcloud alpha compute tpus tpu-vm ssh $TPU_VM_NAME --zone=us-central2-b --command="cd ~/bigvision-palivla &&
+                                                                                  source .venv/bin/activate &&         
                                                                                   wandb login $API_KEY &&
-                                                                                  cd ~/bigvision-palivla && 
                                                                                   python -m palivla/train.py --config_file palivla/configs/nav_config.py"

@@ -1,15 +1,5 @@
 #!/bin/bash
 
-# Install conda
-curl -LO https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
-bash Miniconda3-latest-Linux-x86_64.sh -b -u -p $HOME/miniconda
-source $HOME/miniconda/bin/activate
-conda init bash
-
-# Install octo dependencies
-conda create -n bigvision python=3.10
-conda activate bigvision
-
 # Activate ssh key 
 mkdir -p /home/noam/.ssh
 mv id_ed25519 /home/noam/.ssh
