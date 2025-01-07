@@ -12,7 +12,6 @@ UPDATE=$3
 PROJECT="vlm-guidance"
 ZONE="us-central2-b"
 API_KEY=$4
-HF_KEY=$5
 
 echo "Update? $UPDATE"
 echo "Init? $INIT"
