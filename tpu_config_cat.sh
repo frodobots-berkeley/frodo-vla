@@ -9,7 +9,7 @@ touch /home/noam/.ssh/known_hosts
 ssh-keyscan github.com >> /home/noam/.ssh/known_hosts
 
 curl -LsSf https://astral.sh/uv/install.sh | sh
-source ~/.bashrc
+source ~/.local/bin/uv
 git clone git@github.com:catglossop/bigvision-palivla.git --recursive
 cd ~/bigvision-palivla
 uv venv --python=python3.11
