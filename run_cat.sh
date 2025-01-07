@@ -52,4 +52,4 @@ gcloud alpha compute tpus tpu-vm ssh $TPU_VM_NAME --zone=us-central2-b --command
                                                                                   source ~/.local/bin/env &&
                                                                                   source .venv/bin/activate &&
                                                                                   uv run wandb login $API_KEY &&
-                                                                                  python -m src/palivla/train.py --config_file configs/nav_config.py"
+                                                                                  python src/palivla/train.py --config_file configs/nav_config.py"
