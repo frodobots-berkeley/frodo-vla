@@ -53,5 +53,4 @@ gcloud alpha compute tpus tpu-vm ssh $TPU_VM_NAME --zone=us-central2-b --command
                                                                                   source ~/.local/bin/env &&
                                                                                   source .venv/bin/activate &&
                                                                                   uv run wandb login $API_KEY &&
-                                                                                  huggingface-cli login $HF_KEY &&
                                                                                   python scripts/train.py --config configs/nav_config.py"
