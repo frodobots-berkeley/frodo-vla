@@ -9,7 +9,7 @@ touch /home/noam/.ssh/known_hosts
 ssh-keyscan github.com >> /home/noam/.ssh/known_hosts
 
 curl -LsSf https://astral.sh/uv/install.sh | sh
-source ~/.local/bin/env 
+echo source ~/.local/bin/env >> ~/.bashrc
 git clone git@github.com:catglossop/bigvision-palivla.git --recursive
 cd ~/bigvision-palivla
 source .venv/bin/activate
