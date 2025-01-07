@@ -49,7 +49,7 @@ if $UPDATE; then
 fi
 
 gcloud alpha compute tpus tpu-vm ssh $TPU_VM_NAME --zone=us-central2-b --command="cd ~/bigvision-palivla &&
-                                                                                  source ~/.bashrc &&
+                                                                                  source ~/.local/bin/env &&
                                                                                   source .venv/bin/activate &&
                                                                                   uv run wandb login $API_KEY &&
                                                                                   python -m palivla/train.py --config_file palivla/configs/nav_config.py"
