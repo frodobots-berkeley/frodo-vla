@@ -10,6 +10,7 @@ ssh-keyscan github.com >> /home/noam/.ssh/known_hosts
 
 curl -LsSf https://astral.sh/uv/install.sh | sh
 echo source ~/.local/bin/env >> ~/.bashrc
+source ~/.bashrc
 git clone git@github.com:catglossop/bigvision-palivla.git --recursive
 cd ~/bigvision-palivla
 source .venv/bin/activate
