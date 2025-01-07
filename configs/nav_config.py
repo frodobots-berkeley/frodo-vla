@@ -1,7 +1,7 @@
 from octo.data.utils.data_utils import NormalizationType
 from ml_collections.config_dict import placeholder, ConfigDict, FieldReference
 
-from palivla.componets.model import get_default_config
+from palivla.components.model import get_default_config
 
 placeholder(int)._value
 
