@@ -186,7 +186,7 @@ class ModelComponents:
             batch, action_dim=gt_actions.shape[-1], action_horizon=action_horizon, return_tokens=True
         )
         predicted_actions = np.nan_to_num(predicted_actions)
-
+        predicted_actions = self.sharding.mesh.local_data_to_global_array(predicted_actions)
         return {
             "gen_valid_pct": actions_mask.mean(),
             "gen_l2": np.mean(np.square(predicted_actions - gt_actions) * actions_mask)
