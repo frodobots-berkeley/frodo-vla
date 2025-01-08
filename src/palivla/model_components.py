@@ -216,8 +216,6 @@ class ModelComponents:
             boa_is_prompt=True,
         )
 
-        breakpoint()
-
         # Shard the batch to devices
         inputs = {
             "sensors": batch["observation"],
@@ -226,7 +224,6 @@ class ModelComponents:
             "gen": sequences["gen"],
         }
         inputs = self.sharding.mesh.local_data_to_global_array(inputs)
-        breakpoint()
         # Run the train step
         with self.sharding.mesh.mesh, nn.logical_axis_rules([("act_batch", "fsdp")]):
             from palivla.predict_fns import _decode
