@@ -11,6 +11,7 @@ def get_config():
     num_train_steps = FieldReference(100000, int)
 
     model_config = get_default_config()
+    transform = ModuleSpec.create(gnm_dataset_transform)
     return ConfigDict(
         {
             "wandb_project": "vla-nav",
@@ -81,7 +82,7 @@ def get_config():
                         "language_key" : "language_instruction",
                         "force_recompute_dataset_statistics": False,
                         "action_proprio_normalization_type": NormalizationType.NORMAL,
-                        "standardize_fn" : gnm_dataset_transform,   
+                        "standardize_fn" : transform,   
                     },
                 },
                 "sample_weights": [1.0],
