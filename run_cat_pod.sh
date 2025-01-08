@@ -49,3 +49,5 @@ if $UPDATE; then
 fi
 
 gcloud alpha compute tpus tpu-vm ssh $TPU_VM_NAME --zone=us-central2-b --worker=all --command="tmux kill-session -t tpc && tmux new-session -d -s tpc && tmux send-keys -t tpc 'cd /tmp && bash launch.sh $API_KEY Enter'"
+
+echo "Job launched on TPU VM $TPU_VM_NAME"
