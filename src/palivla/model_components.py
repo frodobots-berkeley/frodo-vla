@@ -204,6 +204,7 @@ class ModelComponents:
         self,
         batch,
         action_dim: int,
+        action_horizon: int,
         *,
         use_ema_params: bool = False,
         return_tokens: bool = False,
@@ -247,6 +248,7 @@ class ModelComponents:
                 self.action_tokenizer,
                 boa_is_prompt=True,
                 action_dim=action_dim,
+                action_horizon=action_horizon,
             )
 
             if return_tokens:
