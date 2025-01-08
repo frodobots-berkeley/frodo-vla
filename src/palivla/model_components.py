@@ -185,10 +185,6 @@ class ModelComponents:
         predicted_actions, actions_mask, tokens = self.predict(
             batch, action_dim=gt_actions.shape[-1], action_horizon=action_horizon, return_tokens=True
         )
-        print(gt_actions[0,:])
-        print(tokens["predicted"][0,:])
-        print(predicted_actions[0,:])
-        print(tokens["target"][0,:])
         predicted_actions = np.nan_to_num(predicted_actions)
 
         return {
@@ -253,7 +249,8 @@ class ModelComponents:
                 action_dim=action_dim,
                 action_horizon=action_horizon,
             )
-
+            print(tokens)
+            print(sequences["gen"]["tokens"])
             if return_tokens:
                 return (
                     actions,

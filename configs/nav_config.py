@@ -62,14 +62,14 @@ def get_config():
             "fsdp_axis_size": -1,
             # Model
             "model_config": model_config,
-            "batch_size": 192,
-            "eval_batch_size": 128,
+            "batch_size": 16,
+            "eval_batch_size": 16,
             "shuffle_buffer_size": 50000,
             "num_steps": num_train_steps,
             "save_interval": 10000,
             "max_to_keep": 1,
             # Logging and visualization
-            "eval_interval": 100,
+            "eval_interval": 10,
             "log_interval": 1,
             # Multi-device settings
             "data_axis_size": 1,
