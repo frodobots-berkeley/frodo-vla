@@ -17,6 +17,7 @@ def get_config():
             "wandb_project": "palivla-bridge",
             "wandb_mode": "online",
             # Tokenizers
+  
             "language_tokenizer": "google/paligemma-3b-pt-224",
             "action_tokenizer": "action_tokenizer.bin(min_action_value=-3, max_action_value=3)",
             "sequence_builder": "sequence_builder.default(prompt_pad_length=50, gen_pad_length=10)",
