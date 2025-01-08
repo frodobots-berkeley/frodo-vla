@@ -195,9 +195,9 @@ class SequenceBuilder:
                         ((0, action_horizon - action.shape[0]), (0, 0)),
                         constant_values=np.nan,
                     )
-                    if action is not None
+                    if (action is not None and action.shape[0] > 0)
                     else np.zeros((action_horizon, action_dim))
-                ) if action.shape[0] > 0 else (np.nan(action_horizon, action_dim))
+                ) 
                 for action in actions if action.shape == (action_horizon, action_dim)
             ]
         )
