@@ -198,7 +198,7 @@ class SequenceBuilder:
                     if action is not None
                     else np.zeros((action_horizon, action_dim))
                 )
-                for action in actions
+                for action in actions if action.shape == (action_horizon, action_dim)
             ]
         )
         actions_mask = einops.repeat(
