@@ -70,7 +70,7 @@ def get_config():
                 },
             },
             "dataset_kwargs": {
-                "oxe_kwargs": {},
+                "oxe_kwargs": None,
                 "dataset_kwargs_list": {
                     "lcbc_kwargs": {
                         "name": "lcbc_dataset",

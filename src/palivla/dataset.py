@@ -8,7 +8,7 @@ from octo.data.utils.data_utils import NormalizationType
 
 def make_base_dataset(
     *,
-    oxe_kwargs: dict,
+    oxe_kwargs: dict = None,
     sample_weights: Sequence[float],
     dataset_kwargs_list: dict,
     train: bool,
@@ -21,11 +21,12 @@ def make_base_dataset(
     traj_read_threads: int,
     **kwargs,
 ) -> dlimp.DLataset:
-    # dataset_kwargs_list, sample_weights = make_oxe_dataset_kwargs_and_weights(
-    #     **oxe_kwargs
-    # )
-
-
+    if oxe_kwargs is not None:
+        dataset_kwargs_list, sample_weights = make_oxe_dataset_kwargs_and_weights(
+            **oxe_kwargs
+        )
+    print(dataset_kwargs_list)
+    print(dataset_kwargs_list[0])
     dataset = make_interleaved_dataset(
         dataset_kwargs_list,
         sample_weights,
