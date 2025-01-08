@@ -71,7 +71,7 @@ def get_config():
             },
             "dataset_kwargs": {
                 "oxe_kwargs": None,
-                "dataset_kwargs_list": {
+                "dataset_kwargs_list": [
                     "lcbc_kwargs": {
                         "name": "lcbc_dataset",
                         "data_dir": "gs://vlm-guidance-data",
@@ -80,7 +80,7 @@ def get_config():
                         "language_key" : "language_instruction",
                         "force_recompute_dataset_statistics": False,
                         "action_proprio_normalization_type": NormalizationType.NORMAL,
-                    },
+                 ],
                 },
                 "sample_weights": [1.0],
                 "traj_transform_kwargs": {
