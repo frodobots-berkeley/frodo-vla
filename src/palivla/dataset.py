@@ -8,6 +8,7 @@ from octo.data.utils.data_utils import NormalizationType
 
 def make_base_dataset(
     *,
+    oxe_kwargs: dict,
     sample_weights: Sequence[float],
     dataset_kwargs_list: dict,
     train: bool,
