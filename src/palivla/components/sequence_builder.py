@@ -190,16 +190,15 @@ class SequenceBuilder:
         actions = np.stack(
             [
                 (
-                    np.pad(
+                    (np.pad(
                         action,
                         ((0, action_horizon - action.shape[0]), (0, 0)),
                         constant_values=np.nan,
-                    )
+                    ) if action.shape[0] < 0 else np.zeros((action_horizon, action_dim)))
                     if action is not None
                     else np.zeros((action_horizon, action_dim))
-                ) if action.shape[0] > 0
-                else np.zeros((action_horizon, action_dim))
-                for action in actions if action.shape == (action_horizon, action_dim)
+                )
+                for action in actions
             ]
         )
         actions_mask = einops.repeat(

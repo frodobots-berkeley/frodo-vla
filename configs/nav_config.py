@@ -51,7 +51,7 @@ def get_config():
             "eval_batch_size": 128,
             "shuffle_buffer_size": 50000,
             "num_steps": num_train_steps,
-            "eval_interval": 100,
+            "eval_interval": 10,
             "save_interval": 10000,
             "max_to_keep": 1,
             # Logging and visualization
