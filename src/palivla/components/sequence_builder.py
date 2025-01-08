@@ -183,7 +183,7 @@ class SequenceBuilder:
                 break
 
         actions_mask = np.array([action is not None for action in actions])
-        print(actions.shape)
+        print(len(actions))
         print(action_horizon, action_dim)
         actions = np.stack(
             [
