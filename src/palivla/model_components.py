@@ -186,11 +186,11 @@ class ModelComponents:
             batch, action_dim=gt_actions.shape[-1], action_horizon=action_horizon, return_tokens=True
         )
         predicted_actions = np.nan_to_num(predicted_actions)
-        with self.sharding.mesh.mesh, nn.logical_axis_rules([("act_batch", "fsdp")]):
-            gen_valid_pct = actions_mask.mean()
-            gen_l2 = np.mean(np.square(predicted_actions - gt_actions) * actions_mask) / actions_mask.mean()
-            gen_l1 = np.mean(np.abs(predicted_actions - gt_actions) * actions_mask) / actions_mask.mean()
-            gen_acc = np.mean((tokens["predicted"] == tokens["target"]) * tokens["mask"]) / tokens["mask"].mean()
+        gt_actions = self.sharding.mesh.local_data_to_global_array(gt_actions)
+        gen_valid_pct = actions_mask.mean()
+        gen_l2 = np.mean(np.square(predicted_actions - gt_actions) * actions_mask) / actions_mask.mean()
+        gen_l1 = np.mean(np.abs(predicted_actions - gt_actions) * actions_mask) / actions_mask.mean()
+        gen_acc = np.mean((tokens["predicted"] == tokens["target"]) * tokens["mask"]) / tokens["mask"].mean()
                               
         return {
             "gen_valid_pct": gen_valid_pct,
