@@ -20,8 +20,8 @@ if [ -f "$CACHE_FILE" ]; then
 fi
 
 # Use default values if not found in cache
-ZONE=${ZONE:-europe-west4-b}
-N_WORKERS=${N_WORKERS:-16}
+ZONE="us-central2-b"
+N_WORKERS="4"
 
 echo "Connecting to $TPU_VM_NAME with $N_WORKERS workers in zone $ZONE..."
 

@@ -16,6 +16,10 @@ API_KEY=$4
 echo "Update? $UPDATE"
 echo "Init? $INIT"
 
+TPU_INFO=$(gcloud compute tpus tpu-vm describe $TPU_VM_NAME --project=$PROJECT --zone=$ZONE --format=json 2>/dev/null)
+IP = $(echo "$TPU_INFO" | jq '.networkEndpoints[0].ipAddress')
+echo "TPU_INFO: $TPU_INFO"
+
 # Cache file for TPU name/zone mapping
 CACHE_FILE="$HOME/.cache/tpus"
 mkdir -p "$(dirname "$CACHE_FILE")"
