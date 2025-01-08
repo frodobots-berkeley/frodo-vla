@@ -80,8 +80,8 @@ def get_config():
                         "language_key" : "language_instruction",
                         "force_recompute_dataset_statistics": False,
                         "action_proprio_normalization_type": NormalizationType.NORMAL,
-                 ],
-                },
+                    },
+                ],
                 "sample_weights": [1.0],
                 "traj_transform_kwargs": {
                     "window_size": 1,
