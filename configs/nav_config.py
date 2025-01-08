@@ -82,6 +82,7 @@ def get_config():
                         "action_proprio_normalization_type": NormalizationType.NORMAL,
                     },
                 },
+                "sample_weights": [1.0],
                 "traj_transform_kwargs": {
                     "window_size": 1,
                     "action_horizon": 1,
