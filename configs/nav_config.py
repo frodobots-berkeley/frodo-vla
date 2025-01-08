@@ -3,6 +3,7 @@ from ml_collections.config_dict import placeholder, ConfigDict, FieldReference
 
 from palivla.components.model import get_default_config
 from octo.data.oxe.oxe_standardization_transforms import gnm_dataset_transform
+from octo.utils.spec import ModuleSpec
 
 placeholder(int)._value
 
@@ -81,7 +82,7 @@ def get_config():
                         "language_key" : "language_instruction",
                         "force_recompute_dataset_statistics": False,
                         "action_proprio_normalization_type": NormalizationType.NORMAL,
-                        "standardize_fn" : gnm_dataset_transform,   
+                        "standardize_fn" : ModuleSpec(gnm_dataset_transform),   
                     },
                 },
                 "sample_weights": [1.0],
