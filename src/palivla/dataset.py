@@ -25,8 +25,7 @@ def make_base_dataset(
         dataset_kwargs_list, sample_weights = make_oxe_dataset_kwargs_and_weights(
             **oxe_kwargs
         )
-    print(dataset_kwargs_list)
-    print(dataset_kwargs_list[0])
+    dataset_kwargs_list = [dataset_kwargs_list[k] for k in dataset_kwargs_list]
     dataset = make_interleaved_dataset(
         dataset_kwargs_list,
         sample_weights,
