@@ -159,7 +159,7 @@ def _decode_with_logp(
         out_shardings=replicate_sharding,
         static_argnames=("n", "eos_token"),
     )(state, n=best_of_n, eos_token=eos_token)
-
+    breakpoint()
     return tokens, logp
 
 

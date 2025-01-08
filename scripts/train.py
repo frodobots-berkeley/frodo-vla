@@ -185,6 +185,7 @@ def main(_):
 
     if config.overfit_dataset:
         batch = next(train_it)
+    
 
     with tqdm.trange(
         start_step, config.num_steps, desc="Training", dynamic_ncols=True
