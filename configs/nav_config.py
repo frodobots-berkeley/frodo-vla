@@ -88,7 +88,7 @@ def get_config():
                 "sample_weights": [1.0],
                 "traj_transform_kwargs": {
                     "window_size": 1,
-                    "action_horizon": 1,
+                    "action_horizon": 5,
                 },
                 "frame_transform_kwargs": {
                     "image_augment_kwargs": {},
