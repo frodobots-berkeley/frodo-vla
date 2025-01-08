@@ -249,8 +249,6 @@ class ModelComponents:
                 action_dim=action_dim,
                 action_horizon=action_horizon,
             )
-            print(tokens)
-            print(sequences["gen"]["tokens"])
             if return_tokens:
                 return (
                     actions,
