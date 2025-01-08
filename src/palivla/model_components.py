@@ -216,6 +216,8 @@ class ModelComponents:
             boa_is_prompt=True,
         )
 
+        breakpoint()
+
         # Shard the batch to devices
         inputs = {
             "sensors": batch["observation"],
