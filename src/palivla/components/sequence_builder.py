@@ -173,7 +173,6 @@ class SequenceBuilder:
             )
             for i in range(len(tokens))
         ]
-        print(actions)
 
         # Get the shape of a valid action
         action_horizon = 0
@@ -184,9 +183,6 @@ class SequenceBuilder:
                 break
 
         actions_mask = np.array([action is not None for action in actions])
-        print(len(actions))
-        print(action_horizon, action_dim)
-        print(actions[0].shape)
         actions = np.stack(
             [
                 (
