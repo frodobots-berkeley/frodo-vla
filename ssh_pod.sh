@@ -32,7 +32,7 @@ for i in $(seq 0 $(($N_WORKERS - 1))); do
     TMUX_WIDTH=$(tmux display-message -p '#{window_width}')
 
     tmux new-window -t tpc_${TPU_VM_NAME}:$i -k
-    INNER_TMUX_COMMAND="tmux a -t tpc_${TPU_VM_NAME}"
+    INNER_TMUX_COMMAND="tmux a -t tpc"
     tmux send-keys -t tpc_${TPU_VM_NAME} "gcloud compute tpus tpu-vm ssh --zone $ZONE $TPU_VM_NAME --worker=$i -- -t $INNER_TMUX_COMMAND" Enter
 done
 tmux a -t tpc_${TPU_VM_NAME} || tmux switch -t tpc_${TPU_VM_NAME}
