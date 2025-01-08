@@ -1,5 +1,4 @@
 API_KEY=$1
-
 cd ~/bigvision-palivla
 source ~/.local/bin/env
 source .venv/bin/activate
