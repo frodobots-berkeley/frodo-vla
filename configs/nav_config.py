@@ -11,6 +11,21 @@ def get_config():
     num_train_steps = FieldReference(100000, int)
 
     model_config = get_default_config()
+
+    # if variant_config is not None:
+    #     variant_config_kv_pairs = variant_config.split(",")
+    #     variant_config_dict = {
+    #         k: v for k, v in [pair.split("=") for pair in variant_config_kv_pairs]
+    #     }
+    # else:
+    #     variant_config_dict = {}
+
+    # model_config["llm_spec"]["config"]["variant"] = variant_config_dict.get(
+    #     "llm", "smoke_test"
+    # )
+    # model_config["img_spec"]["config"]["variant"] = variant_config_dict.get(
+    #     "img", "S/14"
+    # )
     transform = ModuleSpec.create(gnm_dataset_transform)
     return ConfigDict(
         {
@@ -33,7 +48,7 @@ def get_config():
             "resume_checkpoint_dir": None,
             "resume_checkpoint_step": None,
             # Overfit
-            "overfit_dataset": False,
+            "overfit_dataset": True,
             # Training settings
             "batch_size": 192,
             "eval_batch_size": 128,
