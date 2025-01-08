@@ -48,4 +48,4 @@ if $UPDATE; then
     gcloud alpha compute tpus tpu-vm ssh $TPU_VM_NAME --zone=us-central2-b --command="bash update.sh" --worker=all
 fi
 
-gcloud alpha compute tpus tpu-vm ssh $TPU_VM_NAME --zone=us-central2-b --worker=all --command="tmux new-session -d -s tpc && tmux send-keys -t tpc 'cd /tmp && bash launch.sh $API_KEY Enter'"
+gcloud alpha compute tpus tpu-vm ssh $TPU_VM_NAME --zone=us-central2-b --worker=all --command="tmux kill-session -t tpc && tmux new-session -d -s tpc && tmux send-keys -t tpc 'cd /tmp && bash launch.sh $API_KEY Enter'"
