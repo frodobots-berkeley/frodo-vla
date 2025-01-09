@@ -1,5 +1,7 @@
 # Quickstart for Nav-VLA finetuning
 
+Note that the script to run on tpus will automatically push your code. If you want to isolate your development please make a new branch.
+
 To launch on a single tpu vm (v4-8)
 ```
 bash run_cat.sh <name of tpu> <initialize (true for first job on new tpu)> <update (true if code is changed)> <wandb api key>
