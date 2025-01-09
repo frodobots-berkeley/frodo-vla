@@ -33,7 +33,7 @@ def get_config():
             "wandb_mode": "online",
             #Tokenizers
             "language_tokenizer": "google/paligemma-3b-pt-224",
-            "action_tokenizer": "action_tokenizer.bin(min_action_value=-20, max_action_value=20)",
+            "action_tokenizer": "action_tokenizer.bin(min_action_value=-1, max_action_value=1)",
             "sequence_builder": "sequence_builder.default(prompt_pad_length=50, gen_pad_length=10)",
             # Initialization
             "load_fns": [
@@ -102,7 +102,7 @@ def get_config():
                 "sample_weights": [1.0],
                 "traj_transform_kwargs": {
                     "window_size": 1,
-                    "action_horizon": 5,
+                    "action_horizon": 1,
                 },
                 "frame_transform_kwargs": {
                     "image_augment_kwargs": {},
