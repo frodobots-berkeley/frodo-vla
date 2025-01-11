@@ -82,7 +82,7 @@ def get_config():
                 "kwargs": {
                     "optimizer": "sgd",
                     "num_train_steps": num_train_steps,
-                    "base_learning_rate": 1e-4,
+                    "base_learning_rate": 1e-5,
                 },
             },
             "dataset_kwargs": {
@@ -106,7 +106,7 @@ def get_config():
                 },
                 "frame_transform_kwargs": {
                     "image_augment_kwargs": {},
-                    "resize_size": {"primary": [128, 128]},
+                    "resize_size": {"primary": [224, 224]},
                 },
                 "balance_weights": True,
                 "shuffle_buffer_size": 50000,
