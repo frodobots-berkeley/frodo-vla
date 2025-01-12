@@ -12,20 +12,6 @@ def get_config():
 
     model_config = get_default_config()
 
-    # if variant_config is not None:
-    #     variant_config_kv_pairs = variant_config.split(",")
-    #     variant_config_dict = {
-    #         k: v for k, v in [pair.split("=") for pair in variant_config_kv_pairs]
-    #     }
-    # else:
-    #     variant_config_dict = {}
-
-    # model_config["llm_spec"]["config"]["variant"] = variant_config_dict.get(
-    #     "llm", "smoke_test"
-    # )
-    # model_config["img_spec"]["config"]["variant"] = variant_config_dict.get(
-    #     "img", "S/14"
-    # )
     transform = ModuleSpec.create(gnm_dataset_transform)
     return ConfigDict(
         {
@@ -62,27 +48,18 @@ def get_config():
             "fsdp_axis_size": -1,
             # Model
             "model_config": model_config,
-            "batch_size": 192,
-            "eval_batch_size": 128,
             "shuffle_buffer_size": 50000,
             "num_steps": num_train_steps,
-            "save_interval": 10000,
-            "max_to_keep": 1,
             # Logging and visualization
             "eval_interval": 100,
             "log_interval": 1,
-            # Multi-device settings
-            "data_axis_size": 1,
-            "fsdp_axis_size": -1,
-            # Model
-            "model_config": model_config,
             # Optimizer settings
             "optimizer": {
                 "name": "optimizer.default_optimizer",
                 "kwargs": {
                     "optimizer": "sgd",
                     "num_train_steps": num_train_steps,
-                    "base_learning_rate": 1e-5,
+                    "base_learning_rate": 1e-4,
                 },
             },
             "dataset_kwargs": {
@@ -106,7 +83,7 @@ def get_config():
                 },
                 "frame_transform_kwargs": {
                     "image_augment_kwargs": {},
-                    "resize_size": {"primary": [224, 224]},
+                    "resize_size": {"primary": [96, 96]},
                 },
                 "balance_weights": True,
                 "shuffle_buffer_size": 50000,
