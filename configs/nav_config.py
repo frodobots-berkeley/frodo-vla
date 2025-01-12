@@ -59,7 +59,7 @@ def get_config():
                 "kwargs": {
                     "optimizer": "adamw",
                     "num_train_steps": num_train_steps,
-                    "base_learning_rate": 1e-6,
+                    "base_learning_rate": 1e-7,
                 },
             },
             "dataset_kwargs": {
