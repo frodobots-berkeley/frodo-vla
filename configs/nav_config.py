@@ -57,9 +57,9 @@ def get_config():
             "optimizer": {
                 "name": "optimizer.default_optimizer",
                 "kwargs": {
-                    "optimizer": "sgd",
+                    "optimizer": "adamw",
                     "num_train_steps": num_train_steps,
-                    "base_learning_rate": 1e-5,
+                    "base_learning_rate": 1e-6,
                 },
             },
             "dataset_kwargs": {
