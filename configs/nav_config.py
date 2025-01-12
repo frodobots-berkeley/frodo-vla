@@ -18,7 +18,7 @@ def get_config():
             "wandb_project": "vla-nav",
             "wandb_mode": "online",
             #Tokenizers
-            "language_tokenizer": "google/paligemma-3b-pt-224",
+            "language_tokenizer": "google/paligemma-3b-mix-224",
             "action_tokenizer": "action_tokenizer.bin(min_action_value=-1, max_action_value=1)",
             "sequence_builder": "sequence_builder.default(prompt_pad_length=50, gen_pad_length=10)",
             # Initialization
@@ -59,7 +59,7 @@ def get_config():
                 "kwargs": {
                     "optimizer": "sgd",
                     "num_train_steps": num_train_steps,
-                    "base_learning_rate": 1e-4,
+                    "base_learning_rate": 1e-6,
                 },
             },
             "dataset_kwargs": {
