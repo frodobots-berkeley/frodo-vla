@@ -21,6 +21,7 @@ def make_base_dataset(
     traj_read_threads: int,
     **kwargs,
 ) -> dlimp.DLataset:
+    print(oxe_kwargs)
     if oxe_kwargs is not None:
         dataset_kwargs_list, sample_weights = make_oxe_dataset_kwargs_and_weights(
             **oxe_kwargs
