@@ -9,7 +9,7 @@ from ml_collections import ConfigDict, FrozenConfigDict
 from big_vision.models.proj.paligemma import paligemma
 from big_vision.trainers.proj.paligemma import predict_fns
 from palivla.spec import ModuleSpec
-from palivla.tokenizer import Tokenizer
+from big_vision.pp.tokenizer import Tokenizer
 
 model_config = {
     "llm": {"vocab_size": 257_152},

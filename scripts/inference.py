@@ -10,7 +10,7 @@ sys.path.append(".")
 
 import numpy as np
 from absl import app, flags, logging as absl_logging
-from configs.nav_config import get_config
+from palivla.components.model import ModelComponents
 from palivla.optimizer import make_optimizer
 from palivla.spec import ModuleSpec, OptimizerSpec
 from palivla.utils import host_broadcast_str
@@ -62,6 +62,13 @@ def main(_):
     predicted_actions, actions_mask, tokens = model.predict(batch, action_dim=2, action_horizon=10, return_tokens=True)
 
     print(predicted_actions.shape)
+
+if __name__ == "__main__":
+    config_flags.DEFINE_config_file(
+        "config", "configs/smoke_test.py", "Path to the config file."
+    )
+    flags.DEFINE_string("platform", "gpu", "Platform to run on.")
+    app.run(main)
 
 
 
