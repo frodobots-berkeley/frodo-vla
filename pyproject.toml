@@ -75,3 +75,6 @@ allow-direct-references = true
 [tool.uv.sources]
 big-vision = { workspace = true }
 octo = { path = "octo", editable = true }
+torch = [
+  { index = "pytorch-cu118", marker = "platform_system != 'Darwin'"},
+]
