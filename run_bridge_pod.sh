@@ -34,7 +34,7 @@ if $INIT; then
     gcloud alpha compute tpus tpu-vm scp ~/.ssh/id_ed25519 $TPU_VM_NAME: --zone=us-central2-b --worker=all
     gcloud alpha compute tpus tpu-vm scp tpu_config_cat.sh $TPU_VM_NAME: --zone=us-central2-b --worker=all
     gcloud alpha compute tpus tpu-vm scp update.sh $TPU_VM_NAME: --zone=us-central2-b --worker=all
-    gcloud alpha compute tpus tpu-vm scp launch_bridge.sh $TPU_VM_NAME:/tmp/launch.sh --zone=us-central2-b --worker=all
+    gcloud alpha compute tpus tpu-vm scp launch_bridge.sh $TPU_VM_NAME:/tmp/launch_bridge.sh --zone=us-central2-b --worker=all
  
     echo "Initializing TPU VM"
     gcloud alpha compute tpus tpu-vm ssh $TPU_VM_NAME --zone=us-central2-b --command="bash tpu_config_cat.sh" --worker=all
