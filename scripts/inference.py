@@ -10,7 +10,7 @@ sys.path.append(".")
 
 import numpy as np
 from absl import app, flags, logging as absl_logging
-from palivla.components.model import ModelComponents
+from palivla.model_components import ModelComponents
 from palivla.optimizer import make_optimizer
 from palivla.spec import ModuleSpec, OptimizerSpec
 from palivla.utils import host_broadcast_str
