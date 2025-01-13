@@ -63,6 +63,8 @@ def get_config(variant_config: str):
         },
         # Dataset settings
         "dataset_kwargs": {
+            "sample_weights" : [1.0],
+            "dataset_kwargs_list" : {},
             "oxe_kwargs": {
                 "data_mix": "bridge",
                 "data_dir": data_dir,
