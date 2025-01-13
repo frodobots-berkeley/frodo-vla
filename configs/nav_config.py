@@ -83,7 +83,7 @@ def get_config():
                 },
                 "frame_transform_kwargs": {
                     "image_augment_kwargs": {},
-                    "resize_size": {"primary": [224, 224]},
+                    "resize_size": {"primary": [96, 96]},
                 },
                 "balance_weights": True,
                 "shuffle_buffer_size": 50000,
