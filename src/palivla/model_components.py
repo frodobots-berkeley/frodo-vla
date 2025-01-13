@@ -240,7 +240,7 @@ class ModelComponents:
                 mesh=self.sharding.mesh.mesh,
                 out_sharding=PartitionSpec("fsdp"),
                 max_decode_len=10,
-                eos_token=self.language_tokenizer.eos_token_id,
+                eos_token=-1,
             )
             tokens = self.data_gather_fn(tokens)
 
