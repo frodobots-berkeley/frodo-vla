@@ -217,8 +217,7 @@ def main(_):
 
             if (i + 1) % config.save_interval == 0:
                 if config.save_path is not None:
-                    # checkpoint_save_manager.save(i + 1, args=model.save_args())
-                    model.save_state(i + 1, checkpoint_save_manager)
+                    model.save_static(i + 1, args=model.save_args())
 
     if config.save_path is not None:
         checkpoint_save_manager.wait_until_finished()
