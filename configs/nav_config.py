@@ -19,8 +19,8 @@ def get_config():
             "wandb_mode": "online",
             #Tokenizers
             "language_tokenizer": "google/paligemma-3b-mix-224",
-            "action_tokenizer": "action_tokenizer.bin(min_action_value=-1, max_action_value=1, action_vocab_size=256)",
-            "sequence_builder": "sequence_builder.default(prompt_pad_length=75, gen_pad_length=15)",
+            "action_tokenizer": "action_tokenizer.bin(min_action_value=-1, max_action_value=1, action_vocab_size=512)",
+            "sequence_builder": "sequence_builder.default(prompt_pad_length=50, gen_pad_length=10)",
             # Initialization
             "load_fns": [
                 (
@@ -59,7 +59,7 @@ def get_config():
                 "kwargs": {
                     "optimizer": "adamw",
                     "num_train_steps": num_train_steps,
-                    "base_learning_rate": 1e-4,
+                    "base_learning_rate": 1e-6,
                 },
             },
             "dataset_kwargs": {
