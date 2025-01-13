@@ -64,7 +64,7 @@ def make_optimizer(
     @optax.inject_hyperparams
     def _make_optimizer(llm_learning_rate, img_learning_rate, embed_learning_rate):
         def _make_opt(
-            lr, weight_decay=1e-4, grad_norm_clip=10.0, b1=0.9, b2=0.999, **kwargs
+            lr, weight_decay=1e-4, grad_norm_clip=1.0, b1=0.9, b2=0.999, **kwargs
         ):
             if optimizer == "adamw":
                 return optax.chain(
