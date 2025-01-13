@@ -46,8 +46,8 @@ def main(_):
     config = flags.FLAGS.config
     sharding_metadata = make_sharding(config)
 
-    model = ModelComponents.load_static(config.resume_checkpoint_Dir, sharding_metadata)
-    manager = ocp.CheckpointManager(config.resume_checkpoint_Dir, options=ocp.CheckpointManagerOptions())
+    model = ModelComponents.load_static(config.resume_checkpoint_dir, sharding_metadata)
+    manager = ocp.CheckpointManager(config.resume_checkpoint_dir, options=ocp.CheckpointManagerOptions())
     model.load_state(config.resume_checkpoint_step, manager)
 
     # Load in the image and the prompt
