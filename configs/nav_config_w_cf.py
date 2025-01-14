@@ -59,7 +59,7 @@ def get_config():
                 "kwargs": {
                     "optimizer": "adamw",
                     "num_train_steps": num_train_steps,
-                    "base_learning_rate": 1e-4,
+                    "base_learning_rate": 1e-5,
                 },
             },
             "dataset_kwargs": {
@@ -86,7 +86,7 @@ def get_config():
                         "standardize_fn" : transform,   
                     },
                 },
-                "sample_weights": [1.0],
+                "sample_weights": [0.6, 0.4],
                 "traj_transform_kwargs": {
                     "window_size": 1,
                     "action_horizon": 8,
