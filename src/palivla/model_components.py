@@ -106,7 +106,7 @@ class ModelComponents:
         from tensorflow import io
 
         io.gfile.makedirs(path)
-
+        print(f"Saving model to {path}")
         # Huggingface can't load from GCS, so we need to stage the tokenizer to a local directory
         with write_staging_directory(io.gfile.join(path, "language_tokenizer")) as temp_dir:
             self.language_tokenizer.save_pretrained(temp_dir)
