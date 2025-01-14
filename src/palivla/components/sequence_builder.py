@@ -44,6 +44,7 @@ class SequenceBuilder:
 
         boa_prompt = "<begin_of_action>" if boa_is_prompt else ""
         boa_gen = "" if boa_is_prompt else "<begin_of_action>"
+        print(batch)
         prompt = [
             self.prepare_prompt(instruction) + boa_prompt
             for instruction in batch["task"]["language_instruction"]
