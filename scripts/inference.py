@@ -51,7 +51,11 @@ def main(_):
     # Load in the image and the prompt
     prompt = "Go to the door"
     image = np.random.randn(1, 224, 224, 3)
-    batch = {"image": image, "prompt": prompt}
+    batch = {"task" : 
+                {"language_instruction" : prompt},
+             "observation": 
+                {"image": image}
+            }
 
     # Predict the output 
     predicted_actions, actions_mask, tokens = model.predict(batch, action_dim=2, action_horizon=10, return_tokens=True)
