@@ -58,7 +58,7 @@ def main(_):
             }
 
     # Predict the output 
-    predicted_actions, actions_mask, tokens = model.predict(batch, action_dim=2, action_horizon=10, return_tokens=True)
+    predicted_actions, actions_mask, tokens = model.predict(batch, action_dim=2, action_horizon=10, return_tokens=True, include_action_tokens=False)
 
     print(predicted_actions.shape)
 
