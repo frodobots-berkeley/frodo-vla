@@ -210,6 +210,7 @@ class ModelComponents:
         *,
         use_ema_params: bool = False,
         return_tokens: bool = False,
+        include_action_tokens: bool = True,
     ):
         # Tokenize the batch and build sequences
         sequences = self.sequence_builder.build_sequence(
@@ -217,6 +218,7 @@ class ModelComponents:
             self.language_tokenizer,
             self.action_tokenizer,
             boa_is_prompt=True,
+            include_action_tokens=include_action_tokens,
         )
 
         # Shard the batch to devices
