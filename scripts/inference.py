@@ -53,7 +53,7 @@ def main(_):
     prompt = "Go to the door"
     image = np.random.randn(1, 224, 224, 3)
     batch = {"task" : 
-                {"language_instruction" : tf.convert_to_tensor(prompt, dtype=tf.string) },
+                {"language_instruction" : np.array([prompt.encode()])},
              "observation": 
                 {"image": tf.convert_to_tensor(image, dtype=tf.int64)},
              "action": tf.convert_to_tensor(np.random.randn(8, 2), dtype=tf.float32),
