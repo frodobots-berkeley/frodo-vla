@@ -41,7 +41,7 @@ def get_config():
             "num_steps": num_train_steps,
             # Checkpoint settings
             "save_path": "gs://vlm-guidance-logs",
-            "save_interval": 10000,
+            "save_interval": 1000,
             "max_to_keep": 1,
             # Multi-device settings
             "data_axis_size": 1,
@@ -83,7 +83,7 @@ def get_config():
                 },
                 "frame_transform_kwargs": {
                     "image_augment_kwargs": {},
-                    "resize_size": {"primary": [96, 96]},
+                    "resize_size": {"primary": [224, 224]},
                 },
                 "balance_weights": True,
                 "shuffle_buffer_size": 50000,
