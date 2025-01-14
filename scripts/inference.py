@@ -46,8 +46,8 @@ def main(_):
     config = flags.FLAGS.config
     sharding_metadata = make_sharding(config)
     manager = ocp.CheckpointManager(config.resume_checkpoint_dir, options=ocp.CheckpointManagerOptions())
-    model = ModelComponents.load_state(config.resume_checkpoint_step, manager)
-
+    model = ModelComponents.load_static(config.resume_checkpoint_dir, sharding_metadata)
+    model.load_state(config.resume_checkpoint_dir, manager)
     # Load in the image and the prompt
     prompt = "Go to the door"
     image = np.random.randn(1, 224, 224, 3)
