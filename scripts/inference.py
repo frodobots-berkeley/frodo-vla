@@ -29,9 +29,9 @@ jax.config.update("jax_persistent_cache_min_compile_time_secs", 0)
 tf.config.set_visible_devices([], "GPU")
 
 def make_sharding(config: ConfigDict):
-    # mesh = MeshShardingHelper([-1], ["fsdp"])
+    mesh = MeshShardingHelper([-1], ["fsdp"])
     sharding_metadata = ShardingMetadata(
-        mesh=MeshShardingHelper(),
+        mesh=mesh,
         model_sharding_rule=FSDPShardingRule(),
     )
     return sharding_metadata
