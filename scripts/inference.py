@@ -54,10 +54,10 @@ def main(_):
     image = np.random.randn(4, 224, 224, 3).astype(np.float64)
     batch = {"task" : 
                 {"language_instruction" : np.array([prompt.encode()]*4), 
-                 "pad_mask_dict": {"language_instruction": np.array([4])}},
+                 "pad_mask_dict": {"language_instruction": np.array([1]*4)}},
              "observation": 
                 {"image_primary": image, 
-                 "pad_mask_dict": {"image_primary": np.array([4], dtype=bool)}},
+                 "pad_mask_dict": {"image_primary": np.array([1]*4, dtype=bool)}},
              "action": np.random.randn(4, 1, 2).astype(np.float64),    
             }
     print(batch)
