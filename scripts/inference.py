@@ -32,9 +32,7 @@ def make_sharding(config: ConfigDict):
     mesh = MeshShardingHelper([-1], ["fsdp"])
     sharding_metadata = ShardingMetadata(
         mesh=mesh,
-        model_sharding_rule=FSDPShardingRule(
-            "fsdp", fsdp_axis_size=mesh.mesh.shape["fsdp"]
-        ),
+        model_sharding_rule=FSDPShardingRule(),
     )
     return sharding_metadata
 
