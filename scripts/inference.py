@@ -51,14 +51,14 @@ def main(_):
     model.load_state(config.resume_checkpoint_step, manager)
     # Load in the image and the prompt
     prompt = "Go to the door"
-    image = np.random.randn(1, 224, 224, 3).astype(np.float64)
+    image = np.random.randn(4, 224, 224, 3).astype(np.float64)
     batch = {"task" : 
-                {"language_instruction" : np.array([prompt.encode()]), 
-                 "pad_mask_dict": {"language_instruction": np.array([1])}},
+                {"language_instruction" : np.array([prompt.encode()]*4), 
+                 "pad_mask_dict": {"language_instruction": np.array([4])}},
              "observation": 
                 {"image_primary": image, 
-                 "pad_mask_dict": {"image_primary": np.array([1], dtype=bool)}},
-             "action": np.random.randn(1, 1, 2).astype(np.float64),    
+                 "pad_mask_dict": {"image_primary": np.array([4], dtype=bool)}},
+             "action": np.random.randn(4, 1, 2).astype(np.float64),    
             }
     print(batch)
     # Predict the output 
