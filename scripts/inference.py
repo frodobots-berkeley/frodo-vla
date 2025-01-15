@@ -53,12 +53,13 @@ def main(_):
     prompt = "Go to the door"
     image = np.random.randn(1, 224, 224, 3).astype(np.float64)
     batch = {"task" : 
-                {"language_instruction" : np.array([prompt.encode()])},
+                {"language_instruction" : np.array([prompt.encode()]), 
+                 "pad_mask_dict": {"language_instruction": np.array([1])}},
              "observation": 
-                {"image": image},
-             "action": np.random.randn(1, 1, 2).astype(np.float64),
+                {"image": image, 
+                 "action": np.random.randn(1, 1, 2).astype(np.float64),
+                 "pad_mask_dict": {"image": np.array([1], dtype=bool)}},
             }
-    batch = traj_transforms.add_pad_mask_dict(batch)
     print(batch)
     # Predict the output 
     predicted_actions, actions_mask, tokens = model.predict(batch, action_dim=2, action_horizon=10, return_tokens=True, include_action_tokens=False)
