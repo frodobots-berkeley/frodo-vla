@@ -5,6 +5,7 @@ import numpy as np
 import sys
 from ml_collections import config_flags, ConfigDict
 import tensorflow as tf
+from PIL import Image
 
 sys.path.append(".")
 
@@ -51,7 +52,10 @@ def main(_):
     model.load_state(config.resume_checkpoint_step, manager)
     # Load in the image and the prompt
     prompt = "Go to the door"
-    image = np.random.randn(4, 224, 224, 3).astype(np.float64)
+    image = Image.open("/home/noam/LLLwL/lcbc/data/data_annotation/cf_dataset_v2/train/cf_dataset/cory5_aug09_00_0035_chunk_0_start_0_end_14_cf_0/3.jpg")
+    image = image.resize((224, 224))
+    image = np.array(image.convert("RGB")).repeat(4, axis=0)
+    print(image.shape)
     batch = {"task" : 
                 {"language_instruction" : np.array([prompt.encode()]*4), 
                  "pad_mask_dict": {"language_instruction": np.array([1]*4)}},
