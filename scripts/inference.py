@@ -60,11 +60,10 @@ def main(_):
                  "pad_mask_dict": {"image_primary": np.array([1]*4, dtype=bool)}},
              "action": np.random.randn(4, 1, 2).astype(np.float64),    
             }
-    print(batch)
     # Predict the output 
     predicted_actions, actions_mask, tokens = model.predict(batch, action_dim=2, action_horizon=10, return_tokens=True, include_action_tokens=False)
 
-    print(predicted_actions.shape)
+    print(predicted_actions)
 
 if __name__ == "__main__":
     config_flags.DEFINE_config_file(
