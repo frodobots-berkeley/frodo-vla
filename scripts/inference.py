@@ -56,8 +56,8 @@ def main(_):
                 {"language_instruction" : np.array([prompt.encode()]), 
                  "pad_mask_dict": {"language_instruction": np.array([1])}},
              "observation": 
-                {"image": image, 
-                 "pad_mask_dict": {"image": np.array([1], dtype=bool)}},
+                {"image_primary": image, 
+                 "pad_mask_dict": {"image_primary": np.array([1], dtype=bool)}},
              "action": np.random.randn(1, 1, 2).astype(np.float64),    
             }
     print(batch)
