@@ -18,7 +18,7 @@ from palivla.utils import host_broadcast_str
 from octo.data import traj_transforms
 from jax.sharding import NamedSharding, PartitionSpec as P
 import orbax.checkpoint as ocp
-from google.cloud import storage
+# from google.cloud import storage
 from palivla.components.train_state import ShardingMetadata
 from scalax.sharding import (
     MeshShardingHelper,
