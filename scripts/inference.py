@@ -8,7 +8,8 @@ import tensorflow as tf
 from PIL import Image
 
 sys.path.append(".")
-
+from google.cloud import storage
+from google.cloud import logging
 import numpy as np
 from absl import app, flags, logging as absl_logging
 from palivla.model_components import ModelComponents
@@ -29,6 +30,8 @@ jax.config.update("jax_compilation_cache_dir", "/tmp/jax_cache")
 jax.config.update("jax_persistent_cache_min_entry_size_bytes", -1)
 jax.config.update("jax_persistent_cache_min_compile_time_secs", 0)
 tf.config.set_visible_devices([], "GPU")
+
+print(logging.Client())
 
 def make_sharding(config: ConfigDict):
     mesh = MeshShardingHelper([-1], ["fsdp"])
