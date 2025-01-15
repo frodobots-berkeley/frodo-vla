@@ -56,7 +56,7 @@ def main(_):
                 {"language_instruction" : np.array([prompt.encode()])},
              "observation": 
                 {"image": tf.convert_to_tensor(image, dtype=tf.int64)},
-             "action": tf.convert_to_tensor(np.random.randn(8, 2), dtype=tf.float32),
+             "action": tf.convert_to_tensor(np.random.randn(1, 1, 2), dtype=tf.float32),
             }
     
     batch = traj_transforms.add_pad_mask_dict(batch)
