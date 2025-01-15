@@ -58,9 +58,8 @@ def main(_):
                 {"image": image},
              "action": np.random.randn(1, 1, 2).astype(np.float64),
             }
-    
     batch = traj_transforms.add_pad_mask_dict(batch)
-
+    print(batch)
     # Predict the output 
     predicted_actions, actions_mask, tokens = model.predict(batch, action_dim=2, action_horizon=10, return_tokens=True, include_action_tokens=False)
 
