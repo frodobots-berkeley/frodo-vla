@@ -51,12 +51,12 @@ def main(_):
     model.load_state(config.resume_checkpoint_step, manager)
     # Load in the image and the prompt
     prompt = "Go to the door"
-    image = np.random.randn(1, 224, 224, 3)
+    image = np.random.randn(1, 224, 224, 3, dtype=np.float64)
     batch = {"task" : 
                 {"language_instruction" : np.array([prompt.encode()])},
              "observation": 
-                {"image": tf.convert_to_tensor(image, dtype=tf.int64)},
-             "action": tf.convert_to_tensor(np.random.randn(1, 1, 2), dtype=tf.float32),
+                {"image": image},
+             "action": np.random.randn(1, 1, 2, dtype=np.float64),
             }
     
     batch = traj_transforms.add_pad_mask_dict(batch)
