@@ -57,8 +57,8 @@ def main(_):
                  "pad_mask_dict": {"language_instruction": np.array([1])}},
              "observation": 
                 {"image": image, 
-                 "action": np.random.randn(1, 1, 2).astype(np.float64),
                  "pad_mask_dict": {"image": np.array([1], dtype=bool)}},
+             "action": np.random.randn(1, 1, 2).astype(np.float64),    
             }
     print(batch)
     # Predict the output 
