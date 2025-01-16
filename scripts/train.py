@@ -195,7 +195,8 @@ def main(_):
         for i in pbar:
             if not config.overfit_dataset:
                 batch = next(train_it)
-            print(batch)
+            print(batch["action"][:, -1, :, :])
+            print(batch["action_mask"])
             info = model.train_step(batch)
 
             info = jax.device_get(info)
