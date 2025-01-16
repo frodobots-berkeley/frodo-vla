@@ -8,8 +8,6 @@ import tensorflow as tf
 from PIL import Image
 
 sys.path.append(".")
-from google.cloud import storage
-from google.cloud import logging
 import numpy as np
 from absl import app, flags, logging as absl_logging
 from palivla.model_components import ModelComponents
