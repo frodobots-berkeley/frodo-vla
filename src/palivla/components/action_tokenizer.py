@@ -47,6 +47,7 @@ class BinActionTokenizer(ActionTokenizer):
         return self.action_vocab_size
 
     def tokenize(self, data, obs=None):
+        print(data)
         data = (data - self.min_action_value) / (
             self.max_action_value - self.min_action_value
         )
