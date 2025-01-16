@@ -72,7 +72,7 @@ def main(_):
                 "action": np.random.randn(4, 1, 2).astype(np.float64),    
                 }
         # Predict the output 
-        predicted_actions, actions_mask, tokens = model.predict(batch, action_dim=2, action_horizon=10, return_tokens=True, include_action_tokens=False)
+        predicted_actions, actions_mask, tokens = model.predict(batch, action_dim=2, action_horizon=5, return_tokens=True, include_action_tokens=False)
 
         print(predicted_actions)
 

@@ -188,6 +188,8 @@ class ModelComponents:
         predicted_actions = np.nan_to_num(predicted_actions)
 
         gt_actions = jax.experimental.multihost_utils.process_allgather(gt_actions).reshape(predicted_actions.shape)
+        print("PRED: ", predicted_actions)
+        print("GT: ", gt_actions)
         tokens["target"] = jax.experimental.multihost_utils.process_allgather(tokens["target"]).reshape(tokens["predicted"].shape)
         tokens["mask"] = jax.experimental.multihost_utils.process_allgather(tokens["mask"]).reshape(tokens["predicted"].shape)
         gen_valid_pct = actions_mask.mean()
