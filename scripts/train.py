@@ -139,7 +139,6 @@ def main(_):
 
     # Make the basic dataset
     # We have to do this first, since we need to know how the dataset is set up before we can construct the model
-    print(config.dataset_kwargs.to_dict())
     train_ds = make_base_dataset(**config.dataset_kwargs.to_dict(), train=True)
 
     # Construct the final dataset
