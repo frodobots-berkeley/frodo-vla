@@ -58,7 +58,7 @@ def main(_):
     storage_client = storage.Client()
     bucket = storage_client.bucket('vlm-guidance-misc')
     blob = bucket.get_blob('3.jpg')  # use get_blob to fix generation number, so we don't get corruption if blob is overwritten while we read it.
-    with blob.open() as file:
+    with blob.open(mode="rb") as file:
         image = Image.open(file)
     image = image.resize((224, 224))
     image = np.array(image.convert("RGB")).repeat(4, axis=0)
