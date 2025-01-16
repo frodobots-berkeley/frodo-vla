@@ -7,6 +7,7 @@ from ml_collections import config_flags, ConfigDict
 import tensorflow as tf
 from PIL import Image
 from google.cloud import logging
+from google.cloud import storage
 sys.path.append(".")
 import numpy as np
 from absl import app, flags, logging as absl_logging
@@ -54,7 +55,10 @@ def main(_):
     model.load_state(config.resume_checkpoint_step, manager)
     # Load in the image and the prompt
     prompt = "Go to the door"
-    with tf.io.gfile.GFile("gs://vlm-guidance-misc/3.jpg", "r") as file:
+    storage_client = storage.Client()
+    bucket = storage_client.bucket('vlm-guidance-misc')
+    blob = bucket.get_blob('3.jpg')  # use get_blob to fix generation number, so we don't get corruption if blob is overwritten while we read it.
+    with blob.open() as file:
         image = Image.open(file)
     image = image.resize((224, 224))
     image = np.array(image.convert("RGB")).repeat(4, axis=0)
