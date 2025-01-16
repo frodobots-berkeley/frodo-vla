@@ -56,14 +56,11 @@ def main(_):
     model.load_state(config.resume_checkpoint_step, manager)
     # Load in the image and the prompt
     prompt = "Go to the door"
-    storage_client = storage.Client()
-    bucket = storage_client.bucket('vlm-guidance-misc')
-    blob = bucket.get_blob('3.jpg')  # use get_blob to fix generation number, so we don't get corruption if blob is overwritten while we read it.
-    with blob.open() as file:
+    with tf.io.gfile.GFile("gs://vlm-guidance-misc/3.jpg", "r") as file:
         image = Image.open(file)
     image = image.resize((224, 224))
     image = np.array(image.convert("RGB")).repeat(4, axis=0)
-    print(image.shape)
+
     batch = {"task" : 
                 {"language_instruction" : np.array([prompt.encode()]*4), 
                  "pad_mask_dict": {"language_instruction": np.array([1]*4)}},
