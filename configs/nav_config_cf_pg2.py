@@ -27,7 +27,7 @@ def get_config():
                     "load.paligemma_weights",
                     {
                         "hf_repo": "google/paligemma2-3b-pt-224-jax",
-                        "path": "paligemma2-3b-pt-224.npz",
+                        "path": "pt_2b_224.npz",
                     },
                 )
             ],
