@@ -63,18 +63,18 @@ def main(_):
         image = image.resize((224, 224))
         image = np.array(image.convert("RGB")).repeat(4, axis=0)
 
-    batch = {"task" : 
-                {"language_instruction" : np.array([prompt.encode()]*4), 
-                 "pad_mask_dict": {"language_instruction": np.array([1]*4)}},
-             "observation": 
-                {"image_primary": image, 
-                 "pad_mask_dict": {"image_primary": np.array([1]*4, dtype=bool)}},
-             "action": np.random.randn(4, 1, 2).astype(np.float64),    
-            }
-    # Predict the output 
-    predicted_actions, actions_mask, tokens = model.predict(batch, action_dim=2, action_horizon=10, return_tokens=True, include_action_tokens=False)
+        batch = {"task" : 
+                    {"language_instruction" : np.array([prompt.encode()]*4), 
+                    "pad_mask_dict": {"language_instruction": np.array([1]*4)}},
+                "observation": 
+                    {"image_primary": image, 
+                    "pad_mask_dict": {"image_primary": np.array([1]*4, dtype=bool)}},
+                "action": np.random.randn(4, 1, 2).astype(np.float64),    
+                }
+        # Predict the output 
+        predicted_actions, actions_mask, tokens = model.predict(batch, action_dim=2, action_horizon=10, return_tokens=True, include_action_tokens=False)
 
-    print(predicted_actions)
+        print(predicted_actions)
 
 if __name__ == "__main__":
     config_flags.DEFINE_config_file(
