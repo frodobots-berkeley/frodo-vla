@@ -62,7 +62,7 @@ def main(_):
         image = Image.open(file)
         image = image.resize((224, 224))
         image = np.array(image.convert("RGB")).repeat(4, axis=0)
-
+        print(image.shape)
         batch = {"task" : 
                     {"language_instruction" : np.array([prompt.encode()]*4), 
                     "pad_mask_dict": {"language_instruction": np.array([1]*4)}},
