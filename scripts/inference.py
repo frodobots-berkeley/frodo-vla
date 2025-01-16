@@ -61,7 +61,7 @@ def main(_):
     with blob.open(mode="rb") as file:
         image = Image.open(file)
         image = image.resize((224, 224))
-        image = np.expand_dims(np.array(image.convert("RGB")).transpose(2,1,0), 0).repeat(4, axis=0)
+        image = np.expand_dims(np.array(image.convert("RGB")), 0).repeat(4, axis=0)
         print(image.shape)
         batch = {"task" : 
                     {"language_instruction" : np.array([prompt.encode()]*4), 
