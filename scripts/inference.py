@@ -6,7 +6,7 @@ import sys
 from ml_collections import config_flags, ConfigDict
 import tensorflow as tf
 from PIL import Image
-
+from google.cloud import logging
 sys.path.append(".")
 import numpy as np
 from absl import app, flags, logging as absl_logging
