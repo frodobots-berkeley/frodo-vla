@@ -86,7 +86,7 @@ def get_config():
                         "standardize_fn" : transform,   
                     },
                 },
-                "sample_weights": [0.5, 0.5],
+                "sample_weights": [0.8, 0.2],
                 "traj_transform_kwargs": {
                     "window_size": 1,
                     "action_horizon": 8,
