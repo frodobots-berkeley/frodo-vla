@@ -212,10 +212,10 @@ def main(_):
 
                 # Select random subset of the batch
                 idxs = np.random.choice(np.arange(eval_plots["pred_actions"].shape[0]), 4)
-                gt_viz = eval_plots["gt_actions"][idxs, :, :] - eval_plots["gt_actions"][idxs, 0, :]
+                gt_viz = eval_plots["gt_actions"][idxs, :, :] - eval_plots["gt_actions"][idxs, 0, :].reshape(-1, 1, 2)
                 gt_viz = np.cumsum(gt_viz, axis=1)
 
-                pred_viz = eval_plots["pred_actions"][idxs, :, :] - eval_plots["pred_actions"][idxs, 0, :]
+                pred_viz = eval_plots["pred_actions"][idxs, :, :] - eval_plots["pred_actions"][idxs, 0, :].reshape(-1, 1, 2)
                 pred_viz = np.cumsum(pred_viz, axis=1)
                 for j in range(pred_viz.shape[0]):
                     plt.plot(gt_viz[j,:,0], gt_viz[j,:,1], 'r')
