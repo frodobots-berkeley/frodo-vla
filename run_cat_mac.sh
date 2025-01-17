@@ -48,7 +48,9 @@ if $UPDATE; then
     gcloud alpha compute tpus tpu-vm ssh $TPU_VM_NAME --zone=us-central2-b --command="bash update.sh"
 fi
 
-gcloud alpha compute tpus tpu-vm ssh $TPU_VM_NAME --zone=us-central2-b --command="cd ~/bigvision-palivla &&
+gcloud alpha compute tpus tpu-vm ssh $TPU_VM_NAME --zone=us-central2-b --command="sudo su &&
+                                                                                  su noam &&
+                                                                                  cd ~/bigvision-palivla &&
                                                                                   source ~/.local/bin/env &&
                                                                                   source .venv/bin/activate &&
                                                                                   uv run wandb login $API_KEY &&
