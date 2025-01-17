@@ -261,12 +261,11 @@ class ModelComponents:
                 action_dim=action_dim,
                 action_horizon=action_horizon,
             )
-            if np.count_nonzero(np.isnan(actions)) < actions.size:
-                print(f" num nans: {np.count_nonzero(np.isnan(actions))} of {actions.size}")
-                print("generated actions: ", actions)
-                print("Generated tokens: ", tokens)
-                print("GT tokens: ", sequences["gen"]["tokens"])
-                print(sequences["gen"]["mask"])
+            print(f" num nans: {np.count_nonzero(np.isnan(actions))} of {actions.size}")
+            print("generated actions: ", actions)
+            print("Generated tokens: ", tokens)
+            print("GT tokens: ", sequences["gen"]["tokens"])
+            print(sequences["gen"]["mask"])
             if return_tokens:
                 return (
                     actions,
