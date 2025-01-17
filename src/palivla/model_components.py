@@ -169,7 +169,6 @@ class ModelComponents:
             "prompt": sequences["prompt"],
             "gen": sequences["gen"],
         }
-        print("Batch sample: ", sequences["gen"]["tokens"])
         batch = self.sharding.mesh.local_data_to_global_array(batch)
 
         # Run the train step
@@ -243,7 +242,7 @@ class ModelComponents:
             from palivla.predict_fns import _decode
 
             params = self.train_state.get_params(use_ema_params=use_ema_params)
-
+            print("GT tokens: ", sequences["gen"]["tokens"])
             tokens = _decode(
                 params,
                 inputs,
