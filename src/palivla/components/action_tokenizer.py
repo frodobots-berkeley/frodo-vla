@@ -47,8 +47,6 @@ class BinActionTokenizer(ActionTokenizer):
         return self.action_vocab_size
 
     def tokenize(self, data, obs=None):
-        print("Tokenize")
-        print(data)
         data = (data - self.min_action_value) / (
             self.max_action_value - self.min_action_value
         )
@@ -66,12 +64,12 @@ class BinActionTokenizer(ActionTokenizer):
             tokens / (self.vocab_size - 1),
         )
         # print(f" num nans: {np.count_nonzero(np.where(values == np.nan))} of {values.size}")
-        # print(values)
+        print(values)
         data = (
             values * (self.max_action_value - self.min_action_value)
             + self.min_action_value
         )
-        # print(data)
+        print(data)
         data = data[..., :action_dim]
         try:
             data = rearrange(data, "... (p a) -> ... p a", a=action_dim)
