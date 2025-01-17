@@ -49,7 +49,7 @@ if $UPDATE; then
 fi
 
 gcloud alpha compute tpus tpu-vm ssh $TPU_VM_NAME --zone=us-central2-b --command="echo ' Starting training ' &&
-                                                                                  sudo su &&
+                                                                                  sudo su - &&
                                                                                   su noam &&
                                                                                   echo $USER &&
                                                                                   cd ~/bigvision-palivla &&
