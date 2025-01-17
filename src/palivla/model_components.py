@@ -267,8 +267,7 @@ class ModelComponents:
                     {
                         "predicted": tokens,
                         "target": sequences["gen"]["tokens"],
-                        "mask": sequences["gen"]["mask"],
-                    },
+                        "mask": sequences["gen"]["mask"],                    },
                 )
             else:
                 return actions, actions_mask
