@@ -60,6 +60,7 @@ class BinActionTokenizer(ActionTokenizer):
 
     def detokenize(self, tokens, *, obs=None, action_dim: int):
         print("VOCAB_SIZE: ", self.vocab_size)
+        print(tokens)
         values = np.where(
             (tokens < 0) | (tokens >= self.vocab_size),
             np.nan,
