@@ -207,7 +207,7 @@ def main(_):
             if (i + 1) % config.eval_interval == 0:
                 eval_data = model.eval_step(batch)
                 eval_info = eval_data["eval_info"]
-                eval_plots = eval_data["eval_plots"]
+                eval_plots = eval_data["eval_data"]
 
                 # Select random subset of the batch
                 idxs = np.random.choice(np.arange(eval_plots["pred_actions"].shape[0]), 4)
