@@ -212,8 +212,9 @@ def main(_):
 
                 # Select random subset of the batch
                 idxs = np.random.choice(np.arange(eval_plots["pred_actions"].shape[0]), 4)
-                plt.plot(eval_plots["pred_actions"][idxs,:], label="pred")
-                plt.plot(eval_plots["gt_actions"][idxs,:], label="gt")
+                for j in idxs:
+                    plt.plot(eval_plots["pred_actions"][j,:], label="pred")
+                    plt.plot(eval_plots["gt_actions"][j,:], label="gt")
                 save_path = f"images/eval.png"
                 plt.savefig(save_path)
                 breakpoint()
