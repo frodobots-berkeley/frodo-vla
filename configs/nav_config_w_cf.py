@@ -2,7 +2,7 @@ from octo.data.utils.data_utils import NormalizationType
 from ml_collections.config_dict import placeholder, ConfigDict, FieldReference
 
 from palivla.components.model import get_default_config
-from octo.data.oxe.oxe_standardization_transforms import gnm_dataset_transform
+from palivla.standardization_transforms import gnm_dataset_transform
 from octo.utils.spec import ModuleSpec
 
 placeholder(int)._value
