@@ -22,8 +22,10 @@ def compute_stats(
     accuracy = jnp.mean(
         target_mask_loss * (jnp.argmax(pred_logits, axis=-1) == target_tokens)
     ) / jnp.mean(target_mask_loss)
-    metrics = {"loss": loss, "accuracy": accuracy}
-
+    pred_valid_tokens = jnp.count_nonzero(jnp.argmax(pred_logits, axis=-1) > 257153)
+    valid_cnt = pred_valid_tokens / pred_logits.shape[-2] 
+    print("Target mask: ", target_mask_loss)
+    metrics = {"loss": loss, "accuracy": accuracy, "valid_cnt": valid_cnt}
     return loss, metrics
 
 
