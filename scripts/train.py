@@ -89,6 +89,7 @@ def create_model(config: ConfigDict, sharding_metadata: ShardingMetadata):
     model_config["llm_spec"]["config"]["vocab_size"] = len(language_tokenizer)
     print("NUM_TOKENS: ", len(language_tokenizer))
     print("NUM_EXTRA_TOKENS: ", len(extra_tokens))
+    breakpoint()
     model_spec = ModuleSpec(
         PaliVLAModel,
         freeze(model_config),
