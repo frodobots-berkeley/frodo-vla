@@ -259,7 +259,14 @@ class ModelComponents:
                 action_dim=action_dim,
                 action_horizon=action_horizon,
             )
-            breakpoint()
+            if np.count_nonzero(np.isnan(actions)) < actions.size:
+                print(f" num nans: {np.count_nonzero(np.isnan(actions))} of {actions.size}")
+                print(actions)
+                print(tokens)
+                print(sequences["gen"]["tokens"])
+                print(sequences["gen"]["mask"])
+                print(sequences["gen"]["mask_loss"])
+                raise ValueError("Detokenized actions contain NaNs")
             if return_tokens:
                 return (
                     actions,
