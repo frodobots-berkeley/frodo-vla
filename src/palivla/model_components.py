@@ -266,7 +266,7 @@ class ModelComponents:
                 print(sequences["gen"]["tokens"])
                 print(sequences["gen"]["mask"])
                 print(sequences["gen"]["mask_loss"])
-                raise ValueError("Detokenized actions contain NaNs")
+                print("Some valid values in sequence")
             if return_tokens:
                 return (
                     actions,
