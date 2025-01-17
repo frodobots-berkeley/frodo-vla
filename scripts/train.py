@@ -1,4 +1,5 @@
 import os
+import matplotlib.pyplot as plt
 
 from big_vision.utils import Registry
 from palivla.components.action_tokenizer import ActionTokenizer
