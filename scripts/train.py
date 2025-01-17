@@ -212,13 +212,19 @@ def main(_):
 
                 # Select random subset of the batch
                 idxs = np.random.choice(np.arange(eval_plots["pred_actions"].shape[0]), 4)
-                for j in idxs:
-                    plt.plot(eval_plots["pred_actions"][j,:,0] - eval_plots["pred_actions"][j,0,0], eval_plots["pred_actions"][j,:,1] - eval_plots["pred_actions"][j,0,1], label="pred")
-                    plt.plot(eval_plots["gt_actions"][j,:,0] - eval_plots["gt_actions"][j,0,0], eval_plots["gt_actions"][j,:,1] - eval_plots["gt_actions"][j,0,1], label="gt")
-                save_path = f"images/eval_{i+1}.png"
+                gt_viz = eval_plots["gt_actions"][idxs, :, :] - eval_plots["gt_actions"][idxs, 0, :]
+                gt_viz = np.cumsum(gt_viz, axis=1)
+
+                pred_viz = eval_plots["pred_actions"][idxs, :, :] - eval_plots["pred_actions"][idxs, 0, :]
+                pred_viz = np.cumsum(pred_viz, axis=1)
+                for j in range(pred_viz.shape[0]):
+                    plt.plot(gt_viz[j,:,0], gt_viz[j,:,1], 'r')
+                    plt.plot(pred_viz[j,:,0], pred_viz[j,:,1], 'b')
+                save_path = f"images/eval_gt_{i+1}.png"
                 plt.legend()
                 plt.title("Action Prediction")
                 plt.savefig(save_path)
+                    
                 # breakpoint()
                 if jax.process_index() == 0:
                     wandb.log({"action_prediction": wandb.Image(save_path)}, commit=False)
