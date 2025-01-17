@@ -215,9 +215,11 @@ def main(_):
                 for j in idxs:
                     plt.plot(eval_plots["pred_actions"][j,:,0] - eval_plots["pred_actions"][j,0,0], eval_plots["pred_actions"][j,:,1] - eval_plots["pred_actions"][j,0,1], label="pred")
                     plt.plot(eval_plots["gt_actions"][j,:,0] - eval_plots["gt_actions"][j,0,0], eval_plots["gt_actions"][j,:,1] - eval_plots["gt_actions"][j,0,1], label="gt")
-                save_path = f"images/eval.png"
+                save_path = f"images/eval_{i+1}.png"
+                plt.legend()
+                plt.title("Action Prediction")
                 plt.savefig(save_path)
-                breakpoint()
+                # breakpoint()
                 if jax.process_index() == 0:
                     wandb.log({"action_prediction": wandb.Image(save_path)}, commit=False)
                     wandb.log(eval_info, step=i + 1, commit=False)

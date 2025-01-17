@@ -64,7 +64,7 @@ class BinActionTokenizer(ActionTokenizer):
             tokens / (self.vocab_size - 1),
         )
         # print(f" num nans: {np.count_nonzero(np.where(values == np.nan))} of {values.size}")
-        print(values)
+        # print(values)
         data = (
             values * (self.max_action_value - self.min_action_value)
             + self.min_action_value
