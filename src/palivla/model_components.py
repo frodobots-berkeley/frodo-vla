@@ -259,6 +259,7 @@ class ModelComponents:
                 action_dim=action_dim,
                 action_horizon=action_horizon,
             )
+            breakpoint()
             if return_tokens:
                 return (
                     actions,
