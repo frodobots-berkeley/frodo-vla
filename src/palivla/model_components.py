@@ -242,7 +242,6 @@ class ModelComponents:
             from palivla.predict_fns import _decode
 
             params = self.train_state.get_params(use_ema_params=use_ema_params)
-            print("GT tokens: ", sequences["gen"]["tokens"])
             tokens = _decode(
                 params,
                 inputs,
@@ -264,12 +263,10 @@ class ModelComponents:
             )
             if np.count_nonzero(np.isnan(actions)) < actions.size:
                 print(f" num nans: {np.count_nonzero(np.isnan(actions))} of {actions.size}")
-                print(actions)
-                print(tokens)
-                print(sequences["gen"]["tokens"])
+                print("generated actions: ", actions)
+                print("Generated tokens: ", tokens)
+                print("GT tokens: ", sequences["gen"]["tokens"])
                 print(sequences["gen"]["mask"])
-                print(sequences["gen"]["mask_loss"])
-                print("Some valid values in sequence")
             if return_tokens:
                 return (
                     actions,
