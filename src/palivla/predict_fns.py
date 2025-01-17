@@ -94,7 +94,6 @@ def _decode_with_logp(
     """Sample token continuations to the input sequences."""
     replicate_sharding = jax.sharding.NamedSharding(mesh, P())
     out_sharding = jax.sharding.NamedSharding(mesh, out_sharding)
-    print(data)
     # Prefill the model cache and generate logits for first token.
     logits, cache = jax.jit(
         _prefill_cache,

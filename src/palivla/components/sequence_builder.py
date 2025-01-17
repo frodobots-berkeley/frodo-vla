@@ -44,7 +44,7 @@ class SequenceBuilder:
 
         boa_prompt = "<begin_of_action>" if boa_is_prompt else ""
         boa_gen = "" if boa_is_prompt else "<begin_of_action>"
-        print(batch)
+
         prompt = [
             self.prepare_prompt(instruction) + boa_prompt
             for instruction in batch["task"]["language_instruction"]
@@ -125,7 +125,7 @@ class SequenceBuilder:
         boa_id = boa_id or language_tokenizer.encode("<begin_of_action>")[0]
         eos_id = eos_id or language_tokenizer.encode("<eos>")[0]
         act0_id = act0_id or language_tokenizer.encode("<act0>")[0]
-
+        
         # Find the beginning of the action
         if boa_is_prompt:
             start_idx = 0
@@ -140,7 +140,7 @@ class SequenceBuilder:
             end_idx = np.where(tokens == eos_id)[0][0]
         except IndexError:
             return None
-
+        
         # Get the action
         action = tokens[start_idx:end_idx] - act0_id
         try:

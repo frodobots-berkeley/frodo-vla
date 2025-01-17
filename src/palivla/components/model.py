@@ -32,6 +32,21 @@ def get_default_config():
         "target_key_order": ("image_primary",),
     }
 
+def get_pg2_config():
+    return {
+        "llm_spec": {
+            "__ctor": "big_vision.models.proj.paligemma.gemma_bv.Model",
+            "config": {"vocab_size": 257_152},
+        },
+        "img_spec": {
+            "__ctor": "big_vision.models.vit.Model",
+            "config": {"variant": "So400m/14", "pool_type": "none", "scan": True},
+        },
+        "encoder_specs": {},
+        "modality_mappings": {"image_primary": "img"},
+        "prompt_autoregressive": False,
+        "target_key_order": ("image_primary",),
+    }
 
 def collect_embeddings(
     embeds: Dict[str, jax.Array],

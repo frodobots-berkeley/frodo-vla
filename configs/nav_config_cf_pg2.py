@@ -18,7 +18,7 @@ def get_config():
             "wandb_project": "vla-nav",
             "wandb_mode": "online",
             #Tokenizers
-            "language_tokenizer": "google/paligemma-3b-mix-224",
+            "language_tokenizer": "google/paligemma2-3b-pt-224",
             "action_tokenizer": "action_tokenizer.bin(min_action_value=-1, max_action_value=1, action_vocab_size=256)",
             "sequence_builder": "sequence_builder.default(prompt_pad_length=75, gen_pad_length=15)",
             # Initialization
@@ -26,8 +26,8 @@ def get_config():
                 (
                     "load.paligemma_weights",
                     {
-                        "hf_repo": "google/paligemma-3b-mix-224-jax",
-                        "path": "paligemma-3b-mix-224.npz",
+                        "hf_repo": "google/paligemma2-3b-pt-224-jax",
+                        "path": "pt_2b_224.npz",
                     },
                 )
             ],
@@ -86,7 +86,7 @@ def get_config():
                         "standardize_fn" : transform,   
                     },
                 },
-                "sample_weights": [0.8, 0.2],
+                "sample_weights": [0.6, 0.4],
                 "traj_transform_kwargs": {
                     "window_size": 1,
                     "action_horizon": 8,

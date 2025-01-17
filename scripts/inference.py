@@ -6,10 +6,9 @@ import sys
 from ml_collections import config_flags, ConfigDict
 import tensorflow as tf
 from PIL import Image
-
-sys.path.append(".")
-from google.cloud import storage
 from google.cloud import logging
+from google.cloud import storage
+sys.path.append(".")
 import numpy as np
 from absl import app, flags, logging as absl_logging
 from palivla.model_components import ModelComponents
@@ -59,23 +58,23 @@ def main(_):
     storage_client = storage.Client()
     bucket = storage_client.bucket('vlm-guidance-misc')
     blob = bucket.get_blob('3.jpg')  # use get_blob to fix generation number, so we don't get corruption if blob is overwritten while we read it.
-    with blob.open() as file:
+    with blob.open(mode="rb") as file:
         image = Image.open(file)
-    image = image.resize((224, 224))
-    image = np.array(image.convert("RGB")).repeat(4, axis=0)
-    print(image.shape)
-    batch = {"task" : 
-                {"language_instruction" : np.array([prompt.encode()]*4), 
-                 "pad_mask_dict": {"language_instruction": np.array([1]*4)}},
-             "observation": 
-                {"image_primary": image, 
-                 "pad_mask_dict": {"image_primary": np.array([1]*4, dtype=bool)}},
-             "action": np.random.randn(4, 1, 2).astype(np.float64),    
-            }
-    # Predict the output 
-    predicted_actions, actions_mask, tokens = model.predict(batch, action_dim=2, action_horizon=10, return_tokens=True, include_action_tokens=False)
+        image = image.resize((224, 224))
+        image = np.expand_dims(np.array(image.convert("RGB")), 0).repeat(4, axis=0)
+        print(image.shape)
+        batch = {"task" : 
+                    {"language_instruction" : np.array([prompt.encode()]*4), 
+                    "pad_mask_dict": {"language_instruction": np.array([1]*4)}},
+                "observation": 
+                    {"image_primary": image, 
+                    "pad_mask_dict": {"image_primary": np.array([1]*4, dtype=bool)}},
+                "action": np.random.randn(4, 1, 2).astype(np.float64),    
+                }
+        # Predict the output 
+        predicted_actions, actions_mask, tokens = model.predict(batch, action_dim=2, action_horizon=5, return_tokens=True, include_action_tokens=False)
 
-    print(predicted_actions)
+        print(predicted_actions)
 
 if __name__ == "__main__":
     config_flags.DEFINE_config_file(
