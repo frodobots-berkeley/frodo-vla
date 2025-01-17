@@ -203,10 +203,21 @@ def main(_):
             pbar.set_postfix(
                 loss=f"{info['loss']:.4f}",
             )
-
+            os.makedirs("images", exist_ok=True)
             if (i + 1) % config.eval_interval == 0:
-                eval_info = model.eval_step(batch)
+                eval_data = model.eval_step(batch)
+                eval_info = eval_data["eval_info"]
+                eval_plots = eval_data["eval_plots"]
+
+                # Select random subset of the batch
+                idxs = np.random.choice(np.arange(eval_plots["pred_actions"].shape[0]), 4)
+                plt.plot(eval_plots["pred_actions"][idxs,:], label="pred")
+                plt.plot(eval_plots["gt_actions"][idxs,:], label="gt")
+                save_path = f"images/eval.png"
+                plt.savefig(save_path)
+                breakpoint()
                 if jax.process_index() == 0:
+                    wandb.log({"action_prediction": wandb.Image(save_path)}, commit=False)
                     wandb.log(eval_info, step=i + 1, commit=False)
 
             if (i + 1) % config.log_interval == 0:

@@ -197,11 +197,14 @@ class ModelComponents:
         gen_l1 = np.mean(np.abs(predicted_actions - gt_actions) * actions_mask) / actions_mask.mean()
         gen_acc = np.mean((tokens["predicted"] == tokens["target"]) * tokens["mask"]) / tokens["mask"].mean()
                               
-        return {
+        return {"eval_info":{
             "gen_valid_pct": gen_valid_pct,
             "gen_l2": gen_l2,
             "gen_l1": gen_l1,
-            "gen_acc": gen_acc,
+            "gen_acc": gen_acc,},
+            "eval_data":{
+            "pred_actions": predicted_actions,
+            "gt_actions": gt_actions,}
         }
 
     def predict(
