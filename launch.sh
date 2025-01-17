@@ -1,4 +1,6 @@
 API_KEY=$1
+sudo su 
+su noam
 cd ~/bigvision-palivla
 source ~/.local/bin/env
 source .venv/bin/activate
