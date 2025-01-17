@@ -51,6 +51,7 @@ class BinActionTokenizer(ActionTokenizer):
             self.max_action_value - self.min_action_value
         )
         data = rearrange(data, "... p a -> ... (p a)")
+        print(data)
         return np.clip(
             np.round(data * (self.vocab_size - 1)).astype(np.int32),
             0,
