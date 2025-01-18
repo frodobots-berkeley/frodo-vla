@@ -87,7 +87,6 @@ def get_config():
                     },
                 },
                 "sample_weights": [0.8, 0.2],
-                "action_"
                 "traj_transform_kwargs": {
                     "window_size": 1,
                     "action_horizon": action_horizon,
