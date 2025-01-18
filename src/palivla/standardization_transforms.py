@@ -895,7 +895,7 @@ def gnm_dataset_transform(trajectory: Dict[str, Any]) -> Dict[str, Any]:
         ),
         2,
     )
-
+    actions = tf.squeeze(actions, 2)
     normalization_factor = 1.0
     for dataset_name, value in METRIC_WAYPOINT_SPACING.items():
         if tf.strings.regex_full_match(
