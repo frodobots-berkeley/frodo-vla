@@ -233,6 +233,7 @@ class ModelComponents:
             "prompt": sequences["prompt"],
             "gen": sequences["gen"],
         }
+        breakpoint()
         if batch["action"].shape[0] == 1:
             pass
         else:
