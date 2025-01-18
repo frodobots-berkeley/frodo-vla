@@ -142,10 +142,6 @@ class SequenceBuilder:
             return None
         
         # Get the action
-        print("Start: ", start_idx)
-        print("End: ", end_idx)
-        print("EOS: ", eos_id)
-        print("BOA: ", boa_id)
         action = tokens[start_idx:end_idx] - act0_id
         print("Action: ", action)
         try:
