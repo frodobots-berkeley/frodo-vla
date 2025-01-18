@@ -262,7 +262,6 @@ class ModelComponents:
                 action_horizon=action_horizon,
             )
             print(f"Num nans: {np.count_nonzero(np.isnan(actions))} of {actions.size}")
-            print("Generated actions: ", actions)
             print("Generated tokens: ", tokens)
             print("GT tokens: ", sequences["gen"]["tokens"])
             print("Actions mask: ", actions_mask)

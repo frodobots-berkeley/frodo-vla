@@ -41,7 +41,6 @@ class SequenceBuilder:
         include_action_tokens: bool = True,
     ):
         boa_id = language_tokenizer.encode("<begin_of_action>")[0]
-        print("boa_id: ", boa_id)
         boa_prompt = "<begin_of_action>" if boa_is_prompt else ""
         boa_gen = "" if boa_is_prompt else "<begin_of_action>"
 
@@ -125,9 +124,6 @@ class SequenceBuilder:
         boa_id = boa_id or language_tokenizer.encode("<begin_of_action>")[0]
         eos_id = eos_id or language_tokenizer.encode("<eos>")[0]
         act0_id = act0_id or language_tokenizer.encode("<act0>")[0]
-        print("boa_id: ", boa_id)
-        print("eos_id: ", eos_id)
-        print("act0_id: ", act0_id)
         # Find the beginning of the action
         if boa_is_prompt:
             start_idx = 0
@@ -135,14 +131,12 @@ class SequenceBuilder:
             try:
                 start_idx = np.where(tokens == boa_id)[0][0] + 1
             except IndexError:
-                print("start_idx is None")
                 return None
 
         # Find the end of the action
         try:
             end_idx = np.where(tokens == eos_id)[0][0]
         except IndexError:
-            print()
             return None
         
         # Get the action
@@ -151,7 +145,6 @@ class SequenceBuilder:
         try:
             return action_tokenizer.detokenize(action, action_dim=action_dim)
         except ValueError:
-            print("action is None")
             return None
 
     def batch_get_actions(
