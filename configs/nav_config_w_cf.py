@@ -74,6 +74,7 @@ def get_config():
                         "force_recompute_dataset_statistics": False,
                         "action_proprio_normalization_type": NormalizationType.NORMAL,
                         "standardize_fn" : transform,   
+                        "force_recompute_dataset_statistics": True,
                     },
                     "cf_kwargs": {
                         "name": "cf_dataset",
@@ -84,10 +85,10 @@ def get_config():
                         "force_recompute_dataset_statistics": False,
                         "action_proprio_normalization_type": NormalizationType.NORMAL,
                         "standardize_fn" : transform,   
+                        "force_recompute_dataset_statistics": True,
                     },
                 },
                 "sample_weights": [0.8, 0.2],
-                "force_recompute_dataset_statistics": True,
                 "traj_transform_kwargs": {
                     "window_size": 1,
                     "action_horizon": action_horizon,
