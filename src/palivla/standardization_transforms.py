@@ -864,9 +864,8 @@ METRIC_WAYPOINT_SPACING = {
     "seattle": 0.35,
     "tartan_drive": 0.72,
 }
-def gnm_dataset_transform(trajectory: Dict[str, Any], action_horizon=8) -> Dict[str, Any]:
+def new_gnm_dataset_transform(trajectory: Dict[str, Any], action_horizon=8) -> Dict[str, Any]:
     traj_len = tf.shape(trajectory["action"])[0]
-    action_horizon = tf.cast(action_horizon, tf.int32)
     print("Action horizon: ", action_horizon)
     # Pad trajectory states
     padding = tf.tile(trajectory["observation"]["state"][-1:, :], [action_horizon, 1])
@@ -911,7 +910,7 @@ def gnm_dataset_transform(trajectory: Dict[str, Any], action_horizon=8) -> Dict[
 
     return trajectory
 
-def old_gnm_dataset_transform(trajectory: Dict[str, Any]) -> Dict[str, Any]:
+def gnm_dataset_transform(trajectory: Dict[str, Any]) -> Dict[str, Any]:
     def subsampled_traj():
         # first compute per-dataset scaling factor from first action and first 2 positions
         scaling_factor = tf.linalg.norm(trajectory["action"][0]) / tf.linalg.norm(
