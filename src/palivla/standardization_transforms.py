@@ -866,7 +866,7 @@ METRIC_WAYPOINT_SPACING = {
 }
 def gnm_dataset_transform(trajectory: Dict[str, Any], action_horizon=8) -> Dict[str, Any]:
     traj_len = tf.shape(trajectory["action"])[0]
-
+    action_horizon = tf.cast(action_horizon, tf.int32)
     print("Action horizon: ", action_horizon)
     # Pad trajectory states
     padding = tf.tile(trajectory["observation"]["state"][-1:, :], [action_horizon, 1])
