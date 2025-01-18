@@ -909,6 +909,7 @@ def gnm_dataset_transform(trajectory: Dict[str, Any]) -> Dict[str, Any]:
     trajectory["action"] = actions
 
     trajectory["observation"]["proprio"] = trajectory["observation"]["state"]
+    trajectory["observation"]["is_last"] = trajectory["observation"]["is_last"]
 
     return trajectory
 
