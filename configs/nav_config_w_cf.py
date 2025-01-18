@@ -1,6 +1,6 @@
 from octo.data.utils.data_utils import NormalizationType
 from ml_collections.config_dict import placeholder, ConfigDict, FieldReference
-
+from functools import partial
 from palivla.components.model import get_default_config
 from palivla.standardization_transforms import gnm_dataset_transform
 from octo.utils.spec import ModuleSpec
@@ -12,7 +12,7 @@ def get_config():
 
     model_config = get_default_config()
     action_horizon = 8
-    transform = ModuleSpec.create(gnm_dataset_transform, ("action_horizon", action_horizon))
+    transform = ModuleSpec.create(partial(gnm_dataset_transform, action_horizon=action_horizon))
     return ConfigDict(
         {
             "wandb_project": "vla-nav",
