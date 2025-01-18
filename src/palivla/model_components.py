@@ -169,6 +169,7 @@ class ModelComponents:
             "prompt": sequences["prompt"],
             "gen": sequences["gen"],
         }
+        breakpoint()
         batch = self.sharding.mesh.local_data_to_global_array(batch)
 
         # Run the train step
