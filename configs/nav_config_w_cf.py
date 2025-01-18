@@ -11,8 +11,8 @@ def get_config():
     num_train_steps = FieldReference(100000, int)
 
     model_config = get_default_config()
-
-    transform = ModuleSpec.create(gnm_dataset_transform)
+    action_horizon = 8
+    transform = ModuleSpec.create(gnm_dataset_transform(action_horizon=8))
     return ConfigDict(
         {
             "wandb_project": "vla-nav",
@@ -89,7 +89,7 @@ def get_config():
                 "sample_weights": [0.8, 0.2],
                 "traj_transform_kwargs": {
                     "window_size": 1,
-                    "action_horizon": 8,
+                    "action_horizon": action_horizon,
                 },
                 "frame_transform_kwargs": {
                     "image_augment_kwargs": {},
