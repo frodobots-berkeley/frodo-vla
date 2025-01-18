@@ -249,7 +249,7 @@ class ModelComponents:
                 mesh=self.sharding.mesh.mesh,
                 out_sharding=PartitionSpec("fsdp"),
                 max_decode_len=sequences["gen"]["tokens"].shape[1],
-                eos_token=-1,
+                eos_token=1,
             )
             tokens = self.data_gather_fn(tokens)
 
