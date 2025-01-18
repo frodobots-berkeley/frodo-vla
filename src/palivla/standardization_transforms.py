@@ -893,7 +893,6 @@ def gnm_dataset_transform(trajectory: Dict[str, Any], action_horizon=8) -> Dict[
         ),
         2,
     )
-    actions = tf.squeeze(actions, 2)
     normalization_factor = 1.0
     for dataset_name, value in METRIC_WAYPOINT_SPACING.items():
         if tf.strings.regex_full_match(
@@ -905,7 +904,6 @@ def gnm_dataset_transform(trajectory: Dict[str, Any], action_horizon=8) -> Dict[
     actions = actions / normalization_factor
 
     trajectory["action"] = actions
-    print(tf.shape(trajectory["action"]))
 
     trajectory["observation"]["proprio"] = trajectory["observation"]["state"]
 
