@@ -12,7 +12,7 @@ def get_config():
 
     model_config = get_default_config()
     action_horizon = 8
-    transform = ModuleSpec.create(partial(gnm_dataset_transform, action_horizon=action_horizon))
+    transform = ModuleSpec.create(gnm_dataset_transform)
     return ConfigDict(
         {
             "wandb_project": "vla-nav",
