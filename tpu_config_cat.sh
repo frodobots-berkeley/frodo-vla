@@ -11,6 +11,12 @@ ssh-keyscan github.com >> /home/noam/.ssh/known_hosts
 curl -LsSf https://astral.sh/uv/install.sh | sh
 source ~/.local/bin/env
 git clone git@github.com:catglossop/bigvision-palivla.git --recursive
+git submodule sync --recursive
+cd ~/bigvision-palivla/octo
+git fetch 
+git checkout origin/main
+git branch main -f 
+git checkout main
 cd ~/bigvision-palivla
 source .venv/bin/activate
 uv venv --python=python3.11

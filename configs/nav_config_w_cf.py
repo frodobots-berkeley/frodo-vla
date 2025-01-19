@@ -1,4 +1,4 @@
-from palivla.octo.data_utils import NormalizationType
+from octo.data.utils.data_utils import NormalizationType
 from ml_collections.config_dict import placeholder, ConfigDict, FieldReference
 from functools import partial
 from palivla.components.model import get_default_config
