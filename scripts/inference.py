@@ -263,7 +263,7 @@ def main(_):
     ax[1].plot(summed_actions[:, 0], summed_actions[:, 1])
     ax[1].set_title("Output")
     plt.savefig("inference.png")
-    run.log({"inference": wandb.Image("inference.png"), "projected": wandb.Image("temp.png")})
+    run.log({"inference": wandb.Image("inference.png"), "projected": wandb.Image("temp.jpg")})
 
 if __name__ == "__main__":
     config_flags.DEFINE_config_file(
