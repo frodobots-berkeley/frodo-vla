@@ -86,9 +86,11 @@ def draw_trajectory(img, traj):
     camera_matrix, dist_coeffs = get_camera_params()
     camera_height = CAMERA_METRICS["camera_height"]
     camera_x_offset = CAMERA_METRICS["camera_x_offset"]
-    
+
     if len(traj.shape) == 2:
         traj = traj.reshape(1, -1, 2)
+
+    print(traj.shape)
 
     xy_coords = traj
     traj_pixels = get_pos_pixels(
