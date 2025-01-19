@@ -71,10 +71,10 @@ class BinActionTokenizer(ActionTokenizer):
         print(data.shape)
         breakpoint()
         pred_action_dim = data.shape[0]//action_dim
-        data = data[:pred_action_dim].reshape(-1, action_dim)
+        data = data[:pred_action_dim*action_dim].reshape(-1, action_dim)
         print(data.shape)
-        try:
-            data = rearrange(data, "... (p a) -> ... p a", a=action_dim)
-        except EinopsError:
-            raise ValueError(f"Could not detokenize data with shape {data.shape} into {action_dim} dimensions")
+        # try:
+        #     data = rearrange(data, "... (p a) -> ... p a", a=action_dim)
+        # except EinopsError:
+        #     raise ValueError(f"Could not detokenize data with shape {data.shape} into {action_dim} dimensions")
         return data
