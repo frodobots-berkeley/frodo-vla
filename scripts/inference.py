@@ -91,7 +91,7 @@ def main(_):
         print(summed_actions)
 
     # Plot the image and the waypoints
-    fig, ax = plt.subplots((1, 2))
+    fig, ax = plt.subplots(1, 2, figsize=5, 10))
     ax[0].imshow(image[0])
     ax[0].set_title("Image")
     ax[1].plot(summed_actions[:, 0], summed_actions[:, 1])
