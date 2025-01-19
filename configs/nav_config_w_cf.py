@@ -11,7 +11,7 @@ def get_config():
     num_train_steps = FieldReference(100000, int)
 
     model_config = get_default_config()
-    action_horizon = 8
+    action_horizon = 5
     transform = ModuleSpec.create(gnm_dataset_transform)
     return ConfigDict(
         {
@@ -19,7 +19,7 @@ def get_config():
             "wandb_mode": "online",
             #Tokenizers
             "language_tokenizer": "google/paligemma-3b-mix-224",
-            "action_tokenizer": f"action_tokenizer.bin(min_action_value=-1, max_action_value=1, action_vocab_size=128, action_horizon={action_horizon})",
+            "action_tokenizer": f"action_tokenizer.bin(min_action_value=-1, max_action_value=1, action_vocab_size=256, action_horizon={action_horizon})",
             "sequence_builder": "sequence_builder.default(prompt_pad_length=100, gen_pad_length=20)",
             # Initialization
             "load_fns": [
@@ -59,7 +59,7 @@ def get_config():
                 "kwargs": {
                     "optimizer": "adamw",
                     "num_train_steps": num_train_steps,
-                    "base_learning_rate": 1e-5,
+                    "base_learning_rate": 1e-4,
                 },
             },
             "dataset_kwargs": {
