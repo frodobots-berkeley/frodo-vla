@@ -4,6 +4,7 @@ import jax.numpy as jnp
 import numpy as np
 import sys
 import wandb
+import cv2
 from ml_collections import config_flags, ConfigDict
 import tensorflow as tf
 from PIL import Image
