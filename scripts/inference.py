@@ -8,6 +8,7 @@ import tensorflow as tf
 from PIL import Image
 from google.cloud import logging
 from google.cloud import storage
+import matplotlib.pyplot as plt
 sys.path.append(".")
 import numpy as np
 from absl import app, flags, logging as absl_logging
@@ -31,6 +32,17 @@ jax.config.update("jax_persistent_cache_min_compile_time_secs", 0)
 tf.config.set_visible_devices([], "GPU")
 
 print(logging.Client())
+
+# Load data config
+METRIC_WAYPOINT_SPACING = {
+    "cory_hall": 0.06,
+    "go_stanford": 0.12,
+    "recon": 0.25,
+    "sacson": 0.255,
+    "scand": 0.38,
+    "seattle": 0.35,
+    "tartan_drive": 0.72,
+}
 
 def make_sharding(config: ConfigDict):
     mesh = MeshShardingHelper([-1], ["fsdp"])
@@ -73,8 +85,17 @@ def main(_):
                 }
         # Predict the output 
         predicted_actions, actions_mask, tokens = model.predict(batch, action_dim=2, action_horizon=action_horizon, return_tokens=True, include_action_tokens=False)
+        predicted_actions = predicted_actions[0].squeeze()
+        summed_actions = np.cumsum(predicted_actions*METRIC_WAYPOINT_SPACING["sacson"], axis=1)
+        summed_actions -= summed_actions[0]
+        print(summed_actions)
 
-        print(predicted_actions)
+    # Plot the image and the waypoints
+    fig, ax = plt.subplots((1, 2))
+    ax[0].imshow(image[0])
+    ax[0].set_title("Image")
+    ax[1].plot(summed_actions[:, 0], summed_actions[:, 1])
+
 
 if __name__ == "__main__":
     config_flags.DEFINE_config_file(
