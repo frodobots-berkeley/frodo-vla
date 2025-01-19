@@ -116,7 +116,7 @@ class TrainState(FlaxTrainState):
         checkpoint_manager.save(step, args=ocp.args.StandardSave(self))
 
     def load_state(self, step: int, checkpoint_manager: ocp.CheckpointManager):
-        return checkpoint_manager.restore(step, args=ocp.args.Composite())
+        return checkpoint_manager.restore(step, args=ocp.args.StandardRestore(self))
 
     def get_params(self, *, use_ema_params: bool = False):
         if use_ema_params:
