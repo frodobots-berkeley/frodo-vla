@@ -138,6 +138,8 @@ def project_points(
     Returns:
         uv: array of shape (batch_size, horizon, 2) representing (u, v) coordinates on the 2D image plane
     """
+    print(xy.shape)
+    breakpoint()
     batch_size, horizon, _ = xy.shape
 
     # create 3D coordinates with the camera positioned at the given height
