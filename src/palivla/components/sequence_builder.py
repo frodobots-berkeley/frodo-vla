@@ -121,7 +121,6 @@ class SequenceBuilder:
         eos_id: int | None = None,
         act0_id: int | None = None,
     ):
-        print(tokens)
         boa_id = boa_id or language_tokenizer.encode("<begin_of_action>")[0]
         eos_id = eos_id or language_tokenizer.encode("<eos>")[0]
         act0_id = act0_id or language_tokenizer.encode("<act0>")[0]
@@ -142,7 +141,6 @@ class SequenceBuilder:
         
         # Get the action
         action = tokens[start_idx:end_idx] - act0_id
-        print("Action: ", action)
         try:
             return action_tokenizer.detokenize(action, action_dim=action_dim)
         except ValueError:
