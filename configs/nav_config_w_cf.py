@@ -20,7 +20,7 @@ def get_config():
             #Tokenizers
             "language_tokenizer": "google/paligemma-3b-mix-224",
             "action_tokenizer": "action_tokenizer.bin(min_action_value=0, max_action_value=1, action_vocab_size=256)",
-            "sequence_builder": "sequence_builder.default(prompt_pad_length=75, gen_pad_length=15)",
+            "sequence_builder": "sequence_builder.default(prompt_pad_length=100, gen_pad_length=20)",
             # Initialization
             "load_fns": [
                 (
