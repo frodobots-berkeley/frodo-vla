@@ -52,7 +52,7 @@ CAMERA_METRICS = {"camera_height" : 0.95, # meters
                 "camera_x_offset" : 0.45, # distance between the center of the robot and the forward facing camera
                 "camera_matrix" : {"fx": 272.547000, "fy": 266.358000, "cx": 320.000000, "cy": 220.000000},
                 "dist_coeffs" : {"k1": -0.038483, "k2": -0.010456, "p1": 0.003930, "p2": -0.001007, "k3": 0.000000}}
-VIZ_IMAGE_SIZE = (480, 640)  # (height, width)
+VIZ_IMAGE_SIZE = (224, 224) # (height, width)
 
 # Utility functions
 def pil_to_base64(img):
@@ -87,8 +87,6 @@ def draw_trajectory(img, traj):
     camera_matrix, dist_coeffs = get_camera_params()
     camera_height = CAMERA_METRICS["camera_height"]
     camera_x_offset = CAMERA_METRICS["camera_x_offset"]
-
-    print(traj.shape)
 
     xy_coords = traj
     traj_pixels = get_pos_pixels(
@@ -137,8 +135,6 @@ def project_points(
     Returns:
         uv: array of shape (batch_size, horizon, 2) representing (u, v) coordinates on the 2D image plane
     """
-    print(xy.shape)
-    breakpoint()
     batch_size, horizon, _ = xy.shape
 
     # create 3D coordinates with the camera positioned at the given height
