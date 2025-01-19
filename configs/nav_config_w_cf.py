@@ -11,15 +11,15 @@ def get_config():
     num_train_steps = FieldReference(100000, int)
 
     model_config = get_default_config()
-    action_horizon = 5
-    transform = ModuleSpec.create(gnm_dataset_transform)
+    action_horizon = 8
+    transform = ModuleSpec.create(gnm_dataset_transform, action_horizon=action_horizon)
     return ConfigDict(
         {
             "wandb_project": "vla-nav",
             "wandb_mode": "online",
             #Tokenizers
             "language_tokenizer": "google/paligemma-3b-mix-224",
-            "action_tokenizer": f"action_tokenizer.bin(min_action_value=-1, max_action_value=1, action_vocab_size=256, action_horizon={action_horizon})",
+            "action_tokenizer": f"action_tokenizer.bin(min_action_value=-1, max_action_value=1, action_vocab_size=128, action_horizon={action_horizon})",
             "sequence_builder": "sequence_builder.default(prompt_pad_length=100, gen_pad_length=20)",
             # Initialization
             "load_fns": [
@@ -76,17 +76,17 @@ def get_config():
                         "standardize_fn" : transform,   
                         "force_recompute_dataset_statistics": False,
                     },
-                    "cf_kwargs": {
-                        "name": "cf_dataset",
-                        "data_dir": "gs://vlm-guidance-data",
-                        "image_obs_keys": {"primary": "image"},
-                        "proprio_obs_key": "position",
-                        "language_key" : "language_instruction",
-                        "force_recompute_dataset_statistics": False,
-                        "action_proprio_normalization_type": NormalizationType.NORMAL,
-                        "standardize_fn" : transform,   
-                        "force_recompute_dataset_statistics": False,
-                    },
+                    # "cf_kwargs": {
+                    #     "name": "cf_dataset",
+                    #     "data_dir": "gs://vlm-guidance-data",
+                    #     "image_obs_keys": {"primary": "image"},
+                    #     "proprio_obs_key": "position",
+                    #     "language_key" : "language_instruction",
+                    #     "force_recompute_dataset_statistics": False,
+                    #     "action_proprio_normalization_type": NormalizationType.NORMAL,
+                    #     "standardize_fn" : transform,   
+                    #     "force_recompute_dataset_statistics": False,
+                    # },
                 },
                 "sample_weights": [0.8, 0.2],
                 "traj_transform_kwargs": {
