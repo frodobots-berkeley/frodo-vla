@@ -84,6 +84,9 @@ def draw_trajectory(img, traj):
     ax.imshow(img)
     
     camera_matrix, dist_coeffs = get_camera_params()
+    camera_height = CAMERA_METRICS["camera_height"]
+    camera_x_offset = CAMERA_METRICS["camera_x_offset"]
+    
     if len(traj.shape) == 2:
         traj = traj.reshape(1, -1, 2)
 
