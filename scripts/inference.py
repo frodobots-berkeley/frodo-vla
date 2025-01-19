@@ -95,6 +95,8 @@ def main(_):
     ax[0].imshow(image[0])
     ax[0].set_title("Image")
     ax[1].plot(summed_actions[:, 0], summed_actions[:, 1])
+    ax[1].set_title("Output")
+    plt.savefig("inference.png")
 
 
 if __name__ == "__main__":
