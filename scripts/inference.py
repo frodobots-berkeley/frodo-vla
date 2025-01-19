@@ -76,6 +76,8 @@ def get_camera_params():
     k3 = CAMERA_METRICS["dist_coeffs"]["k3"]
     dist_coeffs = np.array([k1, k2, p1, p2, k3, 0.0, 0.0, 0.0])
 
+    return camera_matrix, dist_coeffs
+
 def draw_trajectory(img, traj):
     # project onto the image
     fig, ax = plt.subplots()
