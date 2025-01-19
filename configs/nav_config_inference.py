@@ -32,7 +32,7 @@ def get_config():
                 )
             ],
             "resume_checkpoint_dir": "gs://vlm-guidance-logs/misunderstood-fire-170",
-            "resume_checkpoint_step": 20000,
+            "resume_checkpoint_step": 21000,
             # Overfit
             "overfit_dataset": False,
             # Training settings
