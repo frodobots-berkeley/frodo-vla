@@ -55,6 +55,7 @@ def main(_):
     model.load_state(config.resume_checkpoint_step, manager)
     # Load in the image and the prompt
     prompt = "Go to the door"
+    action_horizon = config["dataset_kwargs"]["traj_transform_kwargs"]["action_horizon"]
     storage_client = storage.Client()
     bucket = storage_client.bucket('vlm-guidance-misc')
     blob = bucket.get_blob('3.jpg')  # use get_blob to fix generation number, so we don't get corruption if blob is overwritten while we read it.
@@ -62,7 +63,6 @@ def main(_):
         image = Image.open(file)
         image = image.resize((224, 224))
         image = np.expand_dims(np.array(image.convert("RGB")), 0).repeat(4, axis=0)
-        print(image.shape)
         batch = {"task" : 
                     {"language_instruction" : np.array([prompt.encode()]*4), 
                     "pad_mask_dict": {"language_instruction": np.array([1]*4)}},
@@ -72,7 +72,7 @@ def main(_):
                 "action": np.random.randn(4, 1, 2).astype(np.float64),    
                 }
         # Predict the output 
-        predicted_actions, actions_mask, tokens = model.predict(batch, action_dim=2, action_horizon=5, return_tokens=True, include_action_tokens=False)
+        predicted_actions, actions_mask, tokens = model.predict(batch, action_dim=2, action_horizon=action_horizon, return_tokens=True, include_action_tokens=False)
 
         print(predicted_actions)
 
