@@ -3,6 +3,7 @@ import jax
 import jax.numpy as jnp
 import numpy as np
 import sys
+import wandb
 from ml_collections import config_flags, ConfigDict
 import tensorflow as tf
 from PIL import Image
@@ -65,6 +66,13 @@ def main(_):
     model = ModelComponents.load_static(config.resume_checkpoint_dir, sharding_metadata)
     manager = ocp.CheckpointManager(config.resume_checkpoint_dir, options=ocp.CheckpointManagerOptions())
     model.load_state(config.resume_checkpoint_step, manager)
+    wandb.login()
+    run = wandb.init(
+        # Set the project where this run will be logged
+        project="vla-nav-inference",
+        mode="online",
+    )
+
     # Load in the image and the prompt
     prompt = "Go to the door"
     action_horizon = config["dataset_kwargs"]["traj_transform_kwargs"]["action_horizon"]
@@ -97,7 +105,7 @@ def main(_):
     ax[1].plot(summed_actions[:, 0], summed_actions[:, 1])
     ax[1].set_title("Output")
     plt.savefig("inference.png")
-
+    run.log({"inference": wandb.Image("inference.png")})
 
 if __name__ == "__main__":
     config_flags.DEFINE_config_file(
