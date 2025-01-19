@@ -7,6 +7,7 @@ import wandb
 from ml_collections import config_flags, ConfigDict
 import tensorflow as tf
 from PIL import Image
+from typing import Optional, List
 from google.cloud import logging
 from google.cloud import storage
 import matplotlib.pyplot as plt
