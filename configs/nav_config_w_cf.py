@@ -1,4 +1,4 @@
-from octo.data.utils.data_utils import NormalizationType
+from palivla.octo.data_utils import NormalizationType
 from ml_collections.config_dict import placeholder, ConfigDict, FieldReference
 from functools import partial
 from palivla.components.model import get_default_config
@@ -59,7 +59,7 @@ def get_config():
                 "kwargs": {
                     "optimizer": "adamw",
                     "num_train_steps": num_train_steps,
-                    "base_learning_rate": 1e-4,
+                    "base_learning_rate": 1e-5,
                 },
             },
             "dataset_kwargs": {
