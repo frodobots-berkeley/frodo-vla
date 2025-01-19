@@ -58,6 +58,7 @@ class BinActionTokenizer(ActionTokenizer):
         )
 
     def detokenize(self, tokens, *, obs=None, action_dim: int):
+        print(tokens)
         values = np.where(
             (tokens < 0) | (tokens >= self.vocab_size),
             np.nan,
@@ -67,7 +68,10 @@ class BinActionTokenizer(ActionTokenizer):
             values * (self.max_action_value - self.min_action_value)
             + self.min_action_value
         )
+        print(data.shape)
         data = data[..., :action_dim]
+        print(data.shape)
+        breakpoint()
         try:
             data = rearrange(data, "... (p a) -> ... p a", a=action_dim)
         except EinopsError:
