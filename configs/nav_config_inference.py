@@ -31,8 +31,8 @@ def get_config():
                     },
                 )
             ],
-            "resume_checkpoint_dir": "gs://vlm-guidance-logs/unique-energy-78",
-            "resume_checkpoint_step": 30000,
+            "resume_checkpoint_dir": "gs://vlm-guidance-logs/misunderstood-fire-170",
+            "resume_checkpoint_step": 10000,
             # Overfit
             "overfit_dataset": False,
             # Training settings
