@@ -52,7 +52,7 @@ CAMERA_METRICS = {"camera_height" : 0.95, # meters
                 "camera_x_offset" : 0.45, # distance between the center of the robot and the forward facing camera
                 "camera_matrix" : {"fx": 272.547000, "fy": 266.358000, "cx": 320.000000, "cy": 220.000000},
                 "dist_coeffs" : {"k1": -0.038483, "k2": -0.010456, "p1": 0.003930, "p2": -0.001007, "k3": 0.000000}}
-VIZ_IMAGE_SIZE = (224, 224) # (height, width)
+VIZ_IMAGE_SIZE = (480, 640)  # (height, width)
 
 # Utility functions
 def pil_to_base64(img):
@@ -252,7 +252,8 @@ def main(_):
         print(summed_actions)
 
     # Plot on the image 
-    out = draw_trajectory(image[0], summed_actions)
+    viz_image = image[0].resize(VIZ_IMAGE_SIZE)
+    out = draw_trajectory(viz_image, summed_actions)
     # Plot the image and the waypoints
     fig, ax = plt.subplots(1, 2, figsize=(5, 10))
     ax[0].imshow(image[0])
