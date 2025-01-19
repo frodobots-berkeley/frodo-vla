@@ -67,7 +67,7 @@ class BinActionTokenizer(ActionTokenizer):
             values * (self.max_action_value - self.min_action_value)
             + self.min_action_value
         )
-        pred_action_dim = data.shape[0]//action_dim
+        pred_action_dim = min(data.shape[0]//action_dim, self.action_horizon)
         data = data[:pred_action_dim*action_dim].reshape(-1, action_dim)
         # try:
         #     data = rearrange(data, "... (p a) -> ... p a", a=action_dim)
