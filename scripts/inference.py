@@ -94,6 +94,7 @@ def draw_trajectory(img, traj):
     traj_pixels = get_pos_pixels(
         xy_coords, camera_height, camera_x_offset, camera_matrix, dist_coeffs, clip=False
     )
+    breakpoint()
     if len(traj_pixels.shape) == 2:
         ax.plot(
             traj_pixels[:250, 0],
@@ -250,7 +251,7 @@ def main(_):
         # Predict the output 
         predicted_actions, actions_mask, tokens = model.predict(batch, action_dim=2, action_horizon=action_horizon, return_tokens=True, include_action_tokens=False)
         predicted_actions = predicted_actions[0].squeeze()
-        summed_actions = np.cumsum(predicted_actions*METRIC_WAYPOINT_SPACING["sacson"], axis=1)
+        summed_actions = np.cumsum(predicted_actions, axis=1)
         summed_actions -= summed_actions[0]
         print(summed_actions)
 
