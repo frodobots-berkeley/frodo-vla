@@ -53,12 +53,12 @@ jax.config.update("jax_persistent_cache_min_compile_time_secs", 0)
 tf.config.set_visible_devices([], "GPU")
 
 tf.random.set_seed(jax.process_index())
-# wandb.login()
-# run = wandb.init(
-#     # Set the project where this run will be logged
-#     project="vla-nav-inference",
-#     mode="online",
-# )
+wandb.login()
+run = wandb.init(
+    # Set the project where this run will be logged
+    project="vla-nav-inference",
+    mode="online",
+)
 
 app = Flask(__name__)
 run_with_ngrok(app)
@@ -68,7 +68,7 @@ model = None
 
 @app.route('/gen_action', methods=["POST"])
 def gen_action():
-    global config, model
+    global config, model, run
     print("\nReceived request")
     # If first time getting inference, load the model
     if model is None: 
@@ -87,6 +87,8 @@ def gen_action():
     obs_data = base64.b64decode(data['obs'])
     obs = Image.open(BytesIO(obs_data))
     print(obs.size)
+    obs.save("temp.jpg")
+    run.log({"obs": wandb.Image("temp.jpg")})
     prompt = data['prompt']
 
     # Run inference
