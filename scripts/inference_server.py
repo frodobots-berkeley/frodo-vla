@@ -48,10 +48,7 @@ jax.config.update("jax_persistent_cache_min_compile_time_secs", 0)
 tf.config.set_visible_devices([], "GPU")
 
 tf.random.set_seed(jax.process_index())
-sharding_metadata = make_sharding(config)
-model = ModelComponents.load_static(config.resume_checkpoint_dir, sharding_metadata)
-manager = ocp.CheckpointManager(config.resume_checkpoint_dir, options=ocp.CheckpointManagerOptions())
-model.load_state(config.resume_checkpoint_step, manager)
+model = None
 wandb.login()
 run = wandb.init(
     # Set the project where this run will be logged
@@ -63,7 +60,12 @@ app = Flask(__name__)
 
 @app.route('/gen_action', methods=["POST"])
 def gen_action():
-    global config
+    global config, model
+    if model is None: 
+        sharding_metadata = make_sharding(config)
+        model = ModelComponents.load_static(config.resume_checkpoint_dir, sharding_metadata)
+        manager = ocp.CheckpointManager(config.resume_checkpoint_dir, options=ocp.CheckpointManagerOptions())
+        model.load_state(config.resume_checkpoint_step, manager)
     # Receive data 
     data = request.get_json()
     obs = base64.b64decode(data['obs'])
