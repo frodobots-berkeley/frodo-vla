@@ -207,7 +207,7 @@ def make_sharding(config: ConfigDict):
     )
     return sharding_metadata
 
-def run_inference(config, prompt, image):
+def run_inference(model, prompt, image, config):
 
     # # Load in the image and the prompt
     # action_horizon = config["dataset_kwargs"]["traj_transform_kwargs"]["action_horizon"]
