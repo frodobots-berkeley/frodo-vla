@@ -86,6 +86,7 @@ def gen_action():
     data = request.get_json()
     obs_data = base64.b64decode(data['obs'])
     obs = Image.open(BytesIO(obs_data))
+    print(obs.size)
     prompt = data['prompt']
 
     # Run inference
