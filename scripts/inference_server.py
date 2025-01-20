@@ -47,16 +47,6 @@ jax.config.update("jax_persistent_cache_min_entry_size_bytes", -1)
 jax.config.update("jax_persistent_cache_min_compile_time_secs", 0)
 tf.config.set_visible_devices([], "GPU")
 
-# CLI FLAGS
-config_flags.DEFINE_config_file(
-        "config", "configs/smoke_test.py", "Path to the config file."
-)
-flags.DEFINE_string("platform", "gpu", "Platform to run on.")
-config = flags.FLAGS.config
-
-if flags.FLAGS.platform == "tpu":
-    jax.distributed.initialize()
-
 tf.random.set_seed(jax.process_index())
 sharding_metadata = make_sharding(config)
 model = ModelComponents.load_static(config.resume_checkpoint_dir, sharding_metadata)
@@ -73,7 +63,7 @@ app = Flask(__name__)
 
 @app.route('/gen_action', methods=["POST"])
 def gen_action():
-
+    global config
     # Receive data 
     data = request.get_json()
     obs = base64.b64decode(data['obs'])
@@ -85,4 +75,13 @@ def gen_action():
     return response
 
 if __name__ == "__main__":
+    # CLI FLAGS
+    config_flags.DEFINE_config_file(
+            "config", "configs/smoke_test.py", "Path to the config file."
+    )
+    flags.DEFINE_string("platform", "gpu", "Platform to run on.")
+    config = flags.FLAGS.config
+
+    if flags.FLAGS.platform == "tpu":
+        jax.distributed.initialize()
     app.run(host="0.0.0.0", port=5001)
