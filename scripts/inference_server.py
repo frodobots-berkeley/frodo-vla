@@ -52,7 +52,7 @@ config_flags.DEFINE_config_file(
         "config", "configs/smoke_test.py", "Path to the config file."
 )
 flags.DEFINE_string("platform", "gpu", "Platform to run on.")
-config = flag.FLAGS.config
+config = flags.FLAGS.config
 
 if flags.FLAGS.platform == "tpu":
     jax.distributed.initialize()
