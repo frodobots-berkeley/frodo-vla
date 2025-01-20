@@ -105,10 +105,9 @@ def draw_trajectory(img, traj):
         ax.set_xlim((0.5, VIZ_IMAGE_SIZE[1] - 0.5))
         ax.set_ylim((VIZ_IMAGE_SIZE[0] - 0.5, 0.5))
         # return the image
-        plt.savefig("temp.jpg")
-        out_img = Image.open("temp.jpg")
+        plt.savefig("~/temp_viz/projected.jpg")
+        out_img = Image.open("~/temp_viz/projected.jpg")
         plt.close()
-
         return out_img
     else:
         return None
@@ -207,7 +206,7 @@ def make_sharding(config: ConfigDict):
     )
     return sharding_metadata
 
-def run_inference(model, prompt, image, config):
+def run_inference(model, prompt, image, config, run):
 
     # # Load in the image and the prompt
     # action_horizon = config["dataset_kwargs"]["traj_transform_kwargs"]["action_horizon"]
@@ -217,6 +216,7 @@ def run_inference(model, prompt, image, config):
     # with blob.open(mode="rb") as file:
     #     image = Image.open(file)
     #     image = image.resize((224, 224))
+    os.makedirs("~/temp_viz", exist_ok=True)
     action_horizon = config["dataset_kwargs"]["traj_transform_kwargs"]["action_horizon"]
     image = np.expand_dims(np.array(image.convert("RGB")), 0).repeat(4, axis=0)
     batch = {"task" : 
@@ -242,8 +242,9 @@ def run_inference(model, prompt, image, config):
     ax[0].set_title("Image")
     ax[1].plot(summed_actions[:, 0], summed_actions[:, 1])
     ax[1].set_title("Output")
-    plt.savefig("inference.png")
-    run.log({"inference": wandb.Image("inference.png"), "projected": wandb.Image("temp.jpg")})
+    plt.savefig("~/temp_viz/inference.jpg")
+    viz = {"inference": "~/temp_viz/inference.jpg", "projected": "~/temp_viz/projected.jpg"}
+    return summed_actions, viz
 
 # if __name__ == "__main__":
 #     config_flags.DEFINE_config_file(
