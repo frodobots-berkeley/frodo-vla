@@ -92,7 +92,7 @@ def gen_action():
     prompt = data['prompt']
 
     # Run inference
-    action = run_inference(model, obs, prompt)
+    action = run_inference(model, prompt, obs)
     print("Action generated!")
     print(action)
     response = jsonify(action=action)
