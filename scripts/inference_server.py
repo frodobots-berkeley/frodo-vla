@@ -29,7 +29,7 @@ from palivla.inference import (
     VIZ_IMAGE_SIZE
 )
 from palivla.components.train_state import ShardingMetadata
-from palivla.inference import run_inference, pil_to_base64
+from palivla.inference import run_inference, pil_to_base64, make_sharding
 from octo.data import traj_transforms
 
 # Jax imports
