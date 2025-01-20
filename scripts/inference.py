@@ -252,8 +252,8 @@ def main(_):
         print(summed_actions)
 
         # Plot on the image 
-        viz_image = image[0].resize(VIZ_IMAGE_SIZE)
-        out = draw_trajectory(viz_image, summed_actions)
+        viz_image = Image.fromarray(image[0]).resize(VIZ_IMAGE_SIZE)
+        out = draw_trajectory(np.array(viz_image), summed_actions)
     # Plot the image and the waypoints
     fig, ax = plt.subplots(1, 2, figsize=(5, 10))
     ax[0].imshow(image[0])
