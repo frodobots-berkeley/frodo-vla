@@ -15,6 +15,8 @@ from flask import Flask, request, jsonify
 from flask_ngrok import run_with_ngrok
 import ngrok
 import base64
+from io import BytesIO
+from PIL import Image
 
 # Google
 from google.cloud import logging
@@ -82,7 +84,8 @@ def gen_action():
     print("Model loaded!")
     # Receive data 
     data = request.get_json()
-    obs = base64.b64decode(data['obs'])
+    obs_data = base64.b64decode(data['obs'])
+    obs = Image.open(BytesIO(obs_data))
     prompt = data['prompt']
 
     # Run inference
