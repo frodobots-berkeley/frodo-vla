@@ -52,7 +52,7 @@ config_flags.DEFINE_config_file(
         "config", "configs/smoke_test.py", "Path to the config file."
 )
 flags.DEFINE_string("platform", "gpu", "Platform to run on.")
-config = config_flags.config
+config = flag.FLAGS.config
 
 if flags.FLAGS.platform == "tpu":
     jax.distributed.initialize()
@@ -85,4 +85,7 @@ def gen_action():
     return response
 
 if __name__ == "__main__":
+    config_flags.DEFINE_config_file(
+        "config", "configs/nav_config_inference.py", "Path to the config file."
+    )
     app.run(host="0.0.0.0", port=5001)
