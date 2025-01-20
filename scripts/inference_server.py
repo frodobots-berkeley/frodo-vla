@@ -88,13 +88,14 @@ def gen_action():
     obs = Image.open(BytesIO(obs_data))
     print(obs.size)
     obs.save("temp.jpg")
-    run.log({"obs": wandb.Image("temp.jpg")})
     prompt = data['prompt']
 
     # Run inference
-    action = run_inference(model, prompt, obs, config)
+    action, viz = run_inference(model, prompt, obs, config)
     print("Action generated!")
     print(action)
+    viz = {k: wandb.Image(v) for k, v in viz.items()}
+    run.log(viz)
     response = jsonify(action=action)
     return response
 
