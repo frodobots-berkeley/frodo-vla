@@ -96,7 +96,7 @@ def gen_action():
     print(action)
     viz = {k: wandb.Image(v) for k, v in viz.items()}
     run.log(viz)
-    response = jsonify(action=action)
+    response = jsonify(action=action.tolist())
     return response
 
 if __name__ == "__main__":
