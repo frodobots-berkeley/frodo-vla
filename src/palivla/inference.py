@@ -92,7 +92,6 @@ def draw_trajectory(img, traj):
     traj_pixels = get_pos_pixels(
         xy_coords, camera_height, camera_x_offset, camera_matrix, dist_coeffs, clip=False
     )
-    breakpoint()
     if len(traj_pixels.shape) == 2:
         ax.plot(
             traj_pixels[:250, 0],
@@ -208,52 +207,34 @@ def make_sharding(config: ConfigDict):
     )
     return sharding_metadata
 
-def main(_):
-    if flags.FLAGS.platform == "tpu":
-        jax.distributed.initialize()
+def run_inference(config, prompt, image):
 
-    tf.random.set_seed(jax.process_index())
+    # # Load in the image and the prompt
+    # action_horizon = config["dataset_kwargs"]["traj_transform_kwargs"]["action_horizon"]
+    # storage_client = storage.Client()
+    # bucket = storage_client.bucket('vlm-guidance-misc')
+    # blob = bucket.get_blob('3.jpg')  # use get_blob to fix generation number, so we don't get corruption if blob is overwritten while we read it.
+    # with blob.open(mode="rb") as file:
+    #     image = Image.open(file)
+    #     image = image.resize((224, 224))
+    image = np.expand_dims(np.array(image.convert("RGB")), 0).repeat(4, axis=0)
+    batch = {"task" : 
+                {"language_instruction" : np.array([prompt.encode()]*4), 
+                "pad_mask_dict": {"language_instruction": np.array([1]*4)}},
+            "observation": 
+                {"image_primary": image, 
+                "pad_mask_dict": {"image_primary": np.array([1]*4, dtype=bool)}},
+            "action": np.random.randn(4, 1, 2).astype(np.float64),    
+            }
+    # Predict the output 
+    predicted_actions, actions_mask, tokens = model.predict(batch, action_dim=2, action_horizon=action_horizon, return_tokens=True, include_action_tokens=False)
+    predicted_actions = predicted_actions[0].squeeze()
+    summed_actions = np.cumsum(predicted_actions, axis=1)
+    summed_actions -= summed_actions[0]
 
-    config = flags.FLAGS.config
-    sharding_metadata = make_sharding(config)
-    model = ModelComponents.load_static(config.resume_checkpoint_dir, sharding_metadata)
-    manager = ocp.CheckpointManager(config.resume_checkpoint_dir, options=ocp.CheckpointManagerOptions())
-    model.load_state(config.resume_checkpoint_step, manager)
-    wandb.login()
-    run = wandb.init(
-        # Set the project where this run will be logged
-        project="vla-nav-inference",
-        mode="online",
-    )
-
-    # Load in the image and the prompt
-    prompt = "Go to the door"
-    action_horizon = config["dataset_kwargs"]["traj_transform_kwargs"]["action_horizon"]
-    storage_client = storage.Client()
-    bucket = storage_client.bucket('vlm-guidance-misc')
-    blob = bucket.get_blob('3.jpg')  # use get_blob to fix generation number, so we don't get corruption if blob is overwritten while we read it.
-    with blob.open(mode="rb") as file:
-        image = Image.open(file)
-        image = image.resize((224, 224))
-        image = np.expand_dims(np.array(image.convert("RGB")), 0).repeat(4, axis=0)
-        batch = {"task" : 
-                    {"language_instruction" : np.array([prompt.encode()]*4), 
-                    "pad_mask_dict": {"language_instruction": np.array([1]*4)}},
-                "observation": 
-                    {"image_primary": image, 
-                    "pad_mask_dict": {"image_primary": np.array([1]*4, dtype=bool)}},
-                "action": np.random.randn(4, 1, 2).astype(np.float64),    
-                }
-        # Predict the output 
-        predicted_actions, actions_mask, tokens = model.predict(batch, action_dim=2, action_horizon=action_horizon, return_tokens=True, include_action_tokens=False)
-        predicted_actions = predicted_actions[0].squeeze()
-        summed_actions = np.cumsum(predicted_actions, axis=1)
-        summed_actions -= summed_actions[0]
-        print(summed_actions)
-
-        # Plot on the image 
-        viz_image = Image.fromarray(image[0]).resize(VIZ_IMAGE_SIZE)
-        out = draw_trajectory(np.array(viz_image), summed_actions)
+    # Plot on the image 
+    viz_image = Image.fromarray(image[0]).resize(VIZ_IMAGE_SIZE)
+    out = draw_trajectory(np.array(viz_image), summed_actions)
     # Plot the image and the waypoints
     fig, ax = plt.subplots(1, 2, figsize=(5, 10))
     ax[0].imshow(image[0])
@@ -263,12 +244,12 @@ def main(_):
     plt.savefig("inference.png")
     run.log({"inference": wandb.Image("inference.png"), "projected": wandb.Image("temp.jpg")})
 
-if __name__ == "__main__":
-    config_flags.DEFINE_config_file(
-        "config", "configs/smoke_test.py", "Path to the config file."
-    )
-    flags.DEFINE_string("platform", "gpu", "Platform to run on.")
-    app.run(main)
+# if __name__ == "__main__":
+#     config_flags.DEFINE_config_file(
+#         "config", "configs/smoke_test.py", "Path to the config file."
+#     )
+#     flags.DEFINE_string("platform", "gpu", "Platform to run on.")
+#     app.run(main)
 
 
 
