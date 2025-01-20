@@ -88,4 +88,4 @@ if __name__ == "__main__":
             "config", "configs/smoke_test.py", "Path to the config file."
     )
     flags.DEFINE_string("platform", "gpu", "Platform to run on.")
-    app.run(host="0.0.0.0", port=5001)
+    app.run(host="35.186.57.77", port=5001)
