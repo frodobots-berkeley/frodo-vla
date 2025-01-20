@@ -206,16 +206,8 @@ def make_sharding(config: ConfigDict):
     )
     return sharding_metadata
 
-def run_inference(model, prompt, image, config, run):
-
-    # # Load in the image and the prompt
-    # action_horizon = config["dataset_kwargs"]["traj_transform_kwargs"]["action_horizon"]
-    # storage_client = storage.Client()
-    # bucket = storage_client.bucket('vlm-guidance-misc')
-    # blob = bucket.get_blob('3.jpg')  # use get_blob to fix generation number, so we don't get corruption if blob is overwritten while we read it.
-    # with blob.open(mode="rb") as file:
-    #     image = Image.open(file)
-    #     image = image.resize((224, 224))
+def run_inference(model, prompt, image, config):
+    
     os.makedirs("~/temp_viz", exist_ok=True)
     action_horizon = config["dataset_kwargs"]["traj_transform_kwargs"]["action_horizon"]
     image = np.expand_dims(np.array(image.convert("RGB")), 0).repeat(4, axis=0)
@@ -245,14 +237,6 @@ def run_inference(model, prompt, image, config, run):
     plt.savefig("~/temp_viz/inference.jpg")
     viz = {"inference": "~/temp_viz/inference.jpg", "projected": "~/temp_viz/projected.jpg"}
     return summed_actions, viz
-
-# if __name__ == "__main__":
-#     config_flags.DEFINE_config_file(
-#         "config", "configs/smoke_test.py", "Path to the config file."
-#     )
-#     flags.DEFINE_string("platform", "gpu", "Platform to run on.")
-#     app.run(main)
-
 
 
 
