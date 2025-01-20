@@ -217,6 +217,7 @@ def run_inference(model, prompt, image, config):
     # with blob.open(mode="rb") as file:
     #     image = Image.open(file)
     #     image = image.resize((224, 224))
+    action_horizon = config["dataset_kwargs"]["traj_transform_kwargs"]["action_horizon"]
     image = np.expand_dims(np.array(image.convert("RGB")), 0).repeat(4, axis=0)
     batch = {"task" : 
                 {"language_instruction" : np.array([prompt.encode()]*4), 
