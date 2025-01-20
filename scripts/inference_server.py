@@ -66,7 +66,7 @@ model = None
 @app.route('/gen_action', methods=["POST"])
 def gen_action():
     global config, model
-    print("Received request")
+    print("\nReceived request")
     # If first time getting inference, load the model
     if model is None: 
         FLAGS = flags.FLAGS
