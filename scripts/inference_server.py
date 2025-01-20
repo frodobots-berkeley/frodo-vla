@@ -79,7 +79,7 @@ def gen_action():
         model = ModelComponents.load_static(config.resume_checkpoint_dir, sharding_metadata)
         manager = ocp.CheckpointManager(config.resume_checkpoint_dir, options=ocp.CheckpointManagerOptions())
         model.load_state(config.resume_checkpoint_step, manager)
-
+    print("Model loaded!")
     # Receive data 
     data = request.get_json()
     obs = base64.b64decode(data['obs'])
@@ -87,6 +87,8 @@ def gen_action():
 
     # Run inference
     action = run_inference(model, obs, prompt)
+    print("Action generated!")
+    print(action)
     response = jsonify(action=action)
     return response
 
