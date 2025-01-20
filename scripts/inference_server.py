@@ -13,6 +13,7 @@ import numpy as np
 from absl import app, flags, logging as absl_logging
 from flask import Flask, request, jsonify
 from flask_ngrok import run_with_ngrok
+import ngrok
 
 # Google
 from google.cloud import logging
@@ -49,17 +50,18 @@ jax.config.update("jax_persistent_cache_min_compile_time_secs", 0)
 tf.config.set_visible_devices([], "GPU")
 
 tf.random.set_seed(jax.process_index())
-model = None
-wandb.login()
-run = wandb.init(
-    # Set the project where this run will be logged
-    project="vla-nav-inference",
-    mode="online",
-)
+# wandb.login()
+# run = wandb.init(
+#     # Set the project where this run will be logged
+#     project="vla-nav-inference",
+#     mode="online",
+# )
 
 app = Flask(__name__)
 run_with_ngrok(app)
 
+config = None
+model = None
 
 @app.route('/gen_action', methods=["POST"])
 def gen_action():
@@ -67,6 +69,8 @@ def gen_action():
     print("Received request")
     # If first time getting inference, load the model
     if model is None: 
+        FLAGS = flags.FLAGS
+        FLAGS(sys.argv) 
         config = flags.FLAGS.config
         if flags.FLAGS.platform == "tpu":
             jax.distributed.initialize()
