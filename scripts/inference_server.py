@@ -14,6 +14,7 @@ from absl import app, flags, logging as absl_logging
 from flask import Flask, request, jsonify
 from flask_ngrok import run_with_ngrok
 import ngrok
+import base64
 
 # Google
 from google.cloud import logging
