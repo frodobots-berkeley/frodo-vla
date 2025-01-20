@@ -12,6 +12,7 @@ sys.path.append(".")
 import numpy as np
 from absl import app, flags, logging as absl_logging
 from flask import Flask, request, jsonify
+from flask_ngrok import run_with_ngrok
 
 # Google
 from google.cloud import logging
@@ -57,11 +58,13 @@ run = wandb.init(
 )
 
 app = Flask(__name__)
+run_with_ngrok(app)
+
 
 @app.route('/gen_action', methods=["POST"])
 def gen_action():
     global config, model
-
+    print("Received request")
     # If first time getting inference, load the model
     if model is None: 
         config = flags.FLAGS.config
