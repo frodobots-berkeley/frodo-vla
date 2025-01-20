@@ -85,7 +85,4 @@ def gen_action():
     return response
 
 if __name__ == "__main__":
-    config_flags.DEFINE_config_file(
-        "config", "configs/nav_config_inference.py", "Path to the config file."
-    )
     app.run(host="0.0.0.0", port=5001)
