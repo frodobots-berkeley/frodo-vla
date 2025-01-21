@@ -223,7 +223,6 @@ def run_inference(model, prompt, image, config):
     predicted_actions, actions_mask, tokens = model.predict(batch, action_dim=2, action_horizon=action_horizon, return_tokens=True, include_action_tokens=False)
     predicted_actions = predicted_actions[0].squeeze()
     summed_actions = np.cumsum(predicted_actions, axis=0)
-    print(summed_actions)
     summed_actions -= summed_actions[0]
 
     # Plot on the image 
@@ -237,7 +236,7 @@ def run_inference(model, prompt, image, config):
     ax[1].set_title("Output")
     plt.savefig("~/temp_viz/inference.jpg")
     viz = {"inference": "~/temp_viz/inference.jpg", "projected": "~/temp_viz/projected.jpg"}
-    return summed_actions, viz
+    return predicted_actions, viz
 
 
 

@@ -3,6 +3,7 @@ import numpy as np
 import sys
 import wandb
 import cv2
+import time
 from ml_collections import config_flags, ConfigDict
 import tensorflow as tf
 from PIL import Image
@@ -65,11 +66,11 @@ run_with_ngrok(app)
 
 config = None
 model = None
+avg_time = []
 
 @app.route('/gen_action', methods=["POST"])
 def gen_action():
     global config, model, run
-    print("\nReceived request")
     # If first time getting inference, load the model
     if model is None: 
         FLAGS = flags.FLAGS
@@ -81,19 +82,21 @@ def gen_action():
         model = ModelComponents.load_static(config.resume_checkpoint_dir, sharding_metadata)
         manager = ocp.CheckpointManager(config.resume_checkpoint_dir, options=ocp.CheckpointManagerOptions())
         model.load_state(config.resume_checkpoint_step, manager)
-    print("Model loaded!")
+        print("\nModel loaded!")
     # Receive data 
     data = request.get_json()
     obs_data = base64.b64decode(data['obs'])
     obs = Image.open(BytesIO(obs_data))
-    print(obs.size)
-    obs.save("temp.jpg")
     prompt = data['prompt']
 
     # Run inference
+    start_time = time.time()
     action, viz = run_inference(model, prompt, obs, config)
-    print("Action generated!")
-    print(action)
+    run_time = time.time() - start_time
+    avg_time.append(run_time)
+
+    print(f"Avg. run time: {np.array(avg_time).mean()}s")
+    
     viz = {k: wandb.Image(v) for k, v in viz.items()}
     run.log(viz)
     response = jsonify(action=action.tolist())
