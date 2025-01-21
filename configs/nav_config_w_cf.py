@@ -41,8 +41,8 @@ def get_config():
             "num_steps": num_train_steps,
             # Checkpoint settings
             "save_path": "gs://vlm-guidance-logs",
-            "save_interval": 1000,
-            "max_to_keep": 1,
+            "save_interval": 10000,
+            "max_to_keep": 10,
             # Multi-device settings
             "data_axis_size": 1,
             "fsdp_axis_size": -1,
