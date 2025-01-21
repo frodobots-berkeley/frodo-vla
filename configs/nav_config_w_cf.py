@@ -11,7 +11,7 @@ def get_config():
     num_train_steps = FieldReference(100000, int)
 
     model_config = get_default_config()
-    action_horizon = 8
+    action_horizon = 5
     transform = ModuleSpec.create(gnm_dataset_transform, action_horizon=action_horizon)
     return ConfigDict(
         {
