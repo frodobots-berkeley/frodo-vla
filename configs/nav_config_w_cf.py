@@ -86,7 +86,7 @@ def get_config():
                         "force_recompute_dataset_statistics": False,
                     },
                 },
-                "sample_weights": [0.9, 0.1],
+                "sample_weights": [0.75, 0.25],
                 "traj_transform_kwargs": {
                     "window_size": 1,
                     "action_horizon": action_horizon,
