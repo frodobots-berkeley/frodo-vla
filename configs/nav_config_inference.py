@@ -31,8 +31,8 @@ def get_config():
                     },
                 )
             ],
-            "resume_checkpoint_dir": "gs://vlm-guidance-logs/solar-lake-168",
-            "resume_checkpoint_step": 66000,
+            "resume_checkpoint_dir": "gs://vlm-guidance-logs/vital-sponge-173",
+            "resume_checkpoint_step": 60000,
             # Overfit
             "overfit_dataset": False,
             # Training settings
