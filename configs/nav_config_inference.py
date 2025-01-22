@@ -31,7 +31,7 @@ def get_config():
                     },
                 )
             ],
-            "resume_checkpoint_dir": "gs://vlm-guidance-logs/decent-breeze-172",
+            "resume_checkpoint_dir": "gs://vlm-guidance-logs/vital-sponge-173",
             "resume_checkpoint_step": 70000,
             # Overfit
             "overfit_dataset": False,
