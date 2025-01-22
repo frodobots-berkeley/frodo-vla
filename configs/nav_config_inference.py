@@ -31,7 +31,7 @@ def get_config():
                     },
                 )
             ],
-            "resume_checkpoint_dir": "gs://vlm-guidance-logs/bright-breeze-175",
+            "resume_checkpoint_dir": "gs://vlm-guidance-logs/misunderstood-fire-170",
             "resume_checkpoint_step": 60000,
             # Overfit
             "overfit_dataset": False,
