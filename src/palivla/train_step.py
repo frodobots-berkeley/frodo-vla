@@ -44,7 +44,6 @@ def step_fn(
             batch["gen"],
             train=train,
         )
-        mask_loss = jnp.logical_and(jnp.logical_not(batch["invalid_mask"]), batch["gen"]["mask_loss"])
         # return compute_stats(
         #     pred_logits=logits[..., :-1, :],
         #     target_tokens=batch["gen"]["tokens"][..., 1:],
@@ -53,7 +52,7 @@ def step_fn(
         return compute_stats(
             pred_logits=logits[..., :-1, :],
             target_tokens=batch["gen"]["tokens"][..., 1:],
-            target_mask_loss=mask_loss[..., 1:],
+            target_mask_loss=batch["invalid_mask"][..., 1:],
         )
     grad_fn = jax.grad(loss_fn, has_aux=True)
 

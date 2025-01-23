@@ -158,21 +158,22 @@ class ModelComponents:
 
     def train_step(self, batch: Any):
         # Tokenize the batch and build sequences
-        invalid_mask = batch["invalid_mask"]
+        invalid_mask = np.logical_not(batch["invalid_mask"])
         del batch["invalid_mask"]
+
         sequences = self.sequence_builder.build_sequence(
             batch, self.language_tokenizer, self.action_tokenizer
         )
-
+        mask_loss = np.logical_and(batch["gen"]["mask_loss"], invalid_mask)
+        
         # Shard the batch to devices
         batch = {
             "sensors": batch["observation"],
             "sensors_mask": batch["observation"]["pad_mask_dict"],
             "prompt": sequences["prompt"],
             "gen": sequences["gen"],
-            "invalid_mask": invalid_mask,
+            "invalid_mask": mask_loss,
         }
-        breakpoint()
         batch = self.sharding.mesh.local_data_to_global_array(batch)
 
         # Run the train step
