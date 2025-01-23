@@ -45,6 +45,11 @@ if $UPDATE; then
     git add *
     git commit -m "Update"
     git push
+    cd octo
+    git add *
+    git commit -m "Update"
+    git push
+    cd ..
     gcloud alpha compute tpus tpu-vm ssh $TPU_VM_NAME --zone=us-central2-b --command="bash update.sh"
 fi
 
