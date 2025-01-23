@@ -197,8 +197,8 @@ def main(_):
             if not config.overfit_dataset:
                 batch = next(train_it)
             breakpoint()
-            for img_num in batch["sensors"]["image_primary"].shape[0]:
-                image = batch["sensors"]["image_primary"][img_num]
+            for img_num in batch["observation"]["image_primary"].shape[0]:
+                image = batch["observation"]["image_primary"][img_num]
                 image_sum = np.where(image != 255)
                 if np.count_nonzero(image_sum) == 0:
                     print("Image is white pixels")
