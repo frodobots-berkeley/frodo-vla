@@ -202,6 +202,7 @@ def main(_):
                 image_sum = np.where(image != 255)
                 if np.count_nonzero(image_sum) == 0:
                     print("Image is white pixels")
+                    batch["action_pad_mask"][img_num, :] = np.zeros_like(batch["action_pad_mask"][img_num, :], dtype=bool)
                     breakpoint()
             info = model.train_step(batch)
 
