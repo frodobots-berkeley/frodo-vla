@@ -45,7 +45,7 @@ def step_fn(
             train=train,
         )
         mask_loss = jnp.zeros_like(batch["gen"]["mask_loss"], dtype=bool)
-        mask_loss = jnp.where(batch["invalid_mask"])
+        mask_loss = jnp.logical_or(mask_loss, batch["gen"]["mask_loss"])
         # return compute_stats(
         #     pred_logits=logits[..., :-1, :],
         #     target_tokens=batch["gen"]["tokens"][..., 1:],

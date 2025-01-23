@@ -51,7 +51,7 @@ def get_config():
             "shuffle_buffer_size": 50000,
             "num_steps": num_train_steps,
             # Logging and visualization
-            "eval_interval": 10,
+            "eval_interval": 100,
             "log_interval": 1,
             # Optimizer settings
             "optimizer": {
