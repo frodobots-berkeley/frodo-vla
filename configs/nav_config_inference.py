@@ -32,7 +32,7 @@ def get_config():
                 )
             ],
             "resume_checkpoint_dir": "gs://vlm-guidance-logs/vital-sponge-173",
-            "resume_checkpoint_step": 70000,
+            "resume_checkpoint_step": 80000,
             # Overfit
             "overfit_dataset": False,
             # Training settings
