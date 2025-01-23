@@ -196,7 +196,7 @@ def main(_):
         for i in pbar:
             if not config.overfit_dataset:
                 batch = next(train_it)
-            breakpoint()
+            obs_mask = [np.count_nonzero(np.where(batch["observation"]["image_primary"][i] != 255)) == 0 for i in range(batch["observation"]["image_primary"].shape[0])]
             for img_num in range(batch["observation"]["image_primary"].shape[0]):
                 image = batch["observation"]["image_primary"][img_num, ...]
                 image_sum = np.where(image != 255)

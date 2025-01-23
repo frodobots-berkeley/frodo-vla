@@ -43,7 +43,6 @@ def step_fn(
             batch["prompt"],
             batch["gen"],
             train=train,
-            rngs={"dropout": key},
         )
         return compute_stats(
             pred_logits=logits[..., :-1, :],
