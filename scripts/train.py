@@ -196,7 +196,6 @@ def main(_):
         for i in pbar:
             if not config.overfit_dataset:
                 batch = next(train_it)
-            breakpoint()
             obs_mask = [np.count_nonzero(np.where(batch["observation"]["image_primary"][i] != 255)) == 0 for i in range(batch["observation"]["image_primary"].shape[0])]
             for img_num in range(batch["observation"]["image_primary"].shape[0]):
                 image = batch["observation"]["image_primary"][img_num, ...]
@@ -225,7 +224,7 @@ def main(_):
                 pred_viz = eval_plots["pred_actions"][idxs, :, :] - eval_plots["pred_actions"][idxs, 0, :].reshape(-1, 1, 2)
                 pred_viz = np.cumsum(pred_viz, axis=1)
                 context = batch["observation"]["image_primary"][idxs, ...]
-                prompts = model.language_tokenizer.batch_decode(batch["prompt"]["tokens"][idxs, ...])
+                prompts = batch["task"]["language_instruction"][idxs]
                 for j in range(pred_viz.shape[0]):
                     fig, ax = plt.subplots(1,2)
                     ax[0].plot(gt_viz[j,:,0], gt_viz[j,:,1], 'r')
