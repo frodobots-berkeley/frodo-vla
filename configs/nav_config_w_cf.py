@@ -11,7 +11,7 @@ def get_config():
     num_train_steps = FieldReference(100000, int)
 
     model_config = get_default_config()
-    action_horizon = 12
+    action_horizon = 8
     transform = ModuleSpec.create(gnm_dataset_transform, action_horizon=action_horizon)
     return ConfigDict(
         {
@@ -51,7 +51,7 @@ def get_config():
             "shuffle_buffer_size": 50000,
             "num_steps": num_train_steps,
             # Logging and visualization
-            "eval_interval": 100,
+            "eval_interval": 10,
             "log_interval": 1,
             # Optimizer settings
             "optimizer": {
