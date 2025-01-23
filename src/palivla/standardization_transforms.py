@@ -886,15 +886,16 @@ def gnm_dataset_transform(trajectory: Dict[str, Any], action_horizon=1) -> Dict[
         :, :, :2
     ]  # delta waypoints
 
-    global_waypoints -= curr_pos
+    # global_waypoints -= curr_pos
     global_waypoints = tf.expand_dims(global_waypoints, 2)
-    actions = tf.squeeze(
-        tf.linalg.matmul(
-            global_waypoints,
-            tf.expand_dims(trajectory["observation"]["yaw_rotmat"][:, :2, :2], 1),
-        ),
-        2,
-    )
+    # actions = tf.squeeze(
+    #     tf.linalg.matmul(
+    #         global_waypoints,
+    #         tf.expand_dims(trajectory["observation"]["yaw_rotmat"][:, :2, :2], 1),
+    #     ),
+    #     2,
+    # )
+    actions = tf.squeeze(global_waypoints, 2)
     normalization_factor = 1.0
     for dataset_name, value in METRIC_WAYPOINT_SPACING.items():
         if tf.strings.regex_full_match(
