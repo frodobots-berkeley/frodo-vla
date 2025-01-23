@@ -172,6 +172,7 @@ class ModelComponents:
             "gen": sequences["gen"],
             "invalid_mask": invalid_mask,
         }
+        breakpoint()
         batch = self.sharding.mesh.local_data_to_global_array(batch)
 
         # Run the train step
