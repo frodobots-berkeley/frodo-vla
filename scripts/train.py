@@ -202,7 +202,6 @@ def main(_):
                 image_sum = np.where(image != 255)
                 if np.count_nonzero(image_sum) == 0:
                     print("Image is white pixels")
-                    breakpoint()
             info = model.train_step(batch)
 
             info = jax.device_get(info)
@@ -217,23 +216,32 @@ def main(_):
                 eval_plots = eval_data["eval_data"]
 
                 # Select random subset of the batch
-                idxs = np.random.choice(np.arange(eval_plots["pred_actions"].shape[0]), 4)
+                wandb_list = []
+                idxs = np.random.choice(np.arange(eval_plots["pred_actions"].shape[0]), 5)
                 gt_viz = eval_plots["gt_actions"][idxs, :, :] - eval_plots["gt_actions"][idxs, 0, :].reshape(-1, 1, 2)
                 gt_viz = np.cumsum(gt_viz, axis=1)
 
                 pred_viz = eval_plots["pred_actions"][idxs, :, :] - eval_plots["pred_actions"][idxs, 0, :].reshape(-1, 1, 2)
                 pred_viz = np.cumsum(pred_viz, axis=1)
+                context = batch["observation"]["image_primary"][idxs, ...]
+                prompts = model.language_tokenizer.batch_decode(batch["prompt"]["tokens"][idxs, ...])
                 for j in range(pred_viz.shape[0]):
-                    plt.plot(gt_viz[j,:,0], gt_viz[j,:,1], 'r')
-                    plt.plot(pred_viz[j,:,0], pred_viz[j,:,1], 'b')
-                save_path = f"images/eval_gt_{i+1}.png"
-                plt.legend()
-                plt.title("Action Prediction")
-                plt.savefig(save_path)
+                    fig, ax = plt.subplots(1,2)
+                    ax[0].plot(gt_viz[j,:,0], gt_viz[j,:,1], 'r')
+                    ax[0].plot(pred_viz[j,:,0], pred_viz[j,:,1], 'b')
+                    ax[1].imshow(context[j, ...].squeeze(0))
+                    ax[1].set_title(prompts[j])
+                    plt.legend()
+                    save_path = f"images/eval_gt_{i+1}_{j}.png"
+                    plt.savefig(save_path)
+                    wandb_list.append(wandb.Image(save_path))
+                    plt.close()
+                    
+
                     
                 # breakpoint()
                 if jax.process_index() == 0:
-                    wandb.log({"action_prediction": wandb.Image(save_path)}, commit=False)
+                    wandb.log({"action_prediction": wandb_list}, commit=False)
                     wandb.log(eval_info, step=i + 1, commit=False)
 
             if (i + 1) % config.log_interval == 0:
