@@ -197,12 +197,10 @@ def main(_):
             if not config.overfit_dataset:
                 batch = next(train_it)
             obs_mask = [np.count_nonzero(np.where(batch["observation"]["image_primary"][i] != 255)) == 0 for i in range(batch["observation"]["image_primary"].shape[0])]
-            breakpoint()
-            white_mask = np.where(np.sum(np.where(batch["observation"]["image_primary"] != 255), axis=0) == 0)
-            batch["action_pad_mask"][white_mask] = np.zeros_like(batch["action_pad_mask"], dtype=bool)
-            breakpoint()
+            batch["invalid_mask"] = np.array(obs_mask)
+            
             info = model.train_step(batch)
-
+            
             info = jax.device_get(info)
             wandb_logs.append(info)
             pbar.set_postfix(
