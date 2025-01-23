@@ -44,7 +44,7 @@ def step_fn(
             batch["gen"],
             train=train,
         )
-        mask_loss = jnp.logical_and(jnp.logical_not(mask_loss), batch["gen"]["mask_loss"])
+        mask_loss = jnp.logical_and(jnp.logical_not(batch["invalid_mask"]), batch["gen"]["mask_loss"])
         # return compute_stats(
         #     pred_logits=logits[..., :-1, :],
         #     target_tokens=batch["gen"]["tokens"][..., 1:],
