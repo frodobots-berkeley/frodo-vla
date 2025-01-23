@@ -196,6 +196,7 @@ def main(_):
         for i in pbar:
             if not config.overfit_dataset:
                 batch = next(train_it)
+            breakpoint()
             for img_num in batch["sensors"]["image_primary"].shape[0]:
                 image = batch["sensors"]["image_primary"][img_num]
                 image_sum = np.where(image != 255)
