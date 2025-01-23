@@ -196,7 +196,12 @@ def main(_):
         for i in pbar:
             if not config.overfit_dataset:
                 batch = next(train_it)
-            
+            for img_num in batch["sensors"]["image_primary"].shape[0]:
+                image = batch["sensors"]["image_primary"][img_num]
+                image_sum = np.where(image != 255)
+                if np.count_nonzero(image_sum) == 0:
+                    print("Image is white pixels")
+                    breakpoint()
             info = model.train_step(batch)
 
             info = jax.device_get(info)
