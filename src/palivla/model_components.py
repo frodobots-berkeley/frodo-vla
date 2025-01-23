@@ -164,8 +164,8 @@ class ModelComponents:
         sequences = self.sequence_builder.build_sequence(
             batch, self.language_tokenizer, self.action_tokenizer
         )
-        mask_loss = np.logical_and(batch["gen"]["mask_loss"], invalid_mask)
-        
+        mask_loss = np.logical_and(sequences["gen"]["mask_loss"], invalid_mask)
+
         # Shard the batch to devices
         batch = {
             "sensors": batch["observation"],
