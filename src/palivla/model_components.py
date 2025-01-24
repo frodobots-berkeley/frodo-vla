@@ -193,8 +193,8 @@ class ModelComponents:
         predicted_actions = np.nan_to_num(predicted_actions)
 
         gt_actions = jax.experimental.multihost_utils.process_allgather(gt_actions).reshape(predicted_actions.shape)
-        print("PRED: ", predicted_actions)
-        print("GT: ", gt_actions)
+        # print("PRED: ", predicted_actions)
+        # print("GT: ", gt_actions)
         # tokens["target"] = jax.experimental.multihost_utils.process_allgather(tokens["target"]).reshape(tokens["predicted"].shape)
         # tokens["mask"] = jax.experimental.multihost_utils.process_allgather(tokens["mask"]).reshape(tokens["predicted"].shape)
         gen_valid_pct = actions_mask.mean()
@@ -266,9 +266,9 @@ class ModelComponents:
                 action_dim=action_dim,
                 action_horizon=action_horizon,
             )
-            print("Generated tokens: ", tokens[0])
-            print("GT tokens: ", sequences["gen"]["tokens"][0])
-            print("Actions mask: ", actions_mask[0])
+            # print("Generated tokens: ", tokens[0])
+            # print("GT tokens: ", sequences["gen"]["tokens"][0])
+            # print("Actions mask: ", actions_mask[0])
             if return_tokens:
                 return (
                     actions,

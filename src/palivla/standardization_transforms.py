@@ -866,7 +866,6 @@ METRIC_WAYPOINT_SPACING = {
 }
 def gnm_dataset_transform(trajectory: Dict[str, Any], action_horizon=1) -> Dict[str, Any]:
     traj_len = tf.shape(trajectory["action"])[0]
-    print("Action horizon: ", action_horizon)
 
     # Pad trajectory states
     padding = tf.tile(trajectory["observation"]["state"][-1:, :], [action_horizon, 1])
@@ -903,15 +902,12 @@ def gnm_dataset_transform(trajectory: Dict[str, Any], action_horizon=1) -> Dict[
             f".*{dataset_name}.*",
         ):
             normalization_factor = value
-            print(normalization_factor)
-            breakpoint()
     normalization_factor = tf.cast(normalization_factor, tf.float64)
     actions = actions / normalization_factor
 
     trajectory["action"] = actions
 
     trajectory["observation"]["proprio"] = trajectory["observation"]["state"]
-    print("Trajectory shape: ", trajectory["action"].shape)
     return trajectory
 
 def old_gnm_dataset_transform(trajectory: Dict[str, Any]) -> Dict[str, Any]:
