@@ -903,6 +903,8 @@ def gnm_dataset_transform(trajectory: Dict[str, Any], action_horizon=1) -> Dict[
             f".*{dataset_name}.*",
         ):
             normalization_factor = value
+            print(normalization_factor)
+            breakpoint()
     normalization_factor = tf.cast(normalization_factor, tf.float64)
     actions = actions / normalization_factor
 
