@@ -165,7 +165,7 @@ class ModelComponents:
             batch, self.language_tokenizer, self.action_tokenizer
         )
         mask_loss = np.logical_and(sequences["gen"]["mask_loss"], invalid_mask)
-        breakpoint()
+
         # Shard the batch to devices
         batch = {
             "sensors": batch["observation"],
