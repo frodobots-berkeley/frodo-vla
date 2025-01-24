@@ -4,6 +4,7 @@ import dlimp
 from octo.data.dataset import make_interleaved_dataset, make_single_dataset
 from octo.data.oxe import make_oxe_dataset_kwargs, make_oxe_dataset_kwargs_and_weights
 from octo.data.utils.data_utils import NormalizationType
+import tensorflow as tf
 
 
 def make_base_dataset(
@@ -41,6 +42,8 @@ def make_base_dataset(
         traj_read_threads=traj_read_threads,
         **kwargs,
     )
+
+    dataset = dataset.filter(lambda x: tf.reduce_any(x["observation"]["image_primary"] != 255))
 
     return dataset
 
