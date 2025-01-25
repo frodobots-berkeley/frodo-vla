@@ -212,7 +212,7 @@ def run_inference(model, prompt, image, config):
     action_horizon = config["dataset_kwargs"]["traj_transform_kwargs"]["action_horizon"]
     image = image.convert("RGB").resize((64,64))
     image = np.expand_dims(np.array(image), 0).repeat(4, axis=0)
-    # Image.fromarray(image).save("~/temp_viz/raw_img.jpg")
+
     batch = {"task" : 
                 {"language_instruction" : np.array([prompt.encode()]*4), 
                 "pad_mask_dict": {"language_instruction": np.array([1]*4)}},

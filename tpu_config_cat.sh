@@ -7,7 +7,8 @@ eval "$(ssh-agent -s)"
 ssh-add id_ed25519
 touch /home/noam/.ssh/known_hosts
 ssh-keyscan github.com >> /home/noam/.ssh/known_hosts
-
+sudo tar -xvzf ngrok-v3-stable-linux-amd64.tgz -C /usr/local/bin
+# Need to set token for ngrok
 curl -LsSf https://astral.sh/uv/install.sh | sh
 source ~/.local/bin/env
 git clone git@github.com:catglossop/bigvision-palivla.git --recursive
@@ -23,3 +24,15 @@ cd ~/bigvision-palivla
 source .venv/bin/activate
 uv venv --python=python3.11
 uv sync --extra tpu  
+
+uv pip install opencv-python
+sudo apt-get install libgl1 -y
+uv pip install Flask
+uv pip install flask-ngrok
+uv pip install ngrok
+uv pip install google-cloud-logging
+uv pip install google-cloud-storage
+sudo cp /tmp/ngrok/ngrok /usr/bin
+# Modify the flask_ngrok file to use path /usr/bin
+
+# for inference - need to move ngrok from /tmp/tmp/ngrok to /usr

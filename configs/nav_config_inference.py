@@ -31,8 +31,8 @@ def get_config():
                     },
                 )
             ],
-            "resume_checkpoint_dir": "gs://vlm-guidance-logs/denim-breeze-215",
-            "resume_checkpoint_step": 50000,
+            "resume_checkpoint_dir": "gs://vlm-guidance-logs/decent-breeze-172",
+            "resume_checkpoint_step": 90000,
             # Overfit
             "overfit_dataset": False,
             # Training settings
