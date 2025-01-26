@@ -26,10 +26,9 @@ class SequenceBuilder:
         with tf.io.gfile.GFile(tf.io.gfile.join(path, "sequence_builder.pkl"), "rb") as f:
             return cloudpickle.load(f)
 
-    def prepare_prompt(self, language_instruction):
-        language_instructions = np.array([l.decode("utf-8") for l in language_instruction if not isinstance(l, int)])
+    def prepare_prompt(self, language_instruction): 
+        language_instructions = np.array([l.decode("utf-8") for l in language_instruction])
         language_instructions = language_instructions[language_instructions != ""]
-        breakpoint()
         if language_instructions.shape[0] != 0:
             lang = np.random.choice(language_instructions)
             return "<bos>" + str(lang)

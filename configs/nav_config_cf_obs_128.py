@@ -66,7 +66,7 @@ def get_config():
                 "oxe_kwargs": None,
                 "dataset_kwargs_list": {
                     "lcbc_kwargs": {
-                        "name": "lcbc_orig_dataset",
+                        "name": "lcbc_orig_dataset_128",
                         "data_dir": "gs://vlm-guidance-data",
                         "image_obs_keys": {"primary": "image"},
                         "proprio_obs_key": "position",
@@ -76,7 +76,7 @@ def get_config():
                         "force_recompute_dataset_statistics": False,
                     },
                     # "lcbc_filtered_kwargs": {
-                    #     "name": "lcbc_filtered_dataset",
+                    #     "name": "lcbc_filtered_128",
                     #     "data_dir": "gs://vlm-guidance-data",
                     #     "image_obs_keys": {"primary": "image"},
                     #     "proprio_obs_key": "position",
@@ -86,7 +86,7 @@ def get_config():
                     #     "force_recompute_dataset_statistics": False,
                     # },
                     "cf_kwargs": {
-                        "name": "cf_dataset",
+                        "name": "cf_v2_dataset_128",
                         "data_dir": "gs://vlm-guidance-data",
                         "image_obs_keys": {"primary": "image"},
                         "proprio_obs_key": "position",
@@ -96,7 +96,7 @@ def get_config():
                         "force_recompute_dataset_statistics": False,
                     },
                     "cf_v3_kwargs": {
-                        "name": "cf_v3_dataset",
+                        "name": "cf_v3_dataset_128",
                         "data_dir": "gs://vlm-guidance-data",
                         "image_obs_keys": {"primary": "image"},
                         "proprio_obs_key": "position",
@@ -106,7 +106,7 @@ def get_config():
                         "force_recompute_dataset_statistics": False,
                     },
                     "outdoor_kwargs": {
-                        "name": "outdoor_dataset",
+                        "name": "outdoor_dataset_128",
                         "data_dir": "gs://vlm-guidance-data",
                         "image_obs_keys": {"primary": "image"},
                         "proprio_obs_key": "position",
@@ -116,7 +116,7 @@ def get_config():
                         "force_recompute_dataset_statistics": False,
                     },
                     # "outdoor_filtered_kwargs": {
-                    #     "name": "outdoor_filtered_dataset",
+                    #     "name": "outdoor_filtered_dataset_128",
                     #     "data_dir": "gs://vlm-guidance-data",
                     #     "image_obs_keys": {"primary": "image"},
                     #     "proprio_obs_key": "position",
