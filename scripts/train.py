@@ -213,7 +213,7 @@ def main(_):
 
                 # Select random subset of the batch
                 wandb_list = []
-                idxs = np.random.choice(np.arange(eval_plots["pred_actions"].shape[0]), 5)
+                idxs = np.random.choice(np.arange(eval_plots["pred_actions"].shape[0]//jax.process_count()), 5)
                 gt_viz = eval_plots["gt_actions"][idxs, :, :] - eval_plots["gt_actions"][idxs, 0, :].reshape(-1, 1, 2)
                 gt_viz = np.cumsum(gt_viz, axis=1)
 
