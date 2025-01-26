@@ -27,13 +27,13 @@ class SequenceBuilder:
             return cloudpickle.load(f)
 
     def prepare_prompt(self, language_instruction):
-        language_instruction = language_instruction.split("b'")
-        language_instruction = [instruction.strip("' ") for instruction in language_instruction]
+        breakpoint()
+        language_instruction = np.where(language_instruction == "b''")[0]
         padding = np.where(language_instruction == "")[0]
         lanuage_instruction = language_instruction[:padding[0]] if padding else language_instruction
-        language_instruciton = np.random.choice(language_instruction)
-        print(language_instruction)
-        return "<bos>" + str(language_instruction)
+        lang = np.random.choice(language_instruction)
+        print(lang)
+        return "<bos>" + str(lang)
 
     def prepare_gen(self, action_tokens):
         return "".join([f"<act{i}>" for i in action_tokens]) + "<eos>"
