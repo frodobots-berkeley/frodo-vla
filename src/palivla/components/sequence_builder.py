@@ -29,6 +29,7 @@ class SequenceBuilder:
     def prepare_prompt(self, language_instruction):
         language_instructions = np.array([l.decode("utf-8") for l in language_instruction if not isinstance(l, int)])
         language_instructions = language_instructions[language_instructions != ""]
+        breakpoint()
         if language_instructions.shape[0] != 0:
             lang = np.random.choice(language_instructions)
             return "<bos>" + str(lang)
