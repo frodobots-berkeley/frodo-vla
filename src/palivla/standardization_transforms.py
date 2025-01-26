@@ -872,11 +872,9 @@ def gnm_dataset_transform(trajectory: Dict[str, Any], action_horizon=1) -> Dict[
     smooth_pos = tf.where(tf.abs(positions_shifted) < 1e-2, tf.zeros_like(positions_shifted), positions_shifted)
     non_zero_idx = tf.where(tf.reduce_any(smooth_pos != 0, axis=1))[0][0]
     non_zero_idx = tf.math.maximum(tf.cast(3, tf.int64), non_zero_idx)
-    breakpoint()
     init_yaw = tf.math.atan2(positions[non_zero_idx, 1], positions[non_zero_idx, 0])
     rot_mat = tf.convert_to_tensor([[tf.math.cos(init_yaw), -tf.math.sin(init_yaw)], [tf.math.sin(init_yaw), tf.math.cos(init_yaw)]])
     positions = tf.linalg.matmul(tf.reshape(positions,[-1, 1, 2]) , tf.reshape(rot_mat, [-1, 1, 2, 2]))
-    breakpoint()
     trajectory["observation"]["positions"] = positions
     # Pad trajectory states
     padding = tf.tile(trajectory["observation"]["state"][-1:, :], [action_horizon, 1])
