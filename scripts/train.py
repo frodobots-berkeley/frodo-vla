@@ -197,7 +197,6 @@ def main(_):
         for i in pbar:
             if not config.overfit_dataset:
                 batch = next(train_it)
-            batch["task"]["language_instruction"] = batch["task"]["language_instruction"]
             
             info = model.train_step(batch)
 

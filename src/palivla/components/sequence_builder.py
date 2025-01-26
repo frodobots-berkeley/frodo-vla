@@ -27,6 +27,9 @@ class SequenceBuilder:
             return cloudpickle.load(f)
 
     def prepare_prompt(self, language_instruction):
+        padding = np.where(language_instruction == "")[0]
+        lanuage_instruction = language_instruction[:padding[0]] if padding else language_instruction
+        language_instruciton = np.random.choice(language_instruction)
         return "<bos>" + str(language_instruction)
 
     def prepare_gen(self, action_tokens):
@@ -43,6 +46,7 @@ class SequenceBuilder:
         boa_id = language_tokenizer.encode("<begin_of_action>")[0]
         boa_prompt = "<begin_of_action>" if boa_is_prompt else ""
         boa_gen = "" if boa_is_prompt else "<begin_of_action>"
+
 
         prompt = [
             self.prepare_prompt(instruction) + boa_prompt
