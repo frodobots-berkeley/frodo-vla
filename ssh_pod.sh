@@ -21,7 +21,7 @@ fi
 
 # Use default values if not found in cache
 ZONE="us-central2-b"
-N_WORKERS="4"
+N_WORKERS=$2
 
 echo "Connecting to $TPU_VM_NAME with $N_WORKERS workers in zone $ZONE..."
 
