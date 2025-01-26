@@ -1,8 +1,6 @@
 API_KEY=$1
-sudo su 
-su noam
 cd ~/bigvision-palivla
 source ~/.local/bin/env
 source .venv/bin/activate
 uv run wandb login $API_KEY
-python scripts/train.py --config configs/nav_config.py --platform tpu
+python scripts/train.py --config configs/$2 --platform tpu

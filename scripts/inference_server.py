@@ -93,6 +93,7 @@ def gen_action():
     # Run inference
     start_time = time.time()
     action, viz = run_inference(model, prompt, obs, config)
+    
     run_time = time.time() - start_time
     avg_time.append(run_time)
 
