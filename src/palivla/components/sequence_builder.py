@@ -30,6 +30,7 @@ class SequenceBuilder:
         padding = np.where(language_instruction == "")[0]
         lanuage_instruction = language_instruction[:padding[0]] if padding else language_instruction
         language_instruciton = np.random.choice(language_instruction)
+        print(language_instruction)
         return "<bos>" + str(language_instruction)
 
     def prepare_gen(self, action_tokens):
