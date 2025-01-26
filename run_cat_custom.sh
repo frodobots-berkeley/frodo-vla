@@ -36,7 +36,7 @@ if $INIT; then
     gcloud alpha compute tpus tpu-vm scp ~/.ssh/id_ed25519 $TPU_VM_NAME: --zone=us-central2-b
     gcloud alpha compute tpus tpu-vm scp tpu_config_cat.sh $TPU_VM_NAME: --zone=us-central2-b
     gcloud alpha compute tpus tpu-vm scp update.sh $TPU_VM_NAME: --zone=us-central2-b
-    gcloud alpha compute tpus tpu-vm scp ngrok-v3-stable-linux-amd64.tgz $TPU_VM_NAME: --zone=us-central2-b
+    gcloud alpha compute tpus tpu-vm scp ~/ngrok-v3-stable-linux-amd64.tgz $TPU_VM_NAME: --zone=us-central2-b
  
     echo "Initializing TPU VM"
     gcloud alpha compute tpus tpu-vm ssh $TPU_VM_NAME --zone=us-central2-b --command="bash tpu_config_cat.sh"
