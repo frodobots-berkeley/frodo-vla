@@ -868,7 +868,7 @@ def gnm_dataset_transform(trajectory: Dict[str, Any], action_horizon=1) -> Dict[
     traj_len = tf.shape(trajectory["action"])[0]
 
     positions = trajectory["observation"]["state"][:, :2]
-    positions_shifted -= positions[0]
+    positions_shifted = positions - positions[0]
     smooth_pos = tf.where(tf.abs(positions_shifted) < 1e-2, tf.zeros_like(positions_shifted), positions_shifted)
     non_zero_idx = tf.where(tf.reduce_any(smooth_pos != 0, axis=1))[0][0]
     non_zero_idx = max(3, non_zero_idx)
