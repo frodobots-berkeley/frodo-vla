@@ -197,8 +197,7 @@ def main(_):
         for i in pbar:
             if not config.overfit_dataset:
                 batch = next(train_it)
-            # obs_mask = [np.count_nonzero(np.where(batch["observation"]["image_primary"][i] != 255)) == 0 for i in range(batch["observation"]["image_primary"].shape[0])]
-            # batch["invalid_mask"] = np.array(obs_mask).reshape(-1, 1).repeat(model.sequence_builder.gen_pad_length, axis=1)
+            batch["task"]["language_instruction"] = batch["task"]["language_instruction"]
             
             info = model.train_step(batch)
 
