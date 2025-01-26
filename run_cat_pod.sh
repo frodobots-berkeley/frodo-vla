@@ -43,6 +43,7 @@ if $INIT; then
  
     echo "Initializing TPU VM"
     gcloud alpha compute tpus tpu-vm ssh $TPU_VM_NAME --zone=us-central2-b --command="bash tpu_config_cat.sh" --worker=all
+    gcloud alpha compute tpus tpu-vm ssh $TPU_VM_NAME --zone=us-central2-b --command="tmux new-session -d -s tpc" --worker=all
 fi 
 
 if $UPDATE; then
