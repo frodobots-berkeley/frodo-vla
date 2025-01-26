@@ -45,7 +45,7 @@ def make_base_dataset(
 
     dataset = dataset.filter(lambda x: tf.reduce_any(x["observation"]["image_primary"] != 255))
 
-    dataset = dataset.filter(lambda x: x["language_annotation"] != b"")
+    dataset = dataset.filter(lambda x: x["language_instruction"] != b"")
 
     return dataset
 
