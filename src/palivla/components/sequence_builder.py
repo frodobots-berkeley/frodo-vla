@@ -29,8 +29,11 @@ class SequenceBuilder:
     def prepare_prompt(self, language_instruction):
         language_instructions = np.array([l.decode("utf-8") for l in language_instruction])
         language_instructions = language_instructions[language_instructions != ""]
-        lang = np.random.choice(language_instructions)
-        return "<bos>" + str(lang)
+        if language_instructions.shape[0] != 0:
+            lang = np.random.choice(language_instructions)
+            return "<bos>" + str(lang)
+        else:
+            return "<bos>" + str("Explore the environment")
 
     def prepare_gen(self, action_tokens):
         return "".join([f"<act{i}>" for i in action_tokens]) + "<eos>"
