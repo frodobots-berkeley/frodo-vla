@@ -220,7 +220,7 @@ def main(_):
                 pred_viz = eval_plots["pred_actions"][idxs, :, :] - eval_plots["pred_actions"][idxs, 0, :].reshape(-1, 1, 2)
                 pred_viz = np.cumsum(pred_viz, axis=1)
                 context = batch["observation"]["image_primary"][idxs, ...]
-                prompts = [self.sequence_builder.prepare_prompt(p) for p in batch["task"]["language_instruction"][idxs]]
+                prompts = [model.sequence_builder.prepare_prompt(p) for p in batch["task"]["language_instruction"][idxs]]
                 for j in range(pred_viz.shape[0]):
                     fig, ax = plt.subplots(1,2)
                     ax[0].plot(gt_viz[j,:,0], gt_viz[j,:,1], 'r')
