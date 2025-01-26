@@ -27,6 +27,8 @@ class SequenceBuilder:
             return cloudpickle.load(f)
 
     def prepare_prompt(self, language_instruction):
+        language_instruction = language_instruction.split("b'")
+        language_instruction = [instruction.strip("' ") for instruction in language_instruction]
         padding = np.where(language_instruction == "")[0]
         lanuage_instruction = language_instruction[:padding[0]] if padding else language_instruction
         language_instruciton = np.random.choice(language_instruction)
