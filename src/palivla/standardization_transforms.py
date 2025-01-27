@@ -902,7 +902,7 @@ def gnm_dataset_transform(trajectory: Dict[str, Any], action_horizon=1) -> Dict[
             [tf.sin(curr_yaw), tf.cos(curr_yaw)],
         ]
     )
-    breakpoint()
+    curr_yaw_rotmat = tf.transpose(curr_yaw_rotmat, [2, 3, 0, 1])
 
     global_waypoints -= curr_pos
     global_waypoints = tf.expand_dims(global_waypoints, 2)
