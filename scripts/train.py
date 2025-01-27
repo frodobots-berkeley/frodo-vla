@@ -215,7 +215,7 @@ def main(_):
                 wandb_list = []
                 idxs = np.random.choice(np.arange(eval_plots["pred_actions"].shape[0]//jax.process_count()), 5)
                 gt_viz = eval_plots["gt_actions"][idxs, :, :]
-                ex_actions = np.concatenate([np.zeros((gt_viz.shape[0],-1, 1, gt_viz.shape[-1])), gt_viz], axis=1)
+                ex_actions = np.concatenate([np.zeros((gt_viz.shape[0],1, 1, gt_viz.shape[-1])), gt_viz], axis=1)
                 delta = ex_actions[:,1:] - ex_actions[:,:-1]
                 gt_viz = np.cumsum(delta, axis=1)
 
