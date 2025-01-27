@@ -31,7 +31,7 @@ def get_config():
                     },
                 )
             ],
-            "resume_checkpoint_dir": "gs://vlm-guidance-logs/fearless-puddle-224",
+            "resume_checkpoint_dir": "gs://vlm-guidance-logs/pleasant-hill-251",
             "resume_checkpoint_step": 10000,
             # Overfit
             "overfit_dataset": False,

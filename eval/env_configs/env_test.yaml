@@ -1,0 +1,9 @@
+env_name: test
+
+prompts: 
+ - "Turn right"
+ - "Turn left"
+ - "Stop"
+ - "Go forward"
+ - null
+  

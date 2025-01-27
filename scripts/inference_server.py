@@ -71,24 +71,34 @@ avg_time = []
 @app.route('/gen_action', methods=["POST"])
 def gen_action():
     global config, model, run
+
     # If first time getting inference, load the model
     if model is None: 
         FLAGS = flags.FLAGS
         FLAGS(sys.argv) 
         config = flags.FLAGS.config
+
+        # Overwrite the config with the one from input
+        config.resume_checkpoint_dir = flags.FLAGS.resume_checkpoint_dir
+        config.resume_checkpoint_step = flags.FLAGS.resume_checkpoint_step
+
+        prompt = flags.FLAGS.prompt
+
         if flags.FLAGS.platform == "tpu":
             jax.distributed.initialize()
         sharding_metadata = make_sharding(config)
+
         print("Loading model...", config.resume_checkpoint_dir)
         model = ModelComponents.load_static(config.resume_checkpoint_dir, sharding_metadata)
         manager = ocp.CheckpointManager(config.resume_checkpoint_dir, options=ocp.CheckpointManagerOptions())
         model.load_state(config.resume_checkpoint_step, manager)
         print("\nModel loaded!")
+
     # Receive data 
     data = request.get_json()
     obs_data = base64.b64decode(data['obs'])
     obs = Image.open(BytesIO(obs_data))
-    prompt = data['prompt']
+    # prompt = data['prompt']
 
     # Run inference
     start_time = time.time()
@@ -110,4 +120,7 @@ if __name__ == "__main__":
             "config", "configs/smoke_test.py", "Path to the config file."
     )
     flags.DEFINE_string("platform", "gpu", "Platform to run on.")
+    flags.DEFINE_string("resume_checkpoint_dir", "gs://vlm-guidance-logs/pleasant-hill-251", "Path to the checkpoint directory.")
+    flags.DEFINE_integer("resume_checkpoint_step", 10000, "Step to resume from.")
+    flags.DEFINE_string("prompt", "", "Prompt to generate action from.")
     app.run()
