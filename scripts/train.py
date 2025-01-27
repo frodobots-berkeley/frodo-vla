@@ -214,13 +214,13 @@ def main(_):
                 # Select random subset of the batch
                 wandb_list = []
                 idxs = np.random.choice(np.arange(eval_plots["pred_actions"].shape[0]//jax.process_count()), 5)
-                gt_viz = eval_plots["gt_actions"][idxs, :, :] - eval_plots["gt_actions"][idxs, 0, :]
+                gt_viz = eval_plots["gt_actions"][idxs, :, :] - eval_plots["gt_actions"][idxs, 0, :].reshape(-1, 1, 2)
                 # ex_actions = np.concatenate([np.zeros((gt_viz.shape[0], 1, gt_viz.shape[-1])), gt_viz], axis=1)
                 # delta = ex_actions[:,1:] - ex_actions[:,:-1]
                 # deltas = normalize_data(delta, ACTION_STATS)
                 gt_viz = np.cumsum(gt_viz, axis=1)
 
-                pred_viz = eval_plots["pred_actions"][idxs, :, :] - eval_plots["pred_actions"][idxs, 0, :]
+                pred_viz = eval_plots["pred_actions"][idxs, :, :] - eval_plots["pred_actions"][idxs, 0, :].reshape(-1, 1, 2)
                 # ex_actions = np.concatenate([np.zeros((pred_viz.shape[0], 1, pred_viz.shape[-1])), pred_viz], axis=1)
                 # delta = ex_actions[:,1:] - ex_actions[:,:-1]
                 pred_viz = np.cumsum(pred_viz, axis=1)
