@@ -62,7 +62,8 @@ def main(args):
             pass
 
         # Give the eval 
-        prompts_print = "\n".join(prompts)
+
+        prompts_print = "\n".join(prompts[:-1])
         prompt_eval = input(f"Which prompt was the policy following? ({prompts_print})")
 
         # Save the eval info
