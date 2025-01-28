@@ -88,7 +88,7 @@ def gen_action():
             jax.distributed.initialize()
         sharding_metadata = make_sharding(config)
 
-        print("Loading model...", config.resume_checkpoint_dir)
+        print("\nLoading model...", config.resume_checkpoint_dir)
         model = ModelComponents.load_static(config.resume_checkpoint_dir, sharding_metadata)
         manager = ocp.CheckpointManager(config.resume_checkpoint_dir, options=ocp.CheckpointManagerOptions())
         model.load_state(config.resume_checkpoint_step, manager)
