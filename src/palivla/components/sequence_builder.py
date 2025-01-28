@@ -28,6 +28,7 @@ class SequenceBuilder:
 
     def prepare_prompt(self, language_instruction): 
         print(language_instruction)
+        breakpoint()
         if isinstance(language_instruction, str):
             language_instruction = [language_instruction]
         language_instructions = np.array([l.decode("utf-8") for l in language_instruction])
