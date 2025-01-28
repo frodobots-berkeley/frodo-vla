@@ -239,6 +239,40 @@ def run_inference(model, prompt, image, config):
     viz = {"inference": "~/temp_viz/inference.jpg", "projected": "~/temp_viz/projected.jpg"}
     return predicted_actions, viz
 
+if "__name__" == "__main__":
+    config_flags.DEFINE_config_file(
+            "config", "configs/smoke_test.py", "Path to the config file."
+    )
+    flags.DEFINE_string("platform", "gpu", "Platform to run on.")
+    flags.DEFINE_string("resume_checkpoint_dir", "gs://vlm-guidance-logs/pleasant-hill-251", "Path to the checkpoint directory.")
+    flags.DEFINE_integer("resume_checkpoint_step", 10000, "Step to resume from.")
+    flags.DEFINE_string("prompt", "", "Prompt to generate action from.")
+
+    FLAGS = flags.FLAGS
+    FLAGS(sys.argv) 
+    config = flags.FLAGS.config
+
+    print()
+    print("Config:", config)
+
+    # Overwrite the config with the one from input
+    config.resume_checkpoint_dir = f"gs://vlm-guidance-logs/{flags.FLAGS.resume_checkpoint_dir}"
+    config.resume_checkpoint_step = flags.FLAGS.resume_checkpoint_step
+
+    input_prompt = flags.FLAGS.prompt
+
+    if flags.FLAGS.platform == "tpu":
+        jax.distributed.initialize()
+    sharding_metadata = make_sharding(config)
+
+    print("Loading model...", config.resume_checkpoint_dir)
+    model = ModelComponents.load_static(config.resume_checkpoint_dir, sharding_metadata)
+    manager = ocp.CheckpointManager(config.resume_checkpoint_dir, options=ocp.CheckpointManagerOptions())
+    model.load_state(config.resume_checkpoint_step, manager)
+    prompt = flags.FLAGS.prompt
+    obs = Image.fromarray(np.random.randn(1, 96, 96, 3).astype(np.uint8))
+    run_inference(model, prompt, obs, config)
+
 
 
 
