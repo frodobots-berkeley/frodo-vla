@@ -53,6 +53,7 @@ def main(args):
         eval_trial_info = eval_combos.pop()
         prompt = eval_trial_info[0]
         policy = policys[eval_trial_info[1]]
+        print(f"Running trial {curr_trial} with prompt: {prompt} and policy: {policy}")
         trial_num = eval_trial_info[2]
         try:
             os.system(f"python ~/bigvision-palivla/scripts/inference_server.py\
