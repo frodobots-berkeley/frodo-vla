@@ -8,7 +8,7 @@ import random
 import glob
 import cv2
 policys = {"cf_filtered" : ("pleasant-hill-251", 60000),
-           "cf_obs": ("restful-resonance-252", 60000),
+           "cf_obs": ("restful-resonance-255", 60000),
            "obs_only" : ("young-fog-250", 60000),
            "all" : ("glowing-dust-253", 60000),}
 NUM_TRIALS = 5
@@ -52,7 +52,6 @@ def main(args):
     while not stop:
         eval_trial_info = eval_combos.pop()
         prompt = eval_trial_info[0]
-        print(prompt)
         policy = policys[eval_trial_info[1]]
         trial_num = eval_trial_info[2]
         try:
