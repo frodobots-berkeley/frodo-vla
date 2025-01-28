@@ -1,1 +1,1 @@
-{"prompt": "Turn left", "policy": ["pleasant-hill-251", 60000], "trial_num": 2, "prompt_eval": "Go forward", "policy_type": "cf_filtered"}
+{"prompt": "Turn left", "policy": ["pleasant-hill-251", 60000], "trial_num": 2, "prompt_eval": "Turn left", "policy_type": "cf_filtered"}
