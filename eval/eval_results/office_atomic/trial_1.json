@@ -1,0 +1,1 @@
+{"prompt": "Stop", "policy": ["young-fog-250", 60000], "trial_num": 4, "prompt_eval": "Go forward", "policy_type": "obs_only"}
