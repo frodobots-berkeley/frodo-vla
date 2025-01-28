@@ -903,11 +903,9 @@ def gnm_dataset_transform(trajectory: Dict[str, Any], action_horizon=1) -> Dict[
     smooth_pos = tf.where(
         tf.abs(curr_pos_shift) < 1e-2, tf.zeros_like(curr_pos_shift), curr_pos_shift
     )
-    non_zero_idx = tf.where(tf.reduce_any(smooth_pos != 0, axis=2))
-    breakpoint()
-    non_zero_idx = tf.math.maximum(tf.cast(3, tf.int64), non_zero_idx, axis=1)
-    curr_yaw = tf.math.atan2(curr_pos[non_zero_idx, 1], curr_pos[non_zero_idx, 0])
-
+    non_zero_idx = tf.where(tf.reduce_any(smooth_pos != 0, axis=2))[:,0]
+    non_zero_idx = tf.math.maximum(tf.cast(3, tf.int64), non_zero_idx)
+    curr_yaw = tf.math.atan2(tf.gather(curr_pos[:, :, 1], tf.reshape(non_zero_idx, [-1,1])) - curr_pos[:, 0, 1], tf.gather(curr_pos[:, :, 0], tf.reshape(non_zero_idx, [-1,1])) - curr_pos[:, 0, 0])
 
     #  Get yaw for each trajectory
     # delta = trajectory["observation"]["state"][1:, :2] - trajectory["observation"]["state"][:-1, :2]
