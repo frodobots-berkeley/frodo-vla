@@ -899,7 +899,7 @@ def gnm_dataset_transform(trajectory: Dict[str, Any], action_horizon=1) -> Dict[
     # delta_pos = curr_pos[:, :, 1] - curr_pos[:, , 0]
     deltas = trajectory["observation"]["state"][1:, :2] - trajectory["observation"]["state"][:-1, :2]
     curr_yaw = tf.atan2(deltas[:, 1], deltas[:, 0])
-    curr_yaw = tf.concat((0.0, curr_yaw), axis=0)
+    curr_yaw = tf.concat((tf.convert_to_tensor([[0.0]]), curr_yaw), axis=0)
     curr_yaw_rotmat = tf.convert_to_tensor(
         [
             [tf.cos(curr_yaw), -tf.sin(curr_yaw)],
