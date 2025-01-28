@@ -5,4 +5,4 @@ prompts:
  - "Turn left"
  - "Stop"
  - "Go forward"
- - ""
+ - "random"

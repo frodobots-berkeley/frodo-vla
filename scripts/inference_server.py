@@ -83,6 +83,8 @@ def gen_action():
         config.resume_checkpoint_step = flags.FLAGS.resume_checkpoint_step
 
         input_prompt = flags.FLAGS.prompt
+        if input_prompt == "random":
+            input_prompt = ""
 
         if flags.FLAGS.platform == "tpu":
             jax.distributed.initialize()
