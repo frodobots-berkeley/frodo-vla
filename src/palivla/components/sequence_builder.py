@@ -27,6 +27,8 @@ class SequenceBuilder:
             return cloudpickle.load(f)
 
     def prepare_prompt(self, language_instruction): 
+        if isinstance(language_instruction, str):
+            language_instruction = [language_instruction]
         language_instructions = np.array([l.decode("utf-8") for l in language_instruction])
         language_instructions = language_instructions[language_instructions != ""]
         if language_instructions.shape[0] != 0:
