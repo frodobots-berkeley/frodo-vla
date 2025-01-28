@@ -5,5 +5,5 @@ prompts:
  - "Turn left"
  - "Stop"
  - "Go forward"
- - null
+ - ""
   

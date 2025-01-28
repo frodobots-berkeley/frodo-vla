@@ -79,10 +79,10 @@ def gen_action():
         config = flags.FLAGS.config
 
         # Overwrite the config with the one from input
-        config.resume_checkpoint_dir = flags.FLAGS.resume_checkpoint_dir
+        config.resume_checkpoint_dir = f"gs://vlm-guidance-logs/{flags.FLAGS.resume_checkpoint_dir}"
         config.resume_checkpoint_step = flags.FLAGS.resume_checkpoint_step
 
-        prompt = flags.FLAGS.prompt
+        input_prompt = flags.FLAGS.prompt
 
         if flags.FLAGS.platform == "tpu":
             jax.distributed.initialize()
@@ -98,7 +98,12 @@ def gen_action():
     data = request.get_json()
     obs_data = base64.b64decode(data['obs'])
     obs = Image.open(BytesIO(obs_data))
-    # prompt = data['prompt']
+    api_prompt = data['prompt']
+
+    if api_prompt != "":
+        prompt = api_prompt
+    else:
+        prompt = input_prompt
 
     # Run inference
     start_time = time.time()
