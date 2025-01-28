@@ -57,7 +57,7 @@ def main(args):
         try:
             os.system(f"python ~/bigvision-palivla/scripts/inference_server.py\
                 --config ~/bigvision-palivla/configs/nav_config_inference.py\
-                --resume_checkpoint_dir gs://vlm-guidance-logs/{policy[0]}\
+                --resume_checkpoint_dir {policy[0]}\
                 --resume_checkpoint_step {policy[1]}\
                 --prompt {prompt}")
         except KeyboardInterrupt:
