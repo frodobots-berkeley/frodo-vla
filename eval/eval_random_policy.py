@@ -7,10 +7,10 @@ import argparse
 import random
 import glob
 import cv2
-policys = {"cf_filtered" : ("pleasant-hill-251", 60000),
-           "cf_obs": ("restful-resonance-255", 60000),
-           "obs_only" : ("young-fog-250", 60000),
-           "all" : ("glowing-dust-253", 60000),}
+policys = {"cf_filtered" : ("pleasant-hill-251", 80000),
+           "cf_obs": ("restful-resonance-255", 80000),
+           "obs_only" : ("young-fog-250", 80000),
+           "all" : ("glowing-dust-253", 70000),}
 NUM_TRIALS = 3
 
 
