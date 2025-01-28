@@ -903,18 +903,17 @@ def gnm_dataset_transform(trajectory: Dict[str, Any], action_horizon=1) -> Dict[
     smooth_pos = tf.where(
         tf.abs(curr_pos_shift) < 1e-2, tf.zeros_like(curr_pos_shift), curr_pos_shift
     )
-    breakpoint()
+
     non_zero_mask = tf.reduce_any(smooth_pos != 0, axis=2)
     first_non_zero_index = tf.argmax(tf.cast(non_zero_mask, tf.int32), axis=1)
     first_non_zero_index = tf.math.maximum(tf.cast(3, tf.int64), first_non_zero_index)
     first_values = curr_pos[:, 0, :]
 
-    batch_indices = tf.range(tf.shape(smooth_pos)[0])
+    batch_indices = tf.range(tf.shape(smooth_pos)[0], dtype=tf.int64)
     gather_indices = tf.stack([batch_indices, first_non_zero_index], axis=1)
-    first_non_zero_values = tf.gather_nd(x, gather_indices)
+    first_non_zero_values = tf.gather_nd(smooth_pos, gather_indices)
 
     curr_yaw = tf.math.atan2(first_non_zero_values[:, 1] - first_values[:,1], first_non_zero_values[:, 0] - first_values[:,0])
-    breakpoint()
     #  Get yaw for each trajectory
     # delta = trajectory["observation"]["state"][1:, :2] - trajectory["observation"]["state"][:-1, :2]
     # yaw = tf.math.atan2(delta[:, 1], delta[:, 0])
@@ -927,7 +926,7 @@ def gnm_dataset_transform(trajectory: Dict[str, Any], action_horizon=1) -> Dict[
         ]
     )
     curr_yaw_rotmat = tf.reshape(curr_yaw_rotmat, [1, 2, 2, -1])
-    curr_yaw_rotmat = tf.transpose(curr_yaw_rotmat, [3, 0, 2, 1])
+    curr_yaw_rotmat = tf.transpose(curr_yaw_rotmat, [3, 0, 1, 2])
     # curr_yaw_rotmat = curr_yaw_rotmat[:tf.shape(global_waypoints)[0], :, :, :]
     
     global_waypoints -= curr_pos
