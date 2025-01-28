@@ -27,8 +27,6 @@ class SequenceBuilder:
             return cloudpickle.load(f)
 
     def prepare_prompt(self, language_instruction): 
-        print(language_instruction)
-        breakpoint()
         if isinstance(language_instruction, str):
             language_instruction = [language_instruction]
         language_instructions = np.array([l.decode("utf-8") for l in language_instruction])
@@ -37,7 +35,7 @@ class SequenceBuilder:
             lang = np.random.choice(language_instructions)
             return "<bos>" + str(lang)
         else:
-            return "<bos>" + str("Explore the environment")
+            return "<bos>" + str("")
 
     def prepare_gen(self, action_tokens):
         return "".join([f"<act{i}>" for i in action_tokens]) + "<eos>"

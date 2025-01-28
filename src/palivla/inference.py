@@ -214,7 +214,7 @@ def run_inference(model, prompt, image, config):
     image = np.expand_dims(np.array(image), 0)
 
     batch = {"task" : 
-                {"language_instruction" : np.array([prompt.encode()]), 
+                {"language_instruction" : np.array([bytes(prompt, "uft-8")]), 
                 "pad_mask_dict": {"language_instruction": np.array([1])}},
             "observation": 
                 {"image_primary": image, 
