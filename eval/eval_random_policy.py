@@ -64,7 +64,7 @@ def main(args):
         # Give the eval 
 
         prompts_print = "\n".join(prompts[:-1])
-        prompt_eval = input(f"Which prompt was the policy following? ({prompts_print})")
+        prompt_eval = input(f"Which prompt was the policy following?\n{prompts_print}\n")
 
         # Save the eval info
         eval_results = {
@@ -74,8 +74,8 @@ def main(args):
             "prompt_eval": prompt_eval
         }
 
-        with open(f"eval_results/{env_name}/{curr_trial}.json", "w") as f:
-            json.dump(eval_results)
+        with open(f"eval_results/{env_name}/trial_{curr_trial}.json", "w") as f:
+            json.dump(eval_results, f)
         curr_trial += 1
         stop_input = input("Stop? (y/n)")
         if stop_input == "y":
