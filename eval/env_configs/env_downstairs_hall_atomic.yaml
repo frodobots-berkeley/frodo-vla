@@ -1,0 +1,8 @@
+env_name: downstairs_hall_atomic
+
+prompts: 
+ - "Turn right"
+ - "Turn left"
+ - "Stop"
+ - "Go forward"
+ - ""

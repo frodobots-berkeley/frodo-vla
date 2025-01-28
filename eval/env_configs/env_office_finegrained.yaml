@@ -1,0 +1,7 @@
+env_name: office_finegrained
+prompts: 
+ - "Turn right"
+ - "Turn left"
+ - "Stop"
+ - "Go forward"
+ - ""

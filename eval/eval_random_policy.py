@@ -7,7 +7,10 @@ import argparse
 import random
 import glob
 import cv2
-policys = {"orig_only" : ("pleasant-hill-251", 40000)}
+policys = {"cf_filtered" : ("pleasant-hill-251", 60000)
+           "cf_obs": ("restful-resonance-252", 60000),
+           "obs_only" : ("young-fog-250", 60000),
+           "all" : ("glowing-dust-253", 60000),}
 NUM_TRIALS = 5
 
 
@@ -72,6 +75,7 @@ def main(args):
             "policy": policy,
             "trial_num": trial_num,
             "prompt_eval": prompt_eval
+            "policy_type": eval_trial_info[1]
         }
 
         with open(f"eval_results/{env_name}/trial_{curr_trial}.json", "w") as f:

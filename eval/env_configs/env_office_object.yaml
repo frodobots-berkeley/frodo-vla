@@ -1,0 +1,7 @@
+env_name: office_object
+
+prompts: 
+ - "Move to the table with chairs"
+ - "Move to the blue stool"
+ - "Move to the white cabinet"
+ - ""
