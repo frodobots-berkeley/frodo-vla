@@ -1,0 +1,1 @@
+{"prompt": "Turn left", "policy": ["restful-resonance-255", 60000], "trial_num": 1, "prompt_eval": "Go forward", "policy_type": "cf_obs"}
