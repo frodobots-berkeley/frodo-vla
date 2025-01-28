@@ -52,6 +52,7 @@ def main(args):
     while not stop:
         eval_trial_info = eval_combos.pop()
         prompt = eval_trial_info[0]
+        print(prompt)
         policy = policys[eval_trial_info[1]]
         trial_num = eval_trial_info[2]
         try:
