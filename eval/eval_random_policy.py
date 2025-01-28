@@ -74,7 +74,7 @@ def main(args):
             "prompt": prompt,
             "policy": policy,
             "trial_num": trial_num,
-            "prompt_eval": prompt_eval
+            "prompt_eval": prompt_eval,
             "policy_type": eval_trial_info[1]
         }
 
