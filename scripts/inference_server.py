@@ -67,10 +67,10 @@ run_with_ngrok(app)
 config = None
 model = None
 avg_time = []
-
+input_prompt = ""
 @app.route('/gen_action', methods=["POST"])
 def gen_action():
-    global config, model, run
+    global config, model, run, input_prompt
 
     # If first time getting inference, load the model
     if model is None: 
@@ -104,8 +104,6 @@ def gen_action():
         prompt = api_prompt
     else:
         prompt = input_prompt
-
-    print(f"Prompt: {prompt}")
 
     # Run inference
     start_time = time.time()
