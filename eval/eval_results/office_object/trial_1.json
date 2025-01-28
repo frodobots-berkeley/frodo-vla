@@ -1,0 +1,1 @@
+{"prompt": "Move to the table with chairs", "policy": ["pleasant-hill-251", 60000], "trial_num": 0, "prompt_eval": "Move to the blue trash can", "policy_type": "cf_filtered"}
