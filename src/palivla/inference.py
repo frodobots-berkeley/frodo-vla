@@ -210,16 +210,15 @@ def run_inference(model, prompt, image, config):
 
     os.makedirs("~/temp_viz", exist_ok=True)
     action_horizon = config["dataset_kwargs"]["traj_transform_kwargs"]["action_horizon"]
-    # image = np.expand_dims(np.array(image), 0).repeat(4, axis=0)
-    image = np.expand_dims(np.array(image), 0)
+    image = np.expand_dims(np.array(image), 0).repeat(4, axis=0)
 
     batch = {"task" : 
-                {"language_instruction" : np.array([bytes(prompt, "uft-8")]), 
-                "pad_mask_dict": {"language_instruction": np.array([1])}},
+                {"language_instruction" : np.array([prompt.encode()]*4), 
+                "pad_mask_dict": {"language_instruction": np.array([1]*4)}},
             "observation": 
                 {"image_primary": image, 
-                "pad_mask_dict": {"image_primary": np.array([1], dtype=bool)}},
-            "action": np.random.randn(1, 1, 2).astype(np.float64),    
+                "pad_mask_dict": {"image_primary": np.array([1]*4, dtype=bool)}},
+            "action": np.random.randn(4, 1, 2).astype(np.float64),    
             }
     # Predict the output 
     predicted_actions, actions_mask, tokens = model.predict(batch, action_dim=2, action_horizon=action_horizon, return_tokens=True, include_action_tokens=False)
