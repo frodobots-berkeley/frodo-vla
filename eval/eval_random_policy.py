@@ -7,9 +7,9 @@ import argparse
 import random
 import glob
 import cv2
-policys = {"cf_filtered" : ("pleasant-hill-251", 50000),
-           "cf_obs": ("restful-resonance-255", 50000),
-           "obs_only" : ("young-fog-250", 50000),
+policys = {"cf_filtered" : ("pleasant-hill-251", 40000),
+           "cf_obs": ("restful-resonance-255", 80000),
+           "obs_only" : ("young-fog-250", 80000),
            "all" : ("glowing-dust-253", 50000),}
 NUM_TRIALS = 3
 
