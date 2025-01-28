@@ -898,10 +898,21 @@ def gnm_dataset_transform(trajectory: Dict[str, Any], action_horizon=1) -> Dict[
         :, :, :2
     ]  # delta waypoints
 
+    # smooth and find yaw
+    curr_pos_shift = curr_pos - curr_pos[:, 0:1, :]
+    smooth_pos = tf.where(
+        tf.abs(curr_pos_shift) < 1e-2, tf.zeros_like(curr_pos_shift), curr_pos_shift
+    )
+    non_zero_idx = tf.where(tf.reduce_any(smooth_pos != 0, axis=2))
+    breakpoint()
+    non_zero_idx = tf.math.maximum(tf.cast(3, tf.int64), non_zero_idx, axis=1)
+    curr_yaw = tf.math.atan2(curr_pos[non_zero_idx, 1], curr_pos[non_zero_idx, 0])
+
+
     #  Get yaw for each trajectory
-    delta = trajectory["observation"]["state"][1:, :2] - trajectory["observation"]["state"][:-1, :2]
-    yaw = tf.math.atan2(delta[:, 1], delta[:, 0])
-    curr_yaw = tf.pad(yaw, [[0, 1]], constant_values=yaw[-1])
+    # delta = trajectory["observation"]["state"][1:, :2] - trajectory["observation"]["state"][:-1, :2]
+    # yaw = tf.math.atan2(delta[:, 1], delta[:, 0])
+    # curr_yaw = tf.pad(yaw, [[0, 1]], constant_values=yaw[-1])
     # curr_yaw = trajectory["observation"]["yaw"]
     curr_yaw_rotmat = tf.convert_to_tensor(
         [
@@ -911,7 +922,7 @@ def gnm_dataset_transform(trajectory: Dict[str, Any], action_horizon=1) -> Dict[
     )
     curr_yaw_rotmat = tf.reshape(curr_yaw_rotmat, [1, 2, 2, -1])
     curr_yaw_rotmat = tf.transpose(curr_yaw_rotmat, [3, 0, 2, 1])
-    curr_yaw_rotmat = curr_yaw_rotmat[:tf.shape(global_waypoints)[0], :, :, :]
+    # curr_yaw_rotmat = curr_yaw_rotmat[:tf.shape(global_waypoints)[0], :, :, :]
     
     global_waypoints -= curr_pos
     global_waypoints = tf.expand_dims(global_waypoints, 2)
