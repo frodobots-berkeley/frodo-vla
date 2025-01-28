@@ -17,7 +17,7 @@ NUM_TRIALS = 3
 def check_done_evals(env_name):
     done_evals = glob.glob(f"eval_results/{env_name}/*.json")
     done_evals = [json.load(open(eval_file, "r")) for eval_file in done_evals]
-    done_eval_infos = [(eval_info["prompt"], eval_info["policy"], eval_info["trial_num"]) for eval_info in done_evals]
+    done_eval_infos = [(eval_info["prompt"], eval_info["policy_type"], eval_info["trial_num"]) for eval_info in done_evals]
 
     return done_eval_infos
 
