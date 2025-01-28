@@ -11,7 +11,7 @@ policys = {"cf_filtered" : ("pleasant-hill-251", 60000),
            "cf_obs": ("restful-resonance-255", 60000),
            "obs_only" : ("young-fog-250", 60000),
            "all" : ("glowing-dust-253", 60000),}
-NUM_TRIALS = 5
+NUM_TRIALS = 3
 
 
 def check_done_evals(env_name):
