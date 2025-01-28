@@ -868,6 +868,7 @@ METRIC_WAYPOINT_SPACING = {
 def gnm_dataset_transform(trajectory: Dict[str, Any], action_horizon=1) -> Dict[str, Any]:
     traj_len = tf.shape(trajectory["action"])[0]
 
+    # rotate trajectory to align with x-axis
     # positions = trajectory["observation"]["state"][:, :2]
     # positions_shifted = positions - positions[0]
     # smooth_pos = tf.where(tf.abs(positions_shifted) < 1e-2, tf.zeros_like(positions_shifted), positions_shifted)
@@ -875,8 +876,10 @@ def gnm_dataset_transform(trajectory: Dict[str, Any], action_horizon=1) -> Dict[
     # non_zero_idx = tf.math.maximum(tf.cast(3, tf.int64), non_zero_idx)
     # init_yaw = tf.math.atan2(positions[non_zero_idx, 1], positions[non_zero_idx, 0])
     # rot_mat = tf.convert_to_tensor([[tf.math.cos(init_yaw), -tf.math.sin(init_yaw)], [tf.math.sin(init_yaw), tf.math.cos(init_yaw)]])
+
     # positions = tf.linalg.matmul(tf.reshape(positions,[-1, 1, 2]) , tf.reshape(rot_mat, [-1, 1, 2, 2]))
     # trajectory["observation"]["positions"] = positions
+
     # Pad trajectory states
     padding = tf.tile(trajectory["observation"]["state"][-1:, :], [action_horizon, 1])
     trajectory["observation"]["state"] = tf.concat(
@@ -898,16 +901,15 @@ def gnm_dataset_transform(trajectory: Dict[str, Any], action_horizon=1) -> Dict[
     #  Get yaw for each trajectory
     delta = trajectory["observation"]["state"][1:, :2] - trajectory["observation"]["state"][:-1, :2]
     yaw = tf.math.atan2(delta[:, 1], delta[:, 0])
-    curr_yaw = tf.pad(yaw, [[1, 0]], constant_values=0.0)
+    curr_yaw = tf.pad(yaw, [[0, 1]], constant_values=0.0)
     curr_yaw_rotmat = tf.convert_to_tensor(
         [
             [tf.cos(curr_yaw), -tf.sin(curr_yaw)],
             [tf.sin(curr_yaw), tf.cos(curr_yaw)],
         ]
     )
-    breakpoint()
-
-    curr_yaw_rotmat = tf.transpose(curr_yaw_rotmat, [2, 3, 1, 0])
+    curr_yaw_rotmat = tf.reshape(curr_yaw_rotmat, [1, 2, 2, -1])
+    curr_yaw_rotmat = tf.transpose(curr_yaw_rotmat, [3, 0, 1, 2])
 
     global_waypoints -= curr_pos
 
