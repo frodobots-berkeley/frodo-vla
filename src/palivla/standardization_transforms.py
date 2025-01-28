@@ -891,15 +891,14 @@ def gnm_dataset_transform(trajectory: Dict[str, Any], action_horizon=1) -> Dict[
     curr_pos_indices = tf.reshape(tf.range(traj_len), [-1, 1]) + tf.range(
         0, action_horizon
     )
-
     curr_pos = tf.gather(trajectory["observation"]["state"], curr_pos_indices)[
         :, :, :2
     ]  # delta waypoints
-    # delta_pos = tf.gather(trajectory["observation"]["state"], curr_pos_indices + 1)[:,:2] - tf.
-    # delta_pos = curr_pos[:, :, 1] - curr_pos[:, , 0]
-    deltas = trajectory["observation"]["state"][1:, :2] - trajectory["observation"]["state"][:-1, :2]
-    curr_yaw = tf.atan2(deltas[:, 1], deltas[:, 0])
-    curr_yaw = tf.concat((tf.convert_to_tensor([[0.0]], dtype=tf.float64), curr_yaw), axis=0)
+
+    #  Get yaw for each trajectory
+    delta = trajectory["observation"]["state"][1:, :2] - trajectory["observation"]["state"][:-1, :2]
+    yaw = tf.math.atan2(delta[:, 1], delta[:, 0])
+    curr_yaw = tf.pad(yaw, [[1, 0]], constant_values=0.0)
     curr_yaw_rotmat = tf.convert_to_tensor(
         [
             [tf.cos(curr_yaw), -tf.sin(curr_yaw)],
