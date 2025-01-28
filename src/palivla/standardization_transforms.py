@@ -945,6 +945,7 @@ def gnm_dataset_transform(trajectory: Dict[str, Any], action_horizon=1) -> Dict[
             trajectory["traj_metadata"]["episode_metadata"]["file_path"][0],
             f".*{dataset_name}.*",
         ):
+            print(f"Using normalization factor {value} for dataset {dataset_name}")
             normalization_factor = value
     normalization_factor = tf.cast(normalization_factor, tf.float64)
     actions = actions / normalization_factor
