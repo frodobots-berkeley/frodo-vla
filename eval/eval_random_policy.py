@@ -8,7 +8,7 @@ import random
 import glob
 import cv2
 policys = {
-           "cf_filtered" : ("pleasant-hill-251", 70000),
+           "cf_filtered" : ("pleasant-hill-251", 60000),
         #    "cf_obs": ("restful-resonance-255", 80000),
         #    "obs_only" : ("young-fog-250", 80000),
         #    "all" : ("glowing-dust-253", 70000),
