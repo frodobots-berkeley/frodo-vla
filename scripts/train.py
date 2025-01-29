@@ -203,9 +203,7 @@ def main(_):
             actions = actions - actions[:, :, 0:1, :]
             yaws = np.arctan2(actions[:,:,1:2,1:2], actions[:,:,1:2,0:1])
             rot_mat = np.stack([np.cos(yaws), -np.sin(yaws), np.sin(yaws), np.cos(yaws)], axis=-1).reshape(-1, 2, 2)
-            breakpoint()
-            batch["action"] = np.einsum("bij,bxkj->bxki", rot_mat, batch["action"])
-            breakpoint()
+            batch["action"] = (np.expand_dims(np.linalg.inv(rot_mat), 1)@batch["action"].transpose(0,1,3,2)).transpose(0,1,3,2)
             info = model.train_step(batch)
  
             info = jax.device_get(info)
