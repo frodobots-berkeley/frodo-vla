@@ -25,6 +25,7 @@ source .venv/bin/activate
 uv venv --python=python3.11
 uv sync --extra tpu  
 
+# For inference
 uv pip install opencv-python
 sudo apt-get install libgl1 -y
 uv pip install Flask
@@ -32,7 +33,7 @@ uv pip install flask-ngrok
 uv pip install ngrok
 uv pip install google-cloud-logging
 uv pip install google-cloud-storage
-sudo cp /tmp/ngrok/ngrok /usr/bin
+sudo cp /tmp/ngrok/ngrok /usr/local/bin
 # Modify the flask_ngrok file to use path /usr/bin
 
 # for inference - need to move ngrok from /tmp/tmp/ngrok to /usr
