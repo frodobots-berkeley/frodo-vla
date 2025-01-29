@@ -929,16 +929,22 @@ def gnm_dataset_transform(trajectory: Dict[str, Any], action_horizon=1) -> Dict[
     curr_yaw_rotmat = tf.transpose(curr_yaw_rotmat, [3, 0, 1, 2])
     # curr_yaw_rotmat = curr_yaw_rotmat[:tf.shape(global_waypoints)[0], :, :, :]
     
-    
     global_waypoints = tf.expand_dims(global_waypoints, 2)
-    actions = tf.squeeze(
+    global_waypoints_r = tf.squeeze(
         tf.linalg.matmul(
             global_waypoints,
             curr_yaw_rotmat,
         ),
         2,
     )
-    global_waypoints -= curr_pos
+    curr_pos_r = tf.squeeze(
+        tf.linalg.matmul(
+            tf.expand_dims(curr_pos, 2),
+            curr_yaw_rotmat,
+        ),
+        2,
+    )
+    actions = global_waypoints_r - curr_pos_r
     # actions = tf.squeeze(global_waypoints, 2)
     normalization_factor = 1.0
     for dataset_name, value in METRIC_WAYPOINT_SPACING.items():
