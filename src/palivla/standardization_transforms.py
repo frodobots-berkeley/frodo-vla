@@ -913,7 +913,7 @@ def gnm_dataset_transform(trajectory: Dict[str, Any], action_horizon=1) -> Dict[
     gather_indices = tf.stack([batch_indices, first_non_zero_index], axis=1)
     first_non_zero_values = tf.gather_nd(smooth_pos, gather_indices)
 
-    curr_yaw = -tf.math.atan2(first_non_zero_values[:, 1] - first_values[:,1], first_non_zero_values[:, 0] - first_values[:,0])
+    curr_yaw = tf.math.atan2(first_non_zero_values[:, 1] - first_values[:,1], first_non_zero_values[:, 0] - first_values[:,0])
     #  Get yaw for each trajectory
     # delta = trajectory["observation"]["state"][1:, :2] - trajectory["observation"]["state"][:-1, :2]
     # yaw = tf.math.atan2(delta[:, 1], delta[:, 0])
