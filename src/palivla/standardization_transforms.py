@@ -933,8 +933,8 @@ def gnm_dataset_transform(trajectory: Dict[str, Any], action_horizon=1) -> Dict[
     global_waypoints = tf.expand_dims(global_waypoints, 2)
     actions = tf.squeeze(
         tf.linalg.matmul(
-            global_waypoints,
             curr_yaw_rotmat,
+            global_waypoints,
         ),
         2,
     )
