@@ -936,7 +936,7 @@ def gnm_dataset_transform(trajectory: Dict[str, Any], action_horizon=1) -> Dict[
             curr_yaw_rotmat,
             global_waypoints,
         ),
-        2,
+        3,
     )
     # actions = tf.squeeze(global_waypoints, 2)
     normalization_factor = 1.0
