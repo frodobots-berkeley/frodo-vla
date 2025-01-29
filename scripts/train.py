@@ -199,11 +199,11 @@ def main(_):
                 batch = next(train_it)
 
             # Rotate each gt actions in the batch by the initial yaw of the chunk 
-            actions = np.cumsum(batch["action"], axis=2)
-            actions = actions - actions[:, :, 0:1, :]
-            yaws = np.arctan2(actions[:,:,1:2,1:2], actions[:,:,1:2,0:1])
-            rot_mat = np.stack([np.cos(yaws), -np.sin(yaws), np.sin(yaws), np.cos(yaws)], axis=-1).reshape(-1, 2, 2)
-            batch["action"] = (np.expand_dims(np.linalg.inv(rot_mat), 1)@batch["action"].transpose(0,1,3,2)).transpose(0,1,3,2)
+            # actions = np.cumsum(batch["action"], axis=2)
+            # actions = actions - actions[:, :, 0:1, :]
+            # yaws = np.arctan2(actions[:,:,1:2,1:2], actions[:,:,1:2,0:1])
+            # rot_mat = np.stack([np.cos(yaws), -np.sin(yaws), np.sin(yaws), np.cos(yaws)], axis=-1).reshape(-1, 2, 2)
+            # batch["action"] = (np.expand_dims(np.linalg.inv(rot_mat), 1)@batch["action"].transpose(0,1,3,2)).transpose(0,1,3,2)
             info = model.train_step(batch)
  
             info = jax.device_get(info)
