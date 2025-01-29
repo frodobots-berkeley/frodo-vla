@@ -107,6 +107,8 @@ def gen_action():
     else:
         prompt = input_prompt
 
+    print('Prompt:', prompt)
+
     # Run inference
     start_time = time.time()
     action, viz = run_inference(model, prompt, obs, config)
