@@ -863,7 +863,7 @@ METRIC_WAYPOINT_SPACING = {
     "sacson": 0.255,
     "bww": 0.255,
     "soda": 0.255,
-    "cory1": 0.255
+    "cory1": 0.255,
     "scand": 0.38,
     "spot": 0.38,
     "jackal": 0.38,
