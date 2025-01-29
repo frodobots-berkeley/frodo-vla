@@ -857,12 +857,23 @@ def cmu_stretch_dataset_transform(trajectory: Dict[str, Any]) -> Dict[str, Any]:
     return trajectory
 METRIC_WAYPOINT_SPACING = {
     "cory_hall": 0.06,
+    "cory5": 0.06
     "go_stanford": 0.12,
     "recon": 0.25,
     "sacson": 0.255,
+    "bww": 0.255,
+    "soda": 0.255,
+    "cory1": 0.255
     "scand": 0.38,
+    "spot": 0.38,
+    "jackal": 0.38,
     "seattle": 0.35,
+    "dirt": 0.35,
+    "tartan": 0.72,
     "tartan_drive": 0.72,
+    "jackal_2019": 0.25, 
+    "jackal_2020": 0.25,
+
 }
 
 def gnm_dataset_transform(trajectory: Dict[str, Any], action_horizon=1) -> Dict[str, Any]:
@@ -920,27 +931,40 @@ def gnm_dataset_transform(trajectory: Dict[str, Any], action_horizon=1) -> Dict[
     # yaw = tf.math.atan2(delta[:, 1], delta[:, 0])
     # curr_yaw = tf.pad(yaw, [[0, 1]], constant_values=yaw[-1])
     # curr_yaw = trajectory["observation"]["yaw"]
-    curr_yaw_rotmat = tf.convert_to_tensor(
-        [
-            [tf.cos(curr_yaw), -tf.sin(curr_yaw)],
-            [tf.sin(curr_yaw), tf.cos(curr_yaw)],
-        ]
-    )
-    curr_yaw_rotmat = tf.reshape(curr_yaw_rotmat, [1, 2, 2, -1])
-    curr_yaw_rotmat = tf.transpose(curr_yaw_rotmat, [3, 0, 1, 2])
-    curr_yaw_rotmat = curr_yaw_rotmat[:tf.shape(global_waypoints)[0], :, :, :]
+    # curr_yaw_rotmat = tf.convert_to_tensor(
+    #     [
+    #         [tf.cos(curr_yaw), -tf.sin(curr_yaw)],
+    #         [tf.sin(curr_yaw), tf.cos(curr_yaw)],
+    #     ]
+    # )
+    # curr_yaw_rotmat = tf.reshape(curr_yaw_rotmat, [1, 2, 2, -1])
+    # curr_yaw_rotmat = tf.transpose(curr_yaw_rotmat, [3, 0, 1, 2])
+    # curr_yaw_rotmat = curr_yaw_rotmat[:tf.shape(global_waypoints)[0], :, :, :]
     
     global_waypoints -= curr_pos
     global_waypoints = tf.expand_dims(global_waypoints, 2)
-    actions = tf.squeeze(tf.linalg.matmul(global_waypoints, curr_yaw_rotmat), 2)
+    actions = tf.squeeze(
+        tf.linalg.matmul(
+            global_waypoints,
+            tf.expand_dims(trajectory["observation"]["yaw_rotmat"][:, :2, :2], 1),
+        ),
+        2,
+    )
     # actions = tf.squeeze(global_waypoints, 2)
     normalization_factor = 1.0
+    match_found = False
     for dataset_name, value in METRIC_WAYPOINT_SPACING.items():
         if tf.strings.regex_full_match(
             trajectory["traj_metadata"]["episode_metadata"]["file_path"][0],
             f".*{dataset_name}.*",
         ):
             normalization_factor = value
+            match_found = True
+    if not match_found:
+        print(trajectory["traj_metadata"]["episode_metadata"]["file_path"][0])
+        # Likely from go_stanford
+        normalization_factor = 0.12
+
     normalization_factor = tf.cast(normalization_factor, tf.float64)
     actions = actions / normalization_factor
 
