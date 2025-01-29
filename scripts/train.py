@@ -207,7 +207,7 @@ def main(_):
             batch["action"] = np.einsum("bij,bxkj->bxki", rot_mat, batch["action"])
             breakpoint()
             info = model.train_step(batch)
-
+ 
             info = jax.device_get(info)
             wandb_logs.append(info)
             pbar.set_postfix(
