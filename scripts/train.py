@@ -199,12 +199,12 @@ def main(_):
                 batch = next(train_it)
 
             # Rotate each gt actions in the batch by the initial yaw of the chunk 
-            actions = np.cumsum(batch["actions"], axis=2)
+            actions = np.cumsum(batch["action"], axis=2)
             actions = actions - actions[:, :, 0:1, :]
             yaws = np.arctan2(actions[:,:,1:2], actions[:,:,0:1])
             breakpoint()
             rot_mat = np.stack([np.cos(yaws), -np.sin(yaws), np.sin(yaws), np.cos(yaws)], axis=-1).reshape(-1, 2, 2)
-            batch["actions"] = np.einsum("bij,bkj->bki", rot_mat, batch["actions"])
+            batch["action"] = np.einsum("bij,bkj->bki", rot_mat, batch["action"])
             breakpoint()
             info = model.train_step(batch)
 
