@@ -10,8 +10,8 @@ import cv2
 policys = {
         #    "cf_filtered" : ("pleasant-hill-251", 90000),
         #    "cf_obs": ("restful-resonance-255", 80000),
-        #    "obs_only" : ("young-fog-250", 70000),
-           "all" : ("glowing-dust-253", 80000),
+           "obs_only" : ("young-fog-250", 90000),
+        #    "all" : ("glowing-dust-253", 80000),
            }
 NUM_TRIALS = 3
 
