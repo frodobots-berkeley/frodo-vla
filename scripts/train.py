@@ -201,7 +201,6 @@ def main(_):
             # Rotate each gt actions in the batch by the initial yaw of the chunk 
             
             info = model.train_step(batch)
-            breakpoint()
 
             info = jax.device_get(info)
             wandb_logs.append(info)
