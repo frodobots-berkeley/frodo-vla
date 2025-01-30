@@ -8,9 +8,9 @@ import random
 import glob
 import cv2
 policys = {
-        #    "cf_filtered" : ("pleasant-hill-251", 90000),
+           "cf_filtered" : ("major-morning-286", 20000),
         #    "cf_obs": ("restful-resonance-255", 80000),
-           "obs_only" : ("young-fog-250", 90000),
+        #    "obs_only" : ("young-fog-250", 90000),
         #    "all" : ("glowing-dust-253", 80000),
            }
 NUM_TRIALS = 3
