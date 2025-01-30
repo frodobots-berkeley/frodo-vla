@@ -31,8 +31,8 @@ def get_config():
                     },
                 )
             ],
-            "resume_checkpoint_dir": None,
-            "resume_checkpoint_step": None,
+            "resume_checkpoint_dir": "gs://vlm-guidance-logs/majority-morning-286",
+            "resume_checkpoint_step": 20000,
             # Overfit
             "overfit_dataset": False,
             # Training settings
