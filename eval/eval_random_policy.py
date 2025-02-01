@@ -9,10 +9,9 @@ import glob
 import cv2
 policys = {
              "cf_filtered" : ("pleasant-hill-251", 100000)
-        #    "cf_filtered" : ("major-morning-286", 20000),
-        #    "cf_obs": ("restful-resonance-255", 80000),
-        #    "obs_only" : ("young-fog-250", 90000),
-        #    "all" : ("glowing-dust-253", 80000),
+        #    "cf_obs": ("restful-resonance-255", 100000),
+        #    "obs_only" : ("young-fog-250", 100000),
+        #    "all" : ("glowing-dust-253", 100000),
            }
 NUM_TRIALS = 3
 
@@ -25,7 +24,7 @@ def check_done_evals(env_name):
     return done_eval_infos
 
 def main(args):
-
+    
     # Load env info 
     with open(args.env_info_path, "r") as f:
         env_info = yaml.safe_load(f)
