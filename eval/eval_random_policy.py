@@ -9,9 +9,9 @@ import glob
 import cv2
 policys = {
             #  "cf_filtered" : ("pleasant-hill-251", 100000)
-           "cf_obs": ("restful-resonance-255", 100000),
+        #    "cf_obs": ("restful-resonance-255", 100000),
         #    "obs_only" : ("young-fog-250", 90000),
-        #    "all" : ("glowing-dust-253", 100000),
+           "all" : ("glowing-dust-253", 90000),
            }
 NUM_TRIALS = 3
 
