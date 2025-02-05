@@ -25,6 +25,8 @@ DATASETS = [
 # Fix issues with dataset from TFrecords 
 def fix_dataset(traj, traj_info):
 
+    breakpoint()
+
     # Get the metadata for this traj 
     traj_name = traj["episode_metadata"]["file_path"].split("/")[-1]
     traj_base_name = traj_name.split("_start_")[0]
