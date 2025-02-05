@@ -80,7 +80,7 @@ def fix_dataset(traj, traj_info):
         new_yaw = np.concatenate([new_yaw, cf_yaw])
 
 def apply_obs_transform(fn: Callable[[dict], dict], frame: dict) -> dict:
-    frame["observation"] = dl.vmap(fn)(frame["observation"])
+    frame["observation"] = dl.vmap(fn)(frame["observation"]["image"])
     return frame
 
 def main(args):
@@ -108,6 +108,7 @@ def main(args):
             partial(
                 obs_transforms.decode_and_resize,
                 resize_size=resize_size,
+                depth_resize_size=resize_size,
             ),
         ),
         num_parallel_calls,
