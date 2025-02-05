@@ -9,6 +9,8 @@ import argparse
 import dlimp as dl
 from functools import partial
 
+import octo.octo.data.obs_transforms as obs_transforms
+from octo.octo.data.dataset import apply_obs_transform
 
 DATASETS = [
     "cory_hall",
@@ -28,7 +30,7 @@ def fix_dataset(traj, traj_info):
     breakpoint()
 
     # Get the metadata for this traj 
-    traj_name = traj["episode_metadata"]["file_path"].split("/")[-1]
+    traj_name = traj["traj_metadata"]["episode_metadata"]["file_path"].split("/")[-1]
     traj_base_name = traj_name.split("_start_")[0]
     traj_start = int(traj_name.split("_start_")[-1].split("_end_")[0])
     traj_end = int(traj_name.split("_end_")[-1].split("_")[0])
@@ -37,7 +39,7 @@ def fix_dataset(traj, traj_info):
     curr_traj_info = traj_info[traj_base_name]
 
     # Check the number of non-white images in the traj
-    images = traj["observations"]["image"]
+    images = traj["observation"]["image"]
     image_non_white = tf.reduce_any(tf.not_equal(images, 255), axis=-1)
     num_non_white = tf.reduce_sum(tf.cast(image_non_white, tf.float32))
 
@@ -46,7 +48,7 @@ def fix_dataset(traj, traj_info):
     # 2. Modify the yaw such that is closer to the original traj yaw
 
     # Check the spacing between points
-    traj_pos = traj["observations"]["position"]
+    traj_pos = traj["observation"]["position"]
     traj_pos = tf.cast(traj_pos, tf.float32)
     deltas = tf.linalg.norm(traj_pos[:-1] - traj_pos[1:], axis=-1)
     spacing = tf.reduce_mean(deltas)
@@ -94,6 +96,20 @@ def main(args):
             traj_info = pickle.load(f)
         traj_infos.update(traj_info)
 
+    # decode + resize images (and depth images)
+    dataset = dataset.frame_map(
+        partial(
+            apply_obs_transform,
+            partial(
+                obs_transforms.decode_and_resize,
+                resize_size=resize_size,
+                depth_resize_size=depth_resize_size,
+            ),
+        ),
+        num_parallel_calls,
+    )
+
+    # Fix the dataset
     dataset = dataset.traj_map(partial(fix_dataset, traj_info=traj_infos), num_parallel_calls=tf.data.AUTOTUNE)
 
 if __name__ == "__main__":
