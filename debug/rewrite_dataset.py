@@ -97,17 +97,8 @@ def main(args):
         traj_infos.update(traj_info)
 
     # decode + resize images (and depth images)
-    dataset = dataset.frame_map(
-        partial(
-            apply_obs_transform,
-            partial(
-                obs_transforms.decode_and_resize,
-                resize_size=resize_size,
-                depth_resize_size=depth_resize_size,
-            ),
-        ),
-        num_parallel_calls,
-    )
+    frame_transform_dict = {}
+    dataset = apply_frame_transforms(dataset, **frame_transform_dict, train=True)
 
     # Fix the dataset
     dataset = dataset.traj_map(partial(fix_dataset, traj_info=traj_infos), num_parallel_calls=tf.data.AUTOTUNE)
