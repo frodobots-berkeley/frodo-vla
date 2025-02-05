@@ -10,7 +10,7 @@ import dlimp as dl
 from functools import partial
 from typing import Callable, Mapping, Optional, Sequence, Tuple, Union
 
-import octo.data.obs_transforms as obs_transforms
+# import octo.data.obs_transforms as obs_transforms
 from octo.data.dataset import apply_frame_transforms
 
 DATASETS = [
@@ -144,7 +144,7 @@ def main(args):
         partial(
             apply_obs_transform,
             partial(
-                obs_transforms.decode_and_resize,
+                decode_and_resize,
                 resize_size=resize_size,
                 depth_resize_size=resize_size,
             ),
