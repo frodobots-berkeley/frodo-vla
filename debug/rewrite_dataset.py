@@ -10,7 +10,7 @@ import dlimp as dl
 from functools import partial
 
 import octo.data.obs_transforms as obs_transforms
-from octo.data.dataset import apply_obs_transform
+from octo.data.dataset import apply_frame_transforms
 
 DATASETS = [
     "cory_hall",
