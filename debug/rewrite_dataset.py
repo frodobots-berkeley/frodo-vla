@@ -78,6 +78,9 @@ def fix_dataset(traj, traj_info):
         cf_yaw = traj_yaw[cf_start:cf_end + 1]
         new_yaw = np.concatenate([new_yaw, cf_yaw])
 
+def apply_obs_transform(fn: Callable[[dict], dict], frame: dict) -> dict:
+    frame["observation"] = dl.vmap(fn)(frame["observation"])
+    return frame
 
 def main(args):
 
@@ -86,7 +89,8 @@ def main(args):
     name = args.dataset_name
     builder = tfds.builder(name, data_dir=data_dir)
     dataset = dl.DLataset.from_rlds(builder, split="all", shuffle=False)
-
+    resize_size = (128, 128)
+    num_parallel_calls = tf.data.AUTOTUNE
 
     # Load the dataset traj and yaw files
     traj_infos = {}
@@ -97,11 +101,19 @@ def main(args):
         traj_infos.update(traj_info)
 
     # decode + resize images (and depth images)
-    frame_transform_dict = {}
-    dataset = apply_frame_transforms(dataset, **frame_transform_dict, train=True)
+    dataset = dataset.frame_map(
+        partial(
+            apply_obs_transform,
+            partial(
+                obs_transforms.decode_and_resize,
+                resize_size=resize_size,
+            ),
+        ),
+        num_parallel_calls,
+    )
 
     # Fix the dataset
-    dataset = dataset.traj_map(partial(fix_dataset, traj_info=traj_infos), num_parallel_calls=tf.data.AUTOTUNE)
+    dataset = dataset.traj_map(partial(fix_dataset, traj_info=traj_infos), num_parallel_calls=num_parallel_calls)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
