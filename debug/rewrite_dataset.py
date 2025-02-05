@@ -80,7 +80,7 @@ def main(args):
     data_dir = args.data_dir
     name = args.dataset_name
     builder = tfds.builder(name, data_dir=data_dir)
-    full_dataset = dl.DLataset.from_rlds(builder, split="all", shuffle=False)
+    dataset = dl.DLataset.from_rlds(builder, split="all", shuffle=False)
 
 
     # Load the dataset traj and yaw files
