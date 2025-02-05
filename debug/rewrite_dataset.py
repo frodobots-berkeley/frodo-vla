@@ -7,6 +7,7 @@ import glob
 import pickle 
 import argparse
 import dlimp as dl
+from functools import partial
 
 
 DATASETS = [
