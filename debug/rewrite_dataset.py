@@ -92,7 +92,7 @@ def main(args):
             traj_info = pickle.load(f)
         traj_infos.update(traj_info)
 
-    dataset = dataset.traj_map(partial(fix_dataset, traj_info=traj_infos), num_parallel_calls)
+    dataset = dataset.traj_map(partial(fix_dataset, traj_info=traj_infos), num_parallel_calls=tf.data.AUTOTUNE)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
