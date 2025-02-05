@@ -9,8 +9,8 @@ import argparse
 import dlimp as dl
 from functools import partial
 
-import octo.octo.data.obs_transforms as obs_transforms
-from octo.octo.data.dataset import apply_obs_transform
+import octo.data.obs_transforms as obs_transforms
+from octo.data.dataset import apply_obs_transform
 
 DATASETS = [
     "cory_hall",
