@@ -80,7 +80,7 @@ def fix_dataset(traj, traj_info):
         new_yaw = np.concatenate([new_yaw, cf_yaw])
 
 def apply_obs_transform(fn: Callable[[dict], dict], frame: dict) -> dict:
-    frame["observation"] = dl.vmap(fn)(frame["observation"]["image"])
+    frame["observation"] = dl.vmap(fn)(frame["observation"])
     return frame
 
 def main(args):
