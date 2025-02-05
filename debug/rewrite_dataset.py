@@ -102,7 +102,7 @@ def main(args):
         traj_infos.update(traj_info)
 
     # decode + resize images (and depth images)
-    dataset = dataset.frame_map(
+    dataset = dataset.traj_map(
         partial(
             apply_obs_transform,
             partial(
