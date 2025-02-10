@@ -118,6 +118,7 @@ def decode_and_resize(
     return obs
 
 def apply_obs_transform(fn: Callable[[dict], dict], frame: dict) -> dict:
+    breakpoint()
     frame["observation"] = dl.vmap(fn)(frame["observation"])
     return frame
 
@@ -128,6 +129,7 @@ def main(args):
     name = args.dataset_name
     builder = tfds.builder(name, data_dir=data_dir)
     dataset = dl.DLataset.from_rlds(builder, split="all", shuffle=False)
+    breakpoint()
     resize_size = (128, 128)
     num_parallel_calls = tf.data.AUTOTUNE
 
