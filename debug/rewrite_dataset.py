@@ -119,7 +119,7 @@ def decode_and_resize(
 
 def apply_obs_transform(fn: Callable[[dict], dict], frame: dict) -> dict:
     breakpoint()
-    frame["observation"] = dl.vmap(fn)(frame["observation"])
+    frame["observation"] = fn(frame["observation"])
     return frame
 
 def main(args):
@@ -148,7 +148,6 @@ def main(args):
             partial(
                 decode_and_resize,
                 resize_size=resize_size,
-                depth_resize_size=resize_size,
             ),
         ),
         num_parallel_calls,
