@@ -89,8 +89,6 @@ def decode_and_resize(
 
     if isinstance(resize_size, tuple):
         resize_size = {name: resize_size for name in image_names}
-    if isinstance(depth_resize_size, tuple):
-        depth_resize_size = {name: depth_resize_size for name in depth_names}
 
     for name in image_names:
         if name not in resize_size:
