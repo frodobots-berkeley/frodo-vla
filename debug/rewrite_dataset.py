@@ -89,7 +89,7 @@ def decode(
     if image.dtype == tf.string:
         if tf.strings.length(image) == 0:
             # this is a padding image
-            image = tf.zeros((*resize_size.get(name, (1, 1)), 3), dtype=tf.uint8)
+            image = tf.zeros((128, 128, 3), dtype=tf.uint8)
         else:
             image = tf.io.decode_image(
                 image, expand_animations=False, dtype=tf.uint8
