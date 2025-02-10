@@ -31,10 +31,10 @@ def fix_dataset(traj, traj_info):
     breakpoint()
 
     # Get the metadata for this traj 
-    traj_name = traj["traj_metadata"]["episode_metadata"]["file_path"].split("/")[-1]
-    traj_base_name = traj_name.split("_start_")[0]
-    traj_start = int(traj_name.split("_start_")[-1].split("_end_")[0])
-    traj_end = int(traj_name.split("_end_")[-1].split("_")[0])
+    traj_name = tf.strings.split(traj["traj_metadata"]["episode_metadata"]["file_path"], "/")[-1]
+    traj_base_name = tf.strings.split(traj_name, "_start_")[0]
+    traj_start = tf.cast(tf.strings.split(tf.strings.split(traj_name, "_start_")[-1], "_end_")[0], tf.int32)
+    traj_end = tf.cast(tf.strings.split(tf.strings.split(traj_name, "_end_")[-1], "_")[0], tf.int32)
 
     # Modify the traj info for this trajectory
     curr_traj_info = traj_info[traj_base_name]
@@ -100,7 +100,6 @@ def decode(
     return obs
 
 def apply_obs_transform(fn: Callable[[dict], dict], frame: dict) -> dict:
-    breakpoint()
     frame["observation_decoded"] = fn(frame["observation"])
     return frame
 
