@@ -79,7 +79,7 @@ def fix_dataset(traj, traj_info):
         cf_yaw = traj_yaw[cf_start:cf_end + 1]
         new_yaw = np.concatenate([new_yaw, cf_yaw])
 
-def decode_and_resize(
+def decode(
     obs: dict,
 ) -> dict:
     """Decodes images and depth images, and then optionally resizes them."""
@@ -126,10 +126,7 @@ def main(args):
     dataset = dataset.frame_map(
         partial(
             apply_obs_transform,
-            partial(
-                decode_and_resize,
-                resize_size=resize_size,
-            ),
+            decode,
         ),
         num_parallel_calls,
     )
