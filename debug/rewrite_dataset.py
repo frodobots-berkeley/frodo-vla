@@ -63,7 +63,7 @@ def fix_dataset(traj, traj_info):
     # Check the number of non-white images in the traj
     images = traj["observation"]["image_decoded"]
     image_non_white = tf.reduce_any(tf.not_equal(images, 255), axis=-1)
-    num_non_white = tf.reduce_sum(tf.cast(image_non_white, tf.float32))
+    num_non_white = tf.cast(tf.reduce_sum(tf.cast(image_non_white, tf.float32)), tf.int32)
 
     # Check two things: 
     # 1. Is the spacing between points close to that of the expected normalization factor
@@ -82,10 +82,10 @@ def fix_dataset(traj, traj_info):
     
     # Check the yaw
     traj_yaw = traj["observation"]["yaw"]
-    non_cf_yaw = traj_yaw[:num_non_white]
+    non_cf_yaw = traj_yaw[:, :num_non_white]
     orig_yaw = curr_traj_info["yaw"]
     end = min(traj_start + num_non_white, traj_end)
-    curr_orig_yaw = orig_yaw[traj_start:end+1]
+    curr_orig_yaw = orig_yaw[:, traj_start:end+1]
 
     assert len(non_cf_yaw) == len(orig_yaw), f"Length mismatch for {traj_base_name}"
 
