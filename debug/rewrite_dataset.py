@@ -58,6 +58,7 @@ def fix_dataset(traj, traj_info):
 
     # Modify the traj info for this trajectory
     curr_traj_info = lookup_in_dict(traj_base_name, traj_info)
+    tf.print(curr_traj_info)
 
     # Check the number of non-white images in the traj
     images = traj["observation"]["image_decoded"]
@@ -73,9 +74,10 @@ def fix_dataset(traj, traj_info):
     traj_pos = tf.cast(traj_pos, tf.float32)
     deltas = tf.linalg.norm(traj_pos[:-1] - traj_pos[1:], axis=-1)
     spacing = tf.reduce_mean(deltas)
-    normalization_factor = curr_traj_info["normalization_factor"]
+    normalization_factor = lookup_in_dict("normalization_factor", curr_traj_info)
+    tf.print(f"Spacing for {traj_base_name} is {spacing} and normalization factor is {normalization_factor}")
     if tf.abs(spacing - normalization_factor) > 0.05:
-        print(f"Spacing issue for {traj_base_name} with spacing {spacing} and normalization factor {normalization_factor}")
+        tf.print(f"Spacing issue for {traj_base_name} with spacing {spacing} and normalization factor {normalization_factor}")
         breakpoint()
     
     # Check the yaw
