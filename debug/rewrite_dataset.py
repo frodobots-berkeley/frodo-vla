@@ -128,7 +128,9 @@ def apply_obs_transform(fn: Callable[[dict], dict], frame: dict) -> dict:
     return frame
 
 def reorganize_traj(traj):
+    
     new_traj = {}
+
     # Observation
     images = traj["observation"]["image"]
     states = traj["observation"]["state"]
@@ -145,7 +147,7 @@ def reorganize_traj(traj):
     is_last = traj["is_last"]
     is_terminal = traj["is_terminal"]
     language_instruction = traj["language_instruction"]
-
+    breakpoint()
     steps = tf.map_fn(
         lambda i: {
             "observation": {"image": images[i],
@@ -163,7 +165,7 @@ def reorganize_traj(traj):
             "is_terminal": is_terminal[i],
             "language_instruction": language_instruction[i]
         },
-        tf.range(tf.shape(images)[0]),  # Iterating over n steps
+        elems=tf.range(tf.shape(images)[0]),  # Iterating over n steps
     )
     new_traj["steps"] = steps
     new_traj["episode_metadata"] = traj["traj_metadata"]["episode_metadata"]
