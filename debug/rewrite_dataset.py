@@ -14,6 +14,10 @@ from typing import Callable, Mapping, Optional, Sequence, Tuple, Union
 # import octo.data.obs_transforms as obs_transforms
 # from octo.data.dataset import apply_frame_transforms
 
+tf.conifg.run_functions_eagerly(True)
+print(tf.executing_eagerly())
+
+
 DATASETS = [
     "cory_hall",
     "go_stanford_cropped",
@@ -48,9 +52,7 @@ def lookup_in_dict(key_tensor, dictionary):
 
 # Fix issues with dataset from TFrecords 
 def fix_dataset(traj, traj_info):
-    tf.enable_eager_execution()
-    tf.config.run_functions_eagerly(True)
-    print(tf.executing_eagerly())
+
     # Get the metadata for this traj 
     traj_name = tf.strings.split(traj["traj_metadata"]["episode_metadata"]["file_path"], "/")[-1]
     tf.print(traj_name, output_stream=sys.stdout)
@@ -180,9 +182,7 @@ def reorganize_traj(traj):
         
 
 def main(args):
-    print(tf.__version__)
-    tf.config.run_functions_eagerly(True) # to run all tf.function in eager mode
-    print(tf.executing_eagerly())
+    
     # Load in the dataset
     data_dir = args.data_dir
     name = args.dataset_name
