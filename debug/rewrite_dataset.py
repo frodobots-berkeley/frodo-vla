@@ -132,16 +132,16 @@ def reorganize_traj(traj):
     for k, v in traj.items():
         try:
             for k2, v2 in v.items():
-                for step in tf.shape(v2)[0]:
+                for step in tf.shape(v2, 0):
                     if len(new_traj["steps"]) <= step:
                         new_traj["steps"].append({})
                     new_traj["steps"][step][k2] = v2[step]
         except:
-            for step in tf.shape(v)[0]:
+            for step in tf.shape(v, 0):
                 if len(new_traj["steps"]) <= step:
                     new_traj["steps"].append({})
                 new_traj["steps"][step][k] = v[step]
-                
+
     new_traj["episode_metadata"] = traj["traj_metadata"]["episode_metadata"]
 
     return new_traj
