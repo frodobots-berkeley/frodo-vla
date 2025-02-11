@@ -98,7 +98,7 @@ def fix_dataset(traj, traj_info):
         cf_start = end - num_non_white
         cf_end = traj_end
         cf_orig_yaw = orig_yaw[traj_start:cf_start]
-        cf_new = tf.atan2(traj_pos[cf_start+1:, 1] - traj_pos[cf_start:-1, 1], traj_pos[cf_start+1:, 0] - traj_pos[cf_start:-1, 0]) + cf_orig_yaw[-1]
+        cf_new = tf.atan2(traj_pos[cf_start+1:, 1] - traj_pos[cf_start:-1, 1], traj_pos[cf_start+1:, 0] - traj_pos[cf_start:-1, 0]) + cf_orig_yaw[:, -1]
         new_yaw = tf.concat([new_yaw, cf_new], axis=0)
         tf.print(new_yaw)
     
