@@ -130,13 +130,13 @@ def apply_obs_transform(fn: Callable[[dict], dict], frame: dict) -> dict:
 def reorganize_traj(traj):
     new_traj = {"steps" : [], "episode_metadata" : {}}
     for k, v in traj.items():
-        try:
+        if k == "observation":
             for k2, v2 in v.items():
                 for step in tf.shape(v2, 0):
                     if len(new_traj["steps"]) <= step:
                         new_traj["steps"].append({})
                     new_traj["steps"][step][k2] = v2[step, ...]
-        except:
+        else:
             for step in tf.shape(v, 0):
                 if len(new_traj["steps"]) <= step:
                     new_traj["steps"].append({})
