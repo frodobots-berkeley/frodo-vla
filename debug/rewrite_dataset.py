@@ -168,6 +168,8 @@ def reorganize_traj(traj):
     new_traj["steps"] = steps
     new_traj["episode_metadata"] = traj["traj_metadata"]["episode_metadata"]
 
+    breakpoint()
+
     return new_traj
         
 
@@ -207,9 +209,6 @@ def main(args):
     # Write dataset as RLDS
     dataset = dataset.map(reorganize_traj, num_parallel_calls=num_parallel_calls)
     dataset.save(args.output_dir)
-    
-    
-
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
