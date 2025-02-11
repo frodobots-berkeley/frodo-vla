@@ -48,6 +48,7 @@ def lookup_in_dict(key_tensor, dictionary):
 
 # Fix issues with dataset from TFrecords 
 def fix_dataset(traj, traj_info):
+    tf.compat.v1.enable_eager_execution()
     tf.config.run_functions_eagerly(True)
     print(tf.executing_eagerly())
     # Get the metadata for this traj 
