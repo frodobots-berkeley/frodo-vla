@@ -15,6 +15,7 @@ from typing import Callable, Mapping, Optional, Sequence, Tuple, Union
 # from octo.data.dataset import apply_frame_transforms
 
 tf.config.run_functions_eagerly(True)
+tf.data.experimental.enable_debug_mode()
 print(tf.executing_eagerly())
 
 
