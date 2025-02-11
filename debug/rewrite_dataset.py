@@ -127,7 +127,7 @@ def apply_obs_transform(fn: Callable[[dict], dict], frame: dict) -> dict:
     frame["observation_decoded"] = fn(frame["observation"])
     return frame
 
-def reorganize_traj(traj, traj_info):
+def reorganize_traj(traj):
     new_traj = {}
     new_traj["steps"] = [traj[k] for k in sorted(traj.keys()) if k != "traj_metadata"]
     new_traj["episode_metadata"] = traj["traj_metadata"]["episode_metadata"]
