@@ -148,9 +148,9 @@ def reorganize_traj(traj):
     is_terminal = traj["is_terminal"]
     language_instruction = traj["language_instruction"]
     breakpoint()
-    steps = tf.map_fn(
-        lambda i: {
-            "observation": {"image": images[i],
+
+    def extract_step(index):
+        return {"observation": {"image": images[i],
                             "state" : states[i],
                             "position": position[i],
                             "yaw": yaws[i],
@@ -164,9 +164,9 @@ def reorganize_traj(traj):
             "is_last": is_last[i],
             "is_terminal": is_terminal[i],
             "language_instruction": language_instruction[i]
-        },
-        elems=tf.range(tf.cast(tf.shape(images)[0], tf.int32)),  # Iterating over n steps
-    )
+        }
+    # Vectorized map over the first dimension (steps)
+    steps = tf.vectorized_map(extract_step, tf.range(tf.shape(images)[0]))
     new_traj["steps"] = steps
     new_traj["episode_metadata"] = traj["traj_metadata"]["episode_metadata"]
 
