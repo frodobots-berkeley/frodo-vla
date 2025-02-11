@@ -76,7 +76,6 @@ def fix_dataset(traj, traj_info):
     tf.print(f"Spacing for {traj_base_name} is {spacing} and normalization factor is {normalization_factor}")
     if tf.abs(spacing - normalization_factor) > 0.05:
         tf.print(f"Spacing issue for {traj_base_name} with spacing {spacing} and normalization factor {normalization_factor}")
-        breakpoint()
     
     # Check the yaw
     traj_yaw = traj["observation"]["yaw"]
@@ -147,7 +146,6 @@ def reorganize_traj(traj):
     is_last = traj["is_last"]
     is_terminal = traj["is_terminal"]
     language_instruction = traj["language_instruction"]
-    breakpoint()
 
     def extract_step(i):
         return {"observation": {"image": images[i],
@@ -165,12 +163,11 @@ def reorganize_traj(traj):
             "is_terminal": is_terminal[i],
             "language_instruction": language_instruction[i]
         }
+
     # Vectorized map over the first dimension (steps)
     steps = tf.vectorized_map(extract_step, tf.range(tf.shape(images)[0]))
     new_traj["steps"] = steps
     new_traj["episode_metadata"] = traj["traj_metadata"]["episode_metadata"]
-
-    breakpoint()
 
     return new_traj
         
