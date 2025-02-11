@@ -81,7 +81,7 @@ def fix_dataset(traj, traj_info):
         breakpoint()
     
     # Check the yaw
-    traj_yaw = traj["observations"]["yaw"]
+    traj_yaw = traj["observation"]["yaw"]
     non_cf_yaw = traj_yaw[:num_non_white]
     orig_yaw = curr_traj_info["yaw"]
     end = min(traj_start + num_non_white, traj_end)
