@@ -128,22 +128,45 @@ def apply_obs_transform(fn: Callable[[dict], dict], frame: dict) -> dict:
     return frame
 
 def reorganize_traj(traj):
-    new_traj = {"steps" : [], "episode_metadata" : {}}
-    for k, v in traj.items():
-        if k == "observation":
-            for k2, v2 in v.items():
-                for step in tf.shape(v2, 0):
-                    if len(new_traj["steps"]) <= step:
-                        new_traj["steps"].append({})
-                    breakpoint()
-                    new_traj["steps"][step][k2] = v2[tf.cast(step, tf.int32), ...]
-        else:
-            for step in tf.shape(v, 0):
-                if len(new_traj["steps"]) <= step:
-                    new_traj["steps"].append({})
-                breakpoint()
-                new_traj["steps"][step][k] = v[tf.cast(step, tf.int32), ...]
+    new_traj = {"steps" : tf., "episode_metadata" : {}}
 
+    # Observation
+    images = traj["observation"]["image"]
+    states = traj["observation"]["state"]
+    position = traj["observation"]["position"]
+    yaws = traj["observation"]["yaw"]
+    yaw_rotmat = traj["observation"]["yaw_rotmat"]
+
+    # Actions
+    actions = traj["action"]
+    action_angles = traj["action_angle"]
+    discount = traj["discount"]
+    reward = traj["reward"]
+    is_first = traj["is_first"]
+    is_last = traj["is_last"]
+    is_terminal = traj["is_terminal"]
+    language_instruction = traj["language_instruction"]
+
+    steps = tf.map_fn(
+        lambda i: {
+            "observation": {"image": images[i],
+                            "state" : states[i],
+                            "position": position[i],
+                            "yaw": yaws[i],
+                            "yaw_rotmat": yaw_rotmat[i],
+                            },
+            "action": actions[i],
+            "action_angle": action_angles[i],
+            "discount": discount[i],
+            "reward": reward[i],
+            "is_first": is_first[i],
+            "is_last": is_last[i],
+            "is_terminal": is_terminal[i],
+            "language_instruction": language_instruction[i]
+        },
+        tf.range(tf.shape(images)[0]),  # Iterating over n steps
+    )
+    new_traj["steps"] = steps
     new_traj["episode_metadata"] = traj["traj_metadata"]["episode_metadata"]
 
     return new_traj
