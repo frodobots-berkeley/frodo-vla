@@ -84,7 +84,7 @@ def fix_dataset(traj, traj_info):
     traj_yaw = traj["observation"]["yaw"]
     non_cf_yaw = traj_yaw[:, :num_non_white]
     orig_yaw = lookup_in_dict("yaw", curr_traj_info)
-    end = tf.min(traj_start + num_non_white, traj_end)
+    end = tf.minimum(traj_start + num_non_white, traj_end)
     curr_orig_yaw = orig_yaw[:, traj_start:end+1]
 
     assert len(non_cf_yaw) == len(orig_yaw), f"Length mismatch for {traj_base_name}"
