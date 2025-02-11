@@ -83,7 +83,7 @@ def fix_dataset(traj, traj_info):
     # Check the yaw
     traj_yaw = traj["observation"]["yaw"]
     non_cf_yaw = traj_yaw[:, :num_non_white]
-    orig_yaw = lookup_in_dict("yaw", curr_traj_info)
+    orig_yaw = tf.cast(lookup_in_dict("yaw", curr_traj_info), tf.float32)
     end = tf.minimum(traj_start + num_non_white, traj_end)
     curr_orig_yaw = orig_yaw[:, traj_start:end+1]
 
