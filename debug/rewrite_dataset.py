@@ -173,6 +173,6 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--data_dir", type=str, required=True)
     parser.add_argument("--dataset_name", type=str, required=True)
-    parser.add_argument("--output_dir", type=str, default="gs://vlm-guidance-data/test", required=True)
+    parser.add_argument("--output_dir", type=str, default="gs://vlm-guidance-data/test")
     args = parser.parse_args()
     main(args)
