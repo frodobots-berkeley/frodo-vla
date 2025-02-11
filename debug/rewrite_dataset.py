@@ -149,7 +149,7 @@ def reorganize_traj(traj):
     language_instruction = traj["language_instruction"]
     breakpoint()
 
-    def extract_step(index):
+    def extract_step(i):
         return {"observation": {"image": images[i],
                             "state" : states[i],
                             "position": position[i],
