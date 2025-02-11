@@ -50,17 +50,17 @@ def fix_dataset(traj, traj_info):
 
     # Get the metadata for this traj 
     traj_name = tf.strings.split(traj["traj_metadata"]["episode_metadata"]["file_path"], "/")[-1]
-    tf.print(traj_name)
+    tf.print(traj_name, output_stream=sys.stdout)
     traj_base_name = tf.strings.split(traj_name, "_start_")[0]
-    tf.print(traj_base_name)
+    tf.print(traj_base_name, output_stream=sys.stdout)
     traj_start = tf.cast(tf.strings.split(tf.strings.split(traj_name, "_start_")[-1], "_end_")[0], tf.int32)[0]
-    tf.print(traj_start)
+    tf.print(traj_start, output_stream=sys.stdout)
     traj_end = tf.cast(tf.strings.split(tf.strings.split(traj_name, "_end_")[-1], "_")[0], tf.int32)[0]
-    tf.print(traj_end)
+    tf.print(traj_end, output_stream=sys.stdout)
 
     # Modify the traj info for this trajectory
     curr_traj_info = lookup_in_dict(traj_base_name, traj_info)
-    tf.print(curr_traj_info)
+    tf.print(curr_traj_info, output_stream=sys.stdout)
 
     # Check the number of non-white images in the traj
     images = traj["observation_decoded"]["image_decoded"]
