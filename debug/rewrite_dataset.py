@@ -23,7 +23,7 @@ DATASETS = [
     "seattle",
     "tartan_drive",
 ]
-
+ 
 def lookup_in_dict(key_tensor, dictionary):
   """
   Looks up a string key tensor in a Python dictionary.
@@ -48,8 +48,6 @@ def lookup_in_dict(key_tensor, dictionary):
 # Fix issues with dataset from TFrecords 
 def fix_dataset(traj, traj_info):
 
-    breakpoint()
-
     # Get the metadata for this traj 
     traj_name = tf.strings.split(traj["traj_metadata"]["episode_metadata"]["file_path"], "/")[-1]
     traj_base_name = tf.strings.split(traj_name, "_start_")[0]
@@ -61,7 +59,7 @@ def fix_dataset(traj, traj_info):
     tf.print(curr_traj_info)
 
     # Check the number of non-white images in the traj
-    images = traj["observation"]["image_decoded"]
+    images = traj["observation_decoded"]["image_decoded"]
     image_non_white = tf.reduce_any(tf.not_equal(images, 255), axis=-1)
     num_non_white = tf.cast(tf.reduce_sum(tf.cast(image_non_white, tf.float32)), tf.int32)
 
@@ -92,13 +90,11 @@ def fix_dataset(traj, traj_info):
     # Compute the yaw of the original part of the trajectory 
     new_yaw = orig_yaw[traj_start:end + 1]
 
-    breakpoint()
     # If the trajectory has a counterfactual, we need to generate the correct yaw for the counterfactual part
     if tf.strings.regex_full_match(traj_name, ".*cf.*"):
         cf_start = end - num_non_white
         cf_end = traj_end
         cf_orig_yaw = orig_yaw[traj_start:cf_start]
-        breakpoint()
         cf_new = tf.atan2(traj_pos[cf_start+1:, 1] - traj_pos[cf_start:-1, 1], traj_pos[cf_start+1:, 0] - traj_pos[cf_start:-1, 0]) + cf_orig_yaw[:, -1]
         new_yaw = tf.concat([new_yaw, cf_new], axis=0)
         tf.print(new_yaw)
@@ -108,12 +104,10 @@ def fix_dataset(traj, traj_info):
 
     return traj
         
-
 def decode(
     obs: dict,
 ) -> dict:
     """Decodes images and depth images, and then optionally resizes them."""
-    # just gets the part after "image_" or "depth_"
 
     image = obs["image"]
     if image.dtype == tf.string:
@@ -132,6 +126,14 @@ def decode(
 def apply_obs_transform(fn: Callable[[dict], dict], frame: dict) -> dict:
     frame["observation_decoded"] = fn(frame["observation"])
     return frame
+
+def reorganize_traj(traj, traj_info):
+    new_traj = {}
+    new_traj["steps"] = [traj[k] for k in sorted(traj.keys()) if k != "traj_metadata"]
+    new_traj["episode_metadata"] = traj["traj_metadata"]["episode_metadata"]
+
+    return new_traj
+        
 
 def main(args):
 
@@ -162,11 +164,14 @@ def main(args):
 
     # Fix the dataset
     dataset = dataset.traj_map(partial(fix_dataset, traj_info=traj_infos), num_parallel_calls=num_parallel_calls)
-    breakpoint()
+    
+    # Remove the image_decoded field 
+    dataset = dataset.traj_map(lambda traj: {k: v for k, v in traj.items() if k != "observation_decoded"}, num_parallel_calls=num_parallel_calls)
 
-    # Save the dataset
-    output_dir = args.output_dir
-    dataset.save(output_dir)
+    # Write dataset as RLDS
+    dataset = dataset.traj_map(reorganize_traj, num_parallel_calls=num_parallel_calls)
+    dataset.save(args.output_dir)
+    
     
 
 
