@@ -52,8 +52,11 @@ def fix_dataset(traj, traj_info):
     traj_name = tf.strings.split(traj["traj_metadata"]["episode_metadata"]["file_path"], "/")[-1]
     tf.print(traj_name)
     traj_base_name = tf.strings.split(traj_name, "_start_")[0]
+    tf.print(traj_base_name)
     traj_start = tf.cast(tf.strings.split(tf.strings.split(traj_name, "_start_")[-1], "_end_")[0], tf.int32)[0]
+    tf.print(traj_start)
     traj_end = tf.cast(tf.strings.split(tf.strings.split(traj_name, "_end_")[-1], "_")[0], tf.int32)[0]
+    tf.print(traj_end)
 
     # Modify the traj info for this trajectory
     curr_traj_info = lookup_in_dict(traj_base_name, traj_info)
