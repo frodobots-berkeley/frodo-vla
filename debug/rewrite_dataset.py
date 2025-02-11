@@ -24,7 +24,9 @@ DATASETS = [
     "seattle",
     "tartan_drive",
 ]
- 
+
+tf.config.run_functions_eagerly(True)
+
 def lookup_in_dict(key_tensor, dictionary):
   """
   Looks up a string key tensor in a Python dictionary.
