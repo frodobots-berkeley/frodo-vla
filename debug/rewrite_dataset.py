@@ -60,7 +60,7 @@ def fix_dataset(traj, traj_info):
     curr_traj_info = lookup_in_dict(traj_base_name, traj_info)
 
     # Check the number of non-white images in the traj
-    images = traj["observation"]["image"]
+    images = traj["observation"]["image_decoded"]
     image_non_white = tf.reduce_any(tf.not_equal(images, 255), axis=-1)
     num_non_white = tf.reduce_sum(tf.cast(image_non_white, tf.float32))
 
