@@ -87,7 +87,7 @@ def fix_dataset(traj, traj_info):
     end = tf.minimum(traj_start + num_non_white, traj_end)
     curr_orig_yaw = orig_yaw[:, traj_start:end+1]
 
-    tf.debugging.Assert(tf.shape(non_cf_yaw, 0) == tf.shape(orig_yaw, 0), f"Length mismatch for {traj_base_name}")
+    assert tf.shape(non_cf_yaw, 0) == tf.shape(orig_yaw, 0), f"Length mismatch for {traj_base_name}"
 
     # Compute the yaw of the original part of the trajectory 
     new_yaw = orig_yaw[traj_start:end + 1]
