@@ -87,19 +87,26 @@ def fix_dataset(traj, traj_info):
     end = tf.minimum(traj_start + num_non_white, traj_end)
     curr_orig_yaw = orig_yaw[:, traj_start:end+1]
 
-    tf.debugging.assert_equal(tf.shape(non_cf_yaw, 0), tf.shape(orig_yaw, 0), message=f"Length mismatch for {traj_base_name}")
+    tf.debugging.assert_equal(tf.shape(non_cf_yaw, 0), tf.shape(curr_orig_yaw, 0), message=f"Length mismatch for {traj_base_name}")
 
     # Compute the yaw of the original part of the trajectory 
     new_yaw = orig_yaw[traj_start:end + 1]
 
     breakpoint()
     # If the trajectory has a counterfactual, we need to generate the correct yaw for the counterfactual part
-    if "cf" in traj_base_name:
+    if tf.strings.regex_full_match(dataset_name, ".*cf.*"):
         cf_start = end - num_non_white
         cf_end = traj_end
-        cf_orig_yaw = orig_yaw[cf_start:cf_end + 1]
-        cf_yaw = traj_yaw[cf_start:cf_end + 1]
-        new_yaw = np.concatenate([new_yaw, cf_yaw])
+        cf_orig_yaw = orig_yaw[traj_start:cf_start]
+        cf_new = tf.atan2(traj_pos[cf_start+1:, 1] - traj_pos[cf_start:-1, 1], traj_pos[cf_start+1:, 0] - traj_pos[cf_start:-1, 0]) + cf_orig_yaw[-1]
+        new_yaw = tf.concat([new_yaw, cf_new], axis=0)
+        tf.print(new_yaw)
+    
+    traj["observation"]["yaw"] = new_yaw
+    traj["observation"]["yaw_rotmat"] = tf.stack([tf.cos(new_yaw), -tf.sin(new_yaw), tf.sin(new_yaw), tf.cos(new_yaw)], axis=-1)
+
+    return traj
+        
 
 def decode(
     obs: dict,
@@ -154,10 +161,18 @@ def main(args):
 
     # Fix the dataset
     dataset = dataset.traj_map(partial(fix_dataset, traj_info=traj_infos), num_parallel_calls=num_parallel_calls)
+    breakpoint()
+
+    # Save the dataset
+    output_dir = args.output_dir
+    dataset.save(output_dir)
+    
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--data_dir", type=str, required=True)
     parser.add_argument("--dataset_name", type=str, required=True)
+    parser.add_argument("--output_dir", type=str, default="gs://vlm-guidance-data/test", required=True)
     args = parser.parse_args()
     main(args)
