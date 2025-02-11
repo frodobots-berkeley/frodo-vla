@@ -14,7 +14,7 @@ from typing import Callable, Mapping, Optional, Sequence, Tuple, Union
 # import octo.data.obs_transforms as obs_transforms
 # from octo.data.dataset import apply_frame_transforms
 
-tf.conifg.run_functions_eagerly(True)
+tf.config.run_functions_eagerly(True)
 print(tf.executing_eagerly())
 
 
@@ -182,7 +182,7 @@ def reorganize_traj(traj):
         
 
 def main(args):
-    
+
     # Load in the dataset
     data_dir = args.data_dir
     name = args.dataset_name
