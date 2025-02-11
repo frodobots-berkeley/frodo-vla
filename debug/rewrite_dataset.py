@@ -128,7 +128,7 @@ def apply_obs_transform(fn: Callable[[dict], dict], frame: dict) -> dict:
     return frame
 
 def reorganize_traj(traj):
-
+    new_traj = {}
     # Observation
     images = traj["observation"]["image"]
     states = traj["observation"]["state"]
@@ -205,7 +205,7 @@ def main(args):
     dataset = dataset.traj_map(lambda traj: {k: v for k, v in traj.items() if k != "observation_decoded"}, num_parallel_calls=num_parallel_calls)
 
     # Write dataset as RLDS
-    dataset = dataset.traj_map(reorganize_traj, num_parallel_calls=num_parallel_calls)
+    dataset = dataset.map(reorganize_traj, num_parallel_calls=num_parallel_calls)
     dataset.save(args.output_dir)
     
     
