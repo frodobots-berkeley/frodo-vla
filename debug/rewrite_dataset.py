@@ -180,7 +180,8 @@ def reorganize_traj(traj):
         
 
 def main(args):
-
+    tf.config.run_functions_eagerly(True) # to run all tf.function in eager mode
+    print(tf.running_eagerly())
     # Load in the dataset
     data_dir = args.data_dir
     name = args.dataset_name
