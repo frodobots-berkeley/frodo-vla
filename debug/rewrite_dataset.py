@@ -24,6 +24,26 @@ DATASETS = [
     "tartan_drive",
 ]
 
+def lookup_in_dict(key_tensor, dictionary):
+  """
+  Looks up a string key tensor in a Python dictionary.
+
+  Args:
+    key_tensor: A tf.string tensor representing the key to lookup.
+    dictionary: A Python dictionary with string keys.
+
+  Returns:
+    A tf.string tensor representing the value associated with the key,
+    or an empty string tensor if the key is not found.
+  """
+  def lookup(key):
+    return dictionary.get(key.decode(), "")
+
+  return tf.py_function(
+      func=lookup, 
+      inp=[key_tensor], 
+      Tout=tf.string
+  )
 
 # Fix issues with dataset from TFrecords 
 def fix_dataset(traj, traj_info):
@@ -37,7 +57,7 @@ def fix_dataset(traj, traj_info):
     traj_end = tf.cast(tf.strings.split(tf.strings.split(traj_name, "_end_")[-1], "_")[0], tf.int32)
 
     # Modify the traj info for this trajectory
-    curr_traj_info = traj_info[traj_base_name]
+    curr_traj_info = lookup_in_dict(traj_base_name, traj_info)
 
     # Check the number of non-white images in the traj
     images = traj["observation"]["image"]
