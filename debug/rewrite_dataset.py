@@ -94,7 +94,7 @@ def fix_dataset(traj, traj_info):
 
     breakpoint()
     # If the trajectory has a counterfactual, we need to generate the correct yaw for the counterfactual part
-    if tf.strings.regex_full_match(dataset_name, ".*cf.*"):
+    if tf.strings.regex_full_match(traj_name, ".*cf.*"):
         cf_start = end - num_non_white
         cf_end = traj_end
         cf_orig_yaw = orig_yaw[traj_start:cf_start]
