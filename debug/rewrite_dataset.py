@@ -165,7 +165,7 @@ def reorganize_traj(traj):
             "is_terminal": is_terminal[i],
             "language_instruction": language_instruction[i]
         },
-        elems=tf.range(tf.shape(images)[0]),  # Iterating over n steps
+        elems=tf.range(tf.shape(images, 0)),  # Iterating over n steps
     )
     new_traj["steps"] = steps
     new_traj["episode_metadata"] = traj["traj_metadata"]["episode_metadata"]
