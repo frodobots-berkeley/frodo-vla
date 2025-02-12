@@ -60,9 +60,9 @@ def fix_traj(traj, frames, episode_metadata, traj_info):
     
     # Get the metadata for this traj 
     traj_name = episode_metadata["file_path"].decode("utf-8").split("/")[-1]
-    traj_base_name = traj_name.split("_start_")[0]
+    traj_base_name = traj_name.split("_chunk_")[0]
     traj_start = int(traj_name.split("_start_")[-1].split("_")[0])
-    traj_end = traj_name.split("_end_")[-1].split("_")[0]
+    traj_end = int(traj_name.split("_end_")[-1].split("_")[0])
     breakpoint()
 
     # Modify the traj info for this trajectory
