@@ -53,7 +53,7 @@ def lookup_in_dict(key_tensor, dictionary):
 
 # Fix issues with dataset from TFrecords 
 def fix_dataset(traj, traj_info):
-
+    
     # Get the metadata for this traj 
     traj_name = tf.strings.split(traj["traj_metadata"]["episode_metadata"]["file_path"], "/")[-1]
     tf.print(traj_name, output_stream=sys.stdout)
@@ -110,7 +110,7 @@ def fix_dataset(traj, traj_info):
     
     traj["observation"]["yaw"] = new_yaw
     traj["observation"]["yaw_rotmat"] = tf.stack([tf.cos(new_yaw), -tf.sin(new_yaw), tf.sin(new_yaw), tf.cos(new_yaw)], axis=-1)
-
+    breakpoint()
     return traj
         
 def decode(
@@ -235,21 +235,22 @@ def reorganize_traj(traj):
     language_instruction = traj["language_instruction"]
 
     num_steps = tf.shape(images)[0]
+    breakpoint()
     def extract_step(i):
-        return {"observation": {"image": images[i],
-                            "state" : states[i],
-                            "position": position[i],
-                            "yaw": yaws[i],
-                            "yaw_rotmat": yaw_rotmat[i],
+        return {"observation": {"image": tfds.features.Image(images[i,:]),
+                            "state" : tfds.features.Tensor(states[i,:]),
+                            "position": tfds.features.Tensor(position[i,:]),
+                            "yaw": tfds.features.Tensor(yaws[i,:]),
+                            "yaw_rotmat": tfds.features.Tensor(yaw_rotmat[i,:]),
                             },
-            "action": actions[i],
-            "action_angle": action_angles[i],
-            "discount": discount[i],
-            "reward": reward[i],
-            "is_first": is_first[i],
-            "is_last": is_last[i],
-            "is_terminal": is_terminal[i],
-            "language_instruction": language_instruction[i]
+            "action": tfds.features.Tensor(actions[i,:]),
+            "action_angle": tfds.features.Tensor(action_angles[i,:]),
+            "discount": tfds.features.Scalar(discount[i,:]),
+            "reward": tfds.features.Scalar(reward[i,:]),
+            "is_first": tfds.features.Scalar(is_first[i,:]),
+            "is_last": tfds.features.Scalar(is_last[i,:]),
+            "is_terminal": tfds.features.Scalar(is_terminal[i,:]),
+            "language_instruction": tfds.features.Tensor(language_instruction[i,:]),
         }
 
     # Vectorized map over the first dimension (steps)
