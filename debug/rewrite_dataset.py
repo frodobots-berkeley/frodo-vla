@@ -254,7 +254,7 @@ def reorganize_traj(traj):
         }
 
     # Vectorized map over the first dimension (steps)
-    steps = traj(
+    steps = tf.map_fn(
         extract_step, tf.range(num_steps), 
         # fn_output_signature={
         #             'observation': tfds.features.FeaturesDict({
