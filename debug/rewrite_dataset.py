@@ -59,7 +59,7 @@ def lookup_in_dict(key_tensor, dictionary):
 def fix_traj(traj, frames, episode_metadata, traj_info):
     
     # Get the metadata for this traj 
-    traj_name = episode_metadata["file_path"].split("/")[-1]
+    traj_name = episode_metadata["file_path"].decode("utf-8").split("/")[-1]
     traj_base_name = traj_name.split("_start_")[0]
     traj_start = int(traj_name.split("_start_")[-1].split("_")[0])
     traj_end = traj_name.split("_end_")[-1].split("_")[0]
