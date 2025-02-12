@@ -156,6 +156,7 @@ def reorganize_traj(traj):
     is_terminal = traj["is_terminal"]
     language_instruction = traj["language_instruction"]
 
+    num_steps = tf.shape(images)[0]
     def extract_step(i):
         return {"observation": {"image": images[i],
                             "state" : states[i],
