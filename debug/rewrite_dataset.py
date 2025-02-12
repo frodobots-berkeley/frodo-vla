@@ -137,7 +137,6 @@ def apply_obs_transform(fn: Callable[[dict], dict], frame: dict) -> dict:
     return frame
 
 def reorganize_traj(traj):
-    breakpoint()
     new_traj = {}
 
     # Observation
@@ -175,7 +174,25 @@ def reorganize_traj(traj):
         }
 
     # Vectorized map over the first dimension (steps)
-    steps = tf.vectorized_map(extract_step, tf.range(tf.shape(images)[0]))
+    steps = tf.map_fn(
+        extract_step, tf.range(num_steps), fn_output_signature={
+            "observation": {
+                "image": tf.TensorSpec(shape=images.shape[1:], dtype=images.dtype),
+                "state": tf.TensorSpec(shape=states.shape[1:], dtype=states.dtype),
+                "position": tf.TensorSpec(shape=position.shape[1:], dtype=position.dtype),
+                "yaw": tf.TensorSpec(shape=yaws.shape[1:], dtype=yaws.dtype),
+                "yaw_rotmat": tf.TensorSpec(shape=yaw_rotmat.shape[1:], dtype=yaw_rotmat.dtype),
+            },
+            "action": tf.TensorSpec(shape=actions.shape[1:], dtype=actions.dtype),
+            "action_angle": tf.TensorSpec(shape=action_angles.shape[1:], dtype=action_angles.dtype),
+            "discount": tf.TensorSpec(shape=discount.shape[1:], dtype=discount.dtype),
+            "reward": tf.TensorSpec(shape=reward.shape[1:], dtype=reward.dtype),
+            "is_first": tf.TensorSpec(shape=is_first.shape[1:], dtype=is_first.dtype),
+            "is_last": tf.TensorSpec(shape=is_last.shape[1:], dtype=is_last.dtype),
+            "is_terminal": tf.TensorSpec(shape=is_terminal.shape[1:], dtype=is_terminal.dtype),
+            "language_instruction": tf.TensorSpec(shape=(), dtype=language_instruction.dtype)  # Assuming it's a string
+        }
+    )
     new_traj["steps"] = steps
     new_traj["episode_metadata"] = traj["traj_metadata"]["episode_metadata"]
 
