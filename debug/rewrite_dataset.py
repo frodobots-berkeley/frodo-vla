@@ -136,7 +136,7 @@ def apply_obs_transform(fn: Callable[[dict], dict], frame: dict) -> dict:
     frame["observation_decoded"] = fn(frame["observation"])
     return frame
 
-@tf.py_function(Tout=tfds.features.FeaturesDict)
+@tf.py_function()
 def reorganize_traj(traj):
     new_traj = {}
 
