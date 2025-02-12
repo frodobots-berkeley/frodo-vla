@@ -171,7 +171,7 @@ def reorganize_traj(traj):
             "is_first": is_first[i],
             "is_last": is_last[i],
             "is_terminal": is_terminal[i],
-            "language_instruction": language_instruction[i]
+            "language_instruction": language_instruction
         }
 
     # Vectorized map over the first dimension (steps)
@@ -191,7 +191,7 @@ def reorganize_traj(traj):
             "is_first": tf.TensorSpec(shape=is_first.shape[1:], dtype=is_first.dtype),
             "is_last": tf.TensorSpec(shape=is_last.shape[1:], dtype=is_last.dtype),
             "is_terminal": tf.TensorSpec(shape=is_terminal.shape[1:], dtype=is_terminal.dtype),
-            "language_instruction": tf.TensorSpec(shape=(), dtype=language_instruction.dtype)  # Assuming it's a string
+            "language_instruction": tf.TensorSpec(shape=language_instruction.shape, dtype=language_instruction.dtype)  # Assuming it's a string
         }
     )
     new_traj["steps"] = steps
