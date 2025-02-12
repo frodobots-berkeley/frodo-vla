@@ -189,6 +189,7 @@ def main(args):
     name = args.dataset_name
     builder = tfds.builder(name, data_dir=data_dir)
     dataset = dl.DLataset.from_rlds(builder, split="all", shuffle=False)
+    breakpoint()
     resize_size = (128, 128)
     num_parallel_calls = tf.data.AUTOTUNE
 
