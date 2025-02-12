@@ -56,26 +56,23 @@ def lookup_in_dict(key_tensor, dictionary):
   )
 
 # Fix issues with dataset from TFrecords 
-def fix_traj(traj, frames, traj_info):
+def fix_traj(traj, frames, episode_metadata, traj_info):
     
     # Get the metadata for this traj 
-    traj_name = tf.strings.split(traj["traj_metadata"]["episode_metadata"]["file_path"], "/")[-1]
-    tf.print(traj_name, output_stream=sys.stdout)
-    traj_base_name = tf.strings.split(traj_name, "_start_")[0]
-    tf.print(traj_base_name, output_stream=sys.stdout)
-    traj_start = tf.cast(tf.strings.split(tf.strings.split(traj_name, "_start_")[-1], "_end_")[0], tf.int32)[0]
-    tf.print(traj_start, output_stream=sys.stdout)
-    traj_end = tf.cast(tf.strings.split(tf.strings.split(traj_name, "_end_")[-1], "_")[0], tf.int32)[0]
-    tf.print(traj_end, output_stream=sys.stdout)
+    traj_name = episode_metadata["file_path"].split("/")[-1]
+    traj_base_name = traj_name.split("_start_")[0]
+    traj_start = int(traj_name.split("_start_")[-1].split("_")[0])
+    traj_end = traj_name.split("_end_")[-1].split("_")[0]
+    breakpoint()
 
     # Modify the traj info for this trajectory
-    curr_traj_info = lookup_in_dict(traj_base_name, traj_info)
-    tf.print(curr_traj_info, output_stream=sys.stdout)
+    curr_traj_info = traj_infos[traj_base_name]
+    print(curr_traj_info)
 
     # Check the number of non-white images in the traj
-    images = traj["observation_decoded"]["image_decoded"]
-    image_non_white = tf.reduce_any(tf.not_equal(images, 255), axis=-1)
-    num_non_white = tf.cast(tf.reduce_sum(tf.cast(image_non_white, tf.float32)), tf.int32)
+    image_non_white = np.any(frames != 255, axis=0)
+    num_non_white = np.sum(image_non_white)
+    breakpoint()
 
     # Check two things: 
     # 1. Is the spacing between points close to that of the expected normalization factor
@@ -83,62 +80,38 @@ def fix_traj(traj, frames, traj_info):
 
     # Check the spacing between points
     traj_pos = traj["observation"]["position"]
-    traj_pos = tf.cast(traj_pos, tf.float32)
-    deltas = tf.linalg.norm(traj_pos[:-1] - traj_pos[1:], axis=-1)
-    spacing = tf.reduce_mean(deltas)
-    normalization_factor = tf.cast(lookup_in_dict("normalization_factor", curr_traj_info), tf.float32)
-    tf.print(f"Spacing for {traj_base_name} is {spacing} and normalization factor is {normalization_factor}")
-    if tf.abs(spacing - normalization_factor) > 0.05:
-        tf.print(f"Spacing issue for {traj_base_name} with spacing {spacing} and normalization factor {normalization_factor}")
+    deltas = np.linalg.norm(traj_pos[:-1] - traj_pos[1:], axis=-1)
+    spacing = np.mean(deltas)
+    normalization_factor = curr_traj_info["normalization_factor"]
+    print(f"Spacing for {traj_base_name} is {spacing} and normalization factor is {normalization_factor}")
+    if np.abs(spacing - normalization_factor) > 0.05:
+        print(f"Spacing issue for {traj_base_name} with spacing {spacing} and normalization factor {normalization_factor}")
     
     # Check the yaw
     traj_yaw = traj["observation"]["yaw"]
     non_cf_yaw = traj_yaw[:, :num_non_white]
-    orig_yaw = tf.cast(lookup_in_dict("yaw", curr_traj_info), tf.float32)
-    end = tf.minimum(traj_start + num_non_white, traj_end)
+    orig_yaw = curr_traj_info["yaw"]
+    end = np.min(traj_start + num_non_white, traj_end)
     curr_orig_yaw = orig_yaw[:, traj_start:end+1]
+    breakpoint()
 
-    tf.debugging.assert_equal(tf.shape(non_cf_yaw, 0), tf.shape(curr_orig_yaw, 0), message=f"Length mismatch for {traj_base_name}")
+    assert non_cf_yaw.shape == curr_orig_yaw.shape
 
     # Compute the yaw of the original part of the trajectory 
     new_yaw = orig_yaw[traj_start:end + 1]
 
     # If the trajectory has a counterfactual, we need to generate the correct yaw for the counterfactual part
-    if tf.strings.regex_full_match(traj_name, ".*cf.*"):
+    if "cf" in traj_name:
         cf_start = end - num_non_white
         cf_end = traj_end
         cf_orig_yaw = orig_yaw[traj_start:cf_start]
-        cf_new = tf.atan2(traj_pos[cf_start+1:, 1] - traj_pos[cf_start:-1, 1], traj_pos[cf_start+1:, 0] - traj_pos[cf_start:-1, 0]) + cf_orig_yaw[:, -1]
-        new_yaw = tf.concat([new_yaw, cf_new], axis=0)
-        tf.print(new_yaw)
+        cf_new = np.arctan2(traj_pos[cf_start+1:, 1] - traj_pos[cf_start:-1, 1], traj_pos[cf_start+1:, 0] - traj_pos[cf_start:-1, 0]) + cf_orig_yaw[:, -1]
+        new_yaw = np.concatenate([new_yaw, cf_new], axis=0)
     
     traj["observation"]["yaw"] = new_yaw
     traj["observation"]["yaw_rotmat"] = tf.stack([tf.cos(new_yaw), -tf.sin(new_yaw), tf.sin(new_yaw), tf.cos(new_yaw)], axis=-1)
     breakpoint()
     return traj
-        
-def decode(
-    obs: dict,
-) -> dict:
-    """Decodes images and depth images, and then optionally resizes them."""
-
-    image = obs["image"]
-    if image.dtype == tf.string:
-        if tf.strings.length(image) == 0:
-            # this is a padding image
-            image = tf.zeros((128, 128, 3), dtype=tf.uint8)
-        else:
-            image = tf.io.decode_image(
-                image, expand_animations=False, dtype=tf.uint8
-            )
-    
-    obs[f"image_decoded"] = image
-
-    return obs
-
-def apply_obs_transform(fn: Callable[[dict], dict], frame: dict) -> dict:
-    frame["observation_decoded"] = fn(frame["observation"])
-    return frame
 
 def work_fn(worker_id, path_shards, output_dir, traj_infos, features, pbar_queue=None):
     print(f"Worker {worker_id} starting")
@@ -146,25 +119,25 @@ def work_fn(worker_id, path_shards, output_dir, traj_infos, features, pbar_queue
     # tf.config.set_visible_devices([], "GPU")
     # torch.cuda.set_device(worker_id)
     paths = path_shards[worker_id]
-    print(paths)
     for path in paths:
 
         writer = tf.io.TFRecordWriter(osp.join(output_dir, osp.basename(path)))
         dataset = tf.data.TFRecordDataset([path]).map(features.deserialize_example)
 
         for example in dataset:
+
             traj = example["steps"].batch(int(1e9)).get_single_element()
-            breakpoint()
-            # traj = tf.nest.map_structure(lambda x: x.numpy()[::subsample], traj)
             del example["steps"]
+
             example = tf.nest.map_structure(lambda x: x.numpy(), example)
             frames = traj["observation"]["image"]
-            breakpoint()
-            traj = fix_traj(traj, frames, traj_infos)
+            episode_metadata = example["episode_metadata"]
+
+            traj = fix_traj(traj, frames, episode_metadata, traj_infos)
             
             # serialize and write
             example["steps"] = traj
-            writer.write(new_features.serialize_example(example))
+            writer.write(features.serialize_example(example))
 
             # pbar_queue.put(1)
         writer.close()
