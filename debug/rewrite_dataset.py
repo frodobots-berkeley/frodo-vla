@@ -197,7 +197,7 @@ def reorganize_traj(traj):
     new_traj["steps"] = steps
     new_traj["episode_metadata"] = traj["traj_metadata"]["episode_metadata"]
 
-    return new_traj
+    return tfds.features.FeaturesDict(new_traj)
         
 
 def main(args):
