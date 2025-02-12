@@ -83,14 +83,14 @@ def fix_traj(traj, frames, episode_metadata, traj_info):
     deltas = np.linalg.norm(traj_pos[:-1] - traj_pos[1:], axis=-1)
     spacing = np.mean(deltas)
     normalization_factor = curr_traj_info["normalization_factor"]
-    print(f"Spacing for {traj_base_name} is {spacing} and normalization factor is {normalization_factor}")
-    if np.abs(spacing - normalization_factor) > 0.05:
+    if np.abs(spacing - normalization_factor) > 0.5:
         print(f"Spacing issue for {traj_base_name} with spacing {spacing} and normalization factor {normalization_factor}")
     
     # Check the yaw
     traj_yaw = traj["observation"]["yaw"]
     non_cf_yaw = traj_yaw[:, :num_non_white]
     orig_yaw = curr_traj_info["yaw"]
+    breakpoint()
     end = np.min(traj_start + num_non_white, traj_end)
     curr_orig_yaw = orig_yaw[:, traj_start:end+1]
     breakpoint()
