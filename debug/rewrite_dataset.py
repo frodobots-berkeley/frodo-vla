@@ -100,7 +100,7 @@ def fix_traj(traj, frames, episode_metadata, traj_info):
         cf_start = end - (frames.shape[0] - num_non_white)
         cf_new = np.arctan2(traj_pos[cf_start+1:, 1] - traj_pos[cf_start:-1, 1], traj_pos[cf_start+1:, 0] - traj_pos[cf_start:-1, 0]) + curr_orig_yaw[-1,...]
         new_yaw = np.concatenate([curr_orig_yaw, cf_new], axis=0)
-        assert new_yaw.shape == traj_yaw.shape
+        assert new_yaw.shape == traj_yaw.shape, f"New yaw shape {new_yaw.shape} does not match traj yaw shape {traj_yaw.shape}"
     else:
         new_yaw = curr_orig_yaw
     
