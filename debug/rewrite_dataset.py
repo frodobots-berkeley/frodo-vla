@@ -105,7 +105,8 @@ def fix_traj(traj, frames, episode_metadata, traj_info):
         new_yaw = np.expand_dims(curr_orig_yaw, 1)
     
     traj["observation"]["yaw"] = new_yaw
-    traj["observation"]["yaw_rotmat"] = np.stack([np.cos(new_yaw), -tf.sin(new_yaw), 0.0, tf.sin(new_yaw), tf.cos(new_yaw), 0.0, 0.0, 0.0, 1.0], axis=0)
+    traj["observation"]["yaw_rotmat"] = np.stack([np.cos(new_yaw), -tf.sin(new_yaw), 0.0, tf.sin(new_yaw), tf.cos(new_yaw), 0.0, 0.0, 0.0, 1.0], axis=-1).transpose(2, 0, 1).reshape(-1, 3, 3) 
+
     breakpoint()
     return traj
 
