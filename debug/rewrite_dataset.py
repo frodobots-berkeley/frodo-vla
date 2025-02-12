@@ -142,34 +142,34 @@ def apply_obs_transform(fn: Callable[[dict], dict], frame: dict) -> dict:
 
 def work_fn(worker_id, path_shard, output_dir, traj_infos, pbar_queue=None):
     print(f"Worker {worker_id} starting")
-    try:
-        tf.config.set_visible_devices([], "GPU")
-        # torch.cuda.set_device(worker_id)
-        paths = path_shards[worker_id]
-        print(paths)
-        for path in paths:
+    # try:
+    # tf.config.set_visible_devices([], "GPU")
+    # torch.cuda.set_device(worker_id)
+    paths = path_shards[worker_id]
+    print(paths)
+    for path in paths:
 
-            writer = tf.io.TFRecordWriter(osp.join(output_dir, osp.basename(path)))
-            dataset = tf.data.TFRecordDataset([path]).map(features.deserialize_example)
+        writer = tf.io.TFRecordWriter(osp.join(output_dir, osp.basename(path)))
+        dataset = tf.data.TFRecordDataset([path]).map(features.deserialize_example)
 
-            for example in dataset:
-                traj = example["steps"].batch(int(1e9)).get_single_element()
-                traj = tf.nest.map_structure(lambda x: x.numpy()[::subsample], traj)
-                del example["steps"]
-                example = tf.nest.map_structure(lambda x: x.numpy(), example)
-                frames = traj["observation"]["image"]
-                breakpoint()
-                traj = fix_traj(traj, frames, traj_infos)
-                
-                # serialize and write
-                example["steps"] = traj
-                writer.write(new_features.serialize_example(example))
+        for example in dataset:
+            traj = example["steps"].batch(int(1e9)).get_single_element()
+            traj = tf.nest.map_structure(lambda x: x.numpy()[::subsample], traj)
+            del example["steps"]
+            example = tf.nest.map_structure(lambda x: x.numpy(), example)
+            frames = traj["observation"]["image"]
+            breakpoint()
+            traj = fix_traj(traj, frames, traj_infos)
+            
+            # serialize and write
+            example["steps"] = traj
+            writer.write(new_features.serialize_example(example))
 
-                # pbar_queue.put(1)
-            writer.close()
-    except Exception:
-        # pbar_queue.put(traceback.format_exc())
-        pass
+            # pbar_queue.put(1)
+        writer.close()
+    # except Exception:
+    #     # pbar_queue.put(traceback.format_exc())
+    #     pass
 
 def main(args):
 
