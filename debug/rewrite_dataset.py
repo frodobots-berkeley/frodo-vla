@@ -63,11 +63,9 @@ def fix_traj(traj, frames, episode_metadata, traj_info):
     traj_base_name = traj_name.split("_chunk_")[0]
     traj_start = int(traj_name.split("_start_")[-1].split("_")[0])
     traj_end = int(traj_name.split("_end_")[-1].split("_")[0])
-    breakpoint()
 
     # Modify the traj info for this trajectory
     curr_traj_info = traj_info[traj_base_name]
-    print(curr_traj_info)
 
     # Check the number of non-white images in the traj
     image_non_white = np.sum(np.any(frames != 255, axis=-1), axis=(1, 2)) > 0
@@ -91,7 +89,6 @@ def fix_traj(traj, frames, episode_metadata, traj_info):
     orig_yaw = curr_traj_info["yaw"]
     end = np.min((traj_start + num_non_white, traj_end))
     curr_orig_yaw = orig_yaw[traj_start:end]
-    breakpoint()
 
     assert non_cf_yaw.shape == curr_orig_yaw.shape
 
@@ -101,7 +98,8 @@ def fix_traj(traj, frames, episode_metadata, traj_info):
         cf_new = np.arctan2(traj_pos[cf_start+1:, 1] - traj_pos[cf_start:-1, 1], traj_pos[cf_start+1:, 0] - traj_pos[cf_start:-1, 0])
         cf_new = cf_new - cf_new[0] + curr_orig_yaw[-1]
         assert (curr_orig_yaw[-1] - cf_new[0]) < 0.5, f"Yaw difference between orig and cf {curr_orig_yaw[-1] - cf_new[0]}"
-        new_yaw = np.concatenate([curr_orig_yaw, cf_new, cf_new[-1,...]], axis=0)
+        breakpoint()
+        new_yaw = np.concatenate([curr_orig_yaw, cf_new, cf_new[-1]], axis=0)
         assert new_yaw.shape == traj_yaw.shape, f"New yaw shape {new_yaw.shape} does not match traj yaw shape {traj_yaw.shape}"
     else:
         new_yaw = curr_orig_yaw
