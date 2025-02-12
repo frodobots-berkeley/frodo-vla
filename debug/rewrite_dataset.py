@@ -10,6 +10,10 @@ import sys
 import dlimp as dl
 from functools import partial
 from typing import Callable, Mapping, Optional, Sequence, Tuple, Union
+import torch.multiprocessing as mp
+import os.path as osp
+import traceback
+import tyro
 
 # import octo.data.obs_transforms as obs_transforms
 # from octo.data.dataset import apply_frame_transforms
@@ -52,7 +56,7 @@ def lookup_in_dict(key_tensor, dictionary):
   )
 
 # Fix issues with dataset from TFrecords 
-def fix_dataset(traj, traj_info):
+def fix_traj(traj, frames, traj_info):
     
     # Get the metadata for this traj 
     traj_name = tf.strings.split(traj["traj_metadata"]["episode_metadata"]["file_path"], "/")[-1]
@@ -136,210 +140,47 @@ def apply_obs_transform(fn: Callable[[dict], dict], frame: dict) -> dict:
     frame["observation_decoded"] = fn(frame["observation"])
     return frame
 
-# @tf.py_function(Tout=tfds.features.FeaturesDict({
-#                 'steps': tfds.features.Dataset({
-#                     'observation': tfds.features.FeaturesDict({
-#                         'image': tfds.features.Image(
-#                             shape=(128, 128, 3),
-#                             dtype=np.uint8,
-#                             encoding_format='png',
-#                             doc='Main camera RGB observation.',
-#                         ),
-#                         'state': tfds.features.Tensor(
-#                             shape=(3,),
-#                             dtype=np.float64,
-#                             doc='Robot state, consists of [2x position, 1x yaw]',
-#                         ),
-#                         'position': tfds.features.Tensor(
-#                             shape=(2,),
-#                             dtype=np.float64,
-#                             doc='Robot position',
-#                         ),
-#                         'yaw': tfds.features.Tensor(
-#                             shape=(1,),
-#                             dtype=np.float64,
-#                             doc='Robot yaw',
-#                         ),
-#                         'yaw_rotmat': tfds.features.Tensor(
-#                             shape=(3, 3),
-#                             dtype=np.float64,
-#                             doc='Robot yaw rotation matrix',
-#                         ),
+def work_fn(worker_id, path_shard, output_dir, traj_infos, pbar_queue=None):
+    try:
+        tf.config.set_visible_devices([], "GPU")
+        torch.cuda.set_device(worker_id)
+        paths = path_shards[worker_id]
+        for path in paths:
 
-#                     }),
-#                     'action': tfds.features.Tensor(
-#                         shape=(2,),
-#                         dtype=np.float64,
-#                         doc='Robot action, consists of 2x position'
-#                     ),
-#                      'action_angle': tfds.features.Tensor(
-#                         shape=(3,),
-#                         dtype=np.float64,
-#                         doc='Robot action, consists of 2x position, 1x yaw',
-#                     ),
+            writer = tf.io.TFRecordWriter(osp.join(output_dir, osp.basename(path)))
+            dataset = tf.data.TFRecordDataset([path]).map(features.deserialize_example)
 
-#                     'discount': tfds.features.Scalar(
-#                         dtype=np.float64,
-#                         doc='Discount if provided, default to 1.'
-#                     ),
-#                     'reward': tfds.features.Scalar(
-#                         dtype=np.float64,
-#                         doc='Reward if provided, 1 on final step for demos.'
-#                     ),
-#                     'is_first': tfds.features.Scalar(
-#                         dtype=np.bool_,
-#                         doc='True on first step of the episode.'
-#                     ),
-#                     'is_last': tfds.features.Scalar(
-#                         dtype=np.bool_,
-#                         doc='True on last step of the episode.'
-#                     ),
-#                     'is_terminal': tfds.features.Scalar(
-#                         dtype=np.bool_,
-#                         doc='True on last step of the episode if it is a terminal step, True for demos.'
-#                     ),
-#                     'language_instruction': tfds.features.Tensor(
-#                         shape=(10,),
-#                         dtype=tf.string,
-#                         doc='Language Instruction.'
-#                     ),
-#                 }),
-#                 'episode_metadata': tfds.features.FeaturesDict({
-#                     'file_path': tfds.features.Text(
-#                         doc='Path to the original data file.'
-#                     ),
-#                     'episode_id': tfds.features.Scalar(
-#                         dtype=tf.int32,
-#                         doc='Episode ID.'
-#                     ),
-#                 }),
-#             }))
-def reorganize_traj(traj):
-    new_traj = {}
-
-    # Observation
-    images = traj["observation"]["image"]
-    states = traj["observation"]["state"]
-    position = traj["observation"]["position"]
-    yaws = traj["observation"]["yaw"]
-    yaw_rotmat = traj["observation"]["yaw_rotmat"]
-
-    # Actions
-    actions = traj["action"]
-    action_angles = traj["action_angle"]
-    discount = traj["discount"]
-    reward = traj["reward"]
-    is_first = traj["is_first"]
-    is_last = traj["is_last"]
-    is_terminal = traj["is_terminal"]
-    language_instruction = traj["language_instruction"]
-
-    num_steps = tf.shape(images)[0]
-
-    def extract_step(i):
-        return {"observation": {"image": tfds.features.Tensor(images[i,...]),
-                            "state" : tfds.features.Tensor(states[i,...]),
-                            "position": tfds.features.Tensor(position[i,...]),
-                            "yaw": tfds.features.Tensor(yaws[i,]),
-                            "yaw_rotmat": tfds.features.Tensor(yaw_rotmat[i,...]),
-                            },
-            "action": tfds.features.Tensor(actions[i,...]),
-            "action_angle": tfds.features.Tensor(action_angles[i,...]),
-            "discount": tfds.features.Scalar(discount[i,...]),
-            "reward": tfds.features.Scalar(reward[i,...]),
-            "is_first": tfds.features.Scalar(is_first[i,...]),
-            "is_last": tfds.features.Scalar(is_last[i,...]),
-            "is_terminal": tfds.features.Scalar(is_terminal[i,...]),
-            "language_instruction": tfds.features.Tensor(language_instruction),
-        }
-
-    # Vectorized map over the first dimension (steps)
-    steps = tf.map_fn(
-        extract_step, tf.range(num_steps), 
-        # fn_output_signature={
-        #             'observation': tfds.features.FeaturesDict({
-        #                 'image': tfds.features.Image(
-        #                     shape=(128, 128, 3),
-        #                     dtype=np.uint8,
-        #                     encoding_format='png',
-        #                     doc='Main camera RGB observation.',
-        #                 ),
-        #                 'state': tfds.features.Tensor(
-        #                     shape=(3,),
-        #                     dtype=np.float64,
-        #                     doc='Robot state, consists of [2x position, 1x yaw]',
-        #                 ),
-        #                 'position': tfds.features.Tensor(
-        #                     shape=(2,),
-        #                     dtype=np.float64,
-        #                     doc='Robot position',
-        #                 ),
-        #                 'yaw': tfds.features.Tensor(
-        #                     shape=(1,),
-        #                     dtype=np.float64,
-        #                     doc='Robot yaw',
-        #                 ),
-        #                 'yaw_rotmat': tfds.features.Tensor(
-        #                     shape=(3, 3),
-        #                     dtype=np.float64,
-        #                     doc='Robot yaw rotation matrix',
-        #                 ),
-
-        #             }),
-        #             'action': tfds.features.Tensor(
-        #                 shape=(2,),
-        #                 dtype=np.float64,
-        #                 doc='Robot action, consists of 2x position'
-        #             ),
-        #              'action_angle': tfds.features.Tensor(
-        #                 shape=(3,),
-        #                 dtype=np.float64,
-        #                 doc='Robot action, consists of 2x position, 1x yaw',
-        #             ),
-
-        #             'discount': tfds.features.Scalar(
-        #                 dtype=np.float64,
-        #                 doc='Discount if provided, default to 1.'
-        #             ),
-        #             'reward': tfds.features.Scalar(
-        #                 dtype=np.float64,
-        #                 doc='Reward if provided, 1 on final step for demos.'
-        #             ),
-        #             'is_first': tfds.features.Scalar(
-        #                 dtype=np.bool_,
-        #                 doc='True on first step of the episode.'
-        #             ),
-        #             'is_last': tfds.features.Scalar(
-        #                 dtype=np.bool_,
-        #                 doc='True on last step of the episode.'
-        #             ),
-        #             'is_terminal': tfds.features.Scalar(
-        #                 dtype=np.bool_,
-        #                 doc='True on last step of the episode if it is a terminal step, True for demos.'
-        #             ),
-        #             'language_instruction': tfds.features.Tensor(
-        #                 shape=(10,),
-        #                 dtype=tf.string,
-        #                 doc='Language Instruction.'
-        #             ),
-        #         }
-        )
-    breakpoint()
-    new_traj["steps"] = tfds.features.Dataset(steps)
-    new_traj["episode_metadata"] = tfds.features.FeaturesDict(traj["traj_metadata"]["episode_metadata"])
-
-    return tfds.features.FeaturesDict(new_traj)
-        
+            for example in dataset:
+                traj = example["steps"].batch(int(1e9)).get_single_element()
+                traj = tf.nest.map_structure(lambda x: x.numpy()[::subsample], traj)
+                del example["steps"]
+                example = tf.nest.map_structure(lambda x: x.numpy(), example)
+                frames = traj["observation"]["image"]
+                breakpoint()
+                traj = fix_traj(traj, frames, traj_infos)
+                
+                # serialize and write
+                example["steps"] = traj
+                writer.write(new_features.serialize_example(example))
+                pbar_queue.put(1)
+            writer.close()
+    except Exception:
+        pbar_queue.put(traceback.format_exc())
 
 def main(args):
 
     # Load in the dataset
     data_dir = args.data_dir
     name = args.dataset_name
+    output_dir = args.output_dir
+    num_workers = args.num_workers
+
     builder = tfds.builder(name, data_dir=data_dir)
-    dataset = dl.DLataset.from_rlds(builder, split="all", shuffle=False)
-    breakpoint()
-    resize_size = (128, 128)
+    output_dir = osp.join(output_dir, *str(builder.data_path).split(osp.sep)[-2:])
+    tf.io.gfile.makedirs(output_dir)
+    paths = tf.io.gfile.glob(f"{builder.data_path}/*.tfrecord*")
+    path_shards = np.array_split(paths, num_workers)
+    
     num_parallel_calls = tf.data.AUTOTUNE
 
     # Load the dataset traj and yaw files
@@ -359,20 +200,51 @@ def main(args):
         num_parallel_calls,
     )
 
-    # Fix the dataset
-    dataset = dataset.traj_map(partial(fix_dataset, traj_info=traj_infos), num_parallel_calls=num_parallel_calls)
-    
-    # Remove the image_decoded field 
-    dataset = dataset.traj_map(lambda traj: {k: v for k, v in traj.items() if k != "observation_decoded"}, num_parallel_calls=num_parallel_calls)
-
     # Write dataset as RLDS
-    dataset = dataset.traj_map(reorganize_traj, num_parallel_calls=num_parallel_calls)
-    dataset.save(args.output_dir)
+    features_spec = builder.info.features
+    
+    if num_workers == 1:
+        worker_id = 0
+        work_fn(worker_id, path_shards, output_dir, traj_infos)
+    else:
+        ctx = mp.get_context("spawn")
+        pbar_queue = ctx.SimpleQueue()
+        
+        pcontext = mp.spawn(
+            fix_dataset,
+            nprocs=num_workers,
+            args=(
+                path_shards,
+                output_dir,
+                traj_infos,
+                pbar_queue,
+            ),
+            join=False,
+        )
+        pbar = tqdm.tqdm(total=builder.info.splits["all"].num_examples)
+        n_running = num_workers
+        while True:
+            n = pbar_queue.get()
+            if isinstance(n, str):
+                print(n)
+                break
+            elif n is None:
+                n_running -= 1
+                if n_running == 0:
+                    break
+            else:
+                pbar.update(n)
+        pbar.close()
+        pbar_queue.close()
+        if not pcontext.join(timeout=5):
+            raise RuntimeError("Failed to join processes.")
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--data_dir", type=str, required=True)
     parser.add_argument("--dataset_name", type=str, required=True)
     parser.add_argument("--output_dir", type=str, default="gs://vlm-guidance-data/test")
+    parser.add_argument("--num_workers", type=int, default=1)
     args = parser.parse_args()
     main(args)
