@@ -66,7 +66,7 @@ def fix_traj(traj, frames, episode_metadata, traj_info):
     breakpoint()
 
     # Modify the traj info for this trajectory
-    curr_traj_info = traj_infos[traj_base_name]
+    curr_traj_info = traj_info[traj_base_name]
     print(curr_traj_info)
 
     # Check the number of non-white images in the traj
