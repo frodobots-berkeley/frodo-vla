@@ -136,7 +136,7 @@ def apply_obs_transform(fn: Callable[[dict], dict], frame: dict) -> dict:
     frame["observation_decoded"] = fn(frame["observation"])
     return frame
 
-@tf.py_function()
+@tf.py_function(Tout=tfds.features.FeaturesDict)
 def reorganize_traj(traj):
     new_traj = {}
 
@@ -177,24 +177,84 @@ def reorganize_traj(traj):
 
     # Vectorized map over the first dimension (steps)
     steps = tf.map_fn(
-        extract_step, tf.range(num_steps), fn_output_signature={
-            "observation": {
-                "image": tf.TensorSpec(shape=images.shape[1:], dtype=images.dtype),
-                "state": tf.TensorSpec(shape=states.shape[1:], dtype=states.dtype),
-                "position": tf.TensorSpec(shape=position.shape[1:], dtype=position.dtype),
-                "yaw": tf.TensorSpec(shape=yaws.shape[1:], dtype=yaws.dtype),
-                "yaw_rotmat": tf.TensorSpec(shape=yaw_rotmat.shape[1:], dtype=yaw_rotmat.dtype),
-            },
-            "action": tf.TensorSpec(shape=actions.shape[1:], dtype=actions.dtype),
-            "action_angle": tf.TensorSpec(shape=action_angles.shape[1:], dtype=action_angles.dtype),
-            "discount": tf.TensorSpec(shape=discount.shape[1:], dtype=discount.dtype),
-            "reward": tf.TensorSpec(shape=reward.shape[1:], dtype=reward.dtype),
-            "is_first": tf.TensorSpec(shape=is_first.shape[1:], dtype=is_first.dtype),
-            "is_last": tf.TensorSpec(shape=is_last.shape[1:], dtype=is_last.dtype),
-            "is_terminal": tf.TensorSpec(shape=is_terminal.shape[1:], dtype=is_terminal.dtype),
-            "language_instruction": tf.TensorSpec(shape=language_instruction.shape[1:], dtype=language_instruction.dtype)  # Assuming it's a string
-        }
-    )
+        extract_step, tf.range(num_steps), fn_output_signature=tfds.features.FeaturesDict({
+                'steps': tfds.features.Dataset({
+                    'observation': tfds.features.FeaturesDict({
+                        'image': tfds.features.Image(
+                            shape=(RESIZE[0], RESIZE[1], 3),
+                            dtype=np.uint8,
+                            encoding_format='png',
+                            doc='Main camera RGB observation.',
+                        ),
+                        'state': tfds.features.Tensor(
+                            shape=(3,),
+                            dtype=np.float64,
+                            doc='Robot state, consists of [2x position, 1x yaw]',
+                        ),
+                        'position': tfds.features.Tensor(
+                            shape=(2,),
+                            dtype=np.float64,
+                            doc='Robot position',
+                        ),
+                        'yaw': tfds.features.Tensor(
+                            shape=(1,),
+                            dtype=np.float64,
+                            doc='Robot yaw',
+                        ),
+                        'yaw_rotmat': tfds.features.Tensor(
+                            shape=(3, 3),
+                            dtype=np.float64,
+                            doc='Robot yaw rotation matrix',
+                        ),
+
+                    }),
+                    'action': tfds.features.Tensor(
+                        shape=(2,),
+                        dtype=np.float64,
+                        doc='Robot action, consists of 2x position'
+                    ),
+                     'action_angle': tfds.features.Tensor(
+                        shape=(3,),
+                        dtype=np.float64,
+                        doc='Robot action, consists of 2x position, 1x yaw',
+                    ),
+
+                    'discount': tfds.features.Scalar(
+                        dtype=np.float64,
+                        doc='Discount if provided, default to 1.'
+                    ),
+                    'reward': tfds.features.Scalar(
+                        dtype=np.float64,
+                        doc='Reward if provided, 1 on final step for demos.'
+                    ),
+                    'is_first': tfds.features.Scalar(
+                        dtype=np.bool_,
+                        doc='True on first step of the episode.'
+                    ),
+                    'is_last': tfds.features.Scalar(
+                        dtype=np.bool_,
+                        doc='True on last step of the episode.'
+                    ),
+                    'is_terminal': tfds.features.Scalar(
+                        dtype=np.bool_,
+                        doc='True on last step of the episode if it is a terminal step, True for demos.'
+                    ),
+                    'language_instruction': tfds.features.Tensor(
+                        shape=(10,),
+                        dtype=tf.string,
+                        doc='Language Instruction.'
+                    ),
+                }),
+                'episode_metadata': tfds.features.FeaturesDict({
+                    'file_path': tfds.features.Text(
+                        doc='Path to the original data file.'
+                    ),
+                    'episode_id': tfds.features.Scalar(
+                        dtype=tf.int32,
+                        doc='Episode ID.'
+                    ),
+                }),
+            }))
     breakpoint()
     new_traj["steps"] = steps
     new_traj["episode_metadata"] = traj["traj_metadata"]["episode_metadata"]
