@@ -140,7 +140,7 @@ def apply_obs_transform(fn: Callable[[dict], dict], frame: dict) -> dict:
                 'steps': tfds.features.Dataset({
                     'observation': tfds.features.FeaturesDict({
                         'image': tfds.features.Image(
-                            shape=(RESIZE[0], RESIZE[1], 3),
+                            shape=(128, 128, 3),
                             dtype=np.uint8,
                             encoding_format='png',
                             doc='Main camera RGB observation.',
