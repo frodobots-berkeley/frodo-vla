@@ -154,7 +154,8 @@ def work_fn(worker_id, path_shards, output_dir, traj_infos, features, pbar_queue
 
         for example in dataset:
             traj = example["steps"].batch(int(1e9)).get_single_element()
-            traj = tf.nest.map_structure(lambda x: x.numpy()[::subsample], traj)
+            breakpoint()
+            # traj = tf.nest.map_structure(lambda x: x.numpy()[::subsample], traj)
             del example["steps"]
             example = tf.nest.map_structure(lambda x: x.numpy(), example)
             frames = traj["observation"]["image"]
