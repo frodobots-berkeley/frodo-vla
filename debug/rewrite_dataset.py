@@ -237,20 +237,20 @@ def reorganize_traj(traj):
     num_steps = tf.shape(images)[0]
     breakpoint()
     def extract_step(i):
-        return {"observation": {"image": tfds.features.Image(images[i,:]),
-                            "state" : tfds.features.Tensor(states[i,:]),
-                            "position": tfds.features.Tensor(position[i,:]),
-                            "yaw": tfds.features.Tensor(yaws[i,:]),
-                            "yaw_rotmat": tfds.features.Tensor(yaw_rotmat[i,:]),
+        return {"observation": {"image": tfds.features.Image(images[i,...]),
+                            "state" : tfds.features.Tensor(states[i,...]),
+                            "position": tfds.features.Tensor(position[i,...]),
+                            "yaw": tfds.features.Tensor(yaws[i,]),
+                            "yaw_rotmat": tfds.features.Tensor(yaw_rotmat[i,...]),
                             },
-            "action": tfds.features.Tensor(actions[i,:]),
-            "action_angle": tfds.features.Tensor(action_angles[i,:]),
-            "discount": tfds.features.Scalar(discount[i,:]),
-            "reward": tfds.features.Scalar(reward[i,:]),
-            "is_first": tfds.features.Scalar(is_first[i,:]),
-            "is_last": tfds.features.Scalar(is_last[i,:]),
-            "is_terminal": tfds.features.Scalar(is_terminal[i,:]),
-            "language_instruction": tfds.features.Tensor(language_instruction[i,:]),
+            "action": tfds.features.Tensor(actions[i,...]),
+            "action_angle": tfds.features.Tensor(action_angles[i,...]),
+            "discount": tfds.features.Scalar(discount[i,...]),
+            "reward": tfds.features.Scalar(reward[i,...]),
+            "is_first": tfds.features.Scalar(is_first[i,...]),
+            "is_last": tfds.features.Scalar(is_last[i,...]),
+            "is_terminal": tfds.features.Scalar(is_terminal[i,...]),
+            "language_instruction": tfds.features.Tensor(language_instruction[i,...]),
         }
 
     # Vectorized map over the first dimension (steps)
