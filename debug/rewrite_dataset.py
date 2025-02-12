@@ -140,7 +140,7 @@ def apply_obs_transform(fn: Callable[[dict], dict], frame: dict) -> dict:
     frame["observation_decoded"] = fn(frame["observation"])
     return frame
 
-def work_fn(worker_id, path_shards, output_dir, traj_infos, pbar_queue=None):
+def work_fn(worker_id, path_shards, output_dir, traj_infos, features, pbar_queue=None):
     print(f"Worker {worker_id} starting")
     # try:
     # tf.config.set_visible_devices([], "GPU")
@@ -200,7 +200,7 @@ def main(args):
     
     if num_workers == 1:
         worker_id = 0
-        work_fn(worker_id, path_shards, output_dir, traj_infos)
+        work_fn(worker_id, path_shards, output_dir, traj_infos, features_spec)
     else:
         ctx = mp.get_context("spawn")
         pbar_queue = ctx.SimpleQueue()
@@ -212,6 +212,7 @@ def main(args):
                 path_shards,
                 output_dir,
                 traj_infos,
+                features_spec,
                 pbar_queue,
             ),
             join=False,
