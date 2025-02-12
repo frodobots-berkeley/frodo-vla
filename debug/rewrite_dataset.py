@@ -99,7 +99,7 @@ def fix_traj(traj, frames, episode_metadata, traj_info):
         cf_new = cf_new - cf_new[0] + curr_orig_yaw[-1]
         assert (curr_orig_yaw[-1] - cf_new[0]) < 0.5, f"Yaw difference between orig and cf {curr_orig_yaw[-1] - cf_new[0]}"
         breakpoint()
-        new_yaw = np.concatenate([curr_orig_yaw, cf_new, cf_new[-1]], axis=0)
+        new_yaw = np.concatenate([curr_orig_yaw, cf_new, cf_new[[-1]]], axis=0).squeeze()
         assert new_yaw.shape == traj_yaw.shape, f"New yaw shape {new_yaw.shape} does not match traj yaw shape {traj_yaw.shape}"
     else:
         new_yaw = curr_orig_yaw
