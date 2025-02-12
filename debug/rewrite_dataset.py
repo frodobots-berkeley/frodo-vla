@@ -237,7 +237,7 @@ def reorganize_traj(traj):
     num_steps = tf.shape(images)[0]
 
     def extract_step(i):
-        return {"observation": {"image": tfds.features.Image(images[i,...]),
+        return {"observation": {"image": tfds.features.Tensor(images[i,...]),
                             "state" : tfds.features.Tensor(states[i,...]),
                             "position": tfds.features.Tensor(position[i,...]),
                             "yaw": tfds.features.Tensor(yaws[i,]),
