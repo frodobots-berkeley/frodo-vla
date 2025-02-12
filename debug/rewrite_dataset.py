@@ -97,7 +97,7 @@ def fix_traj(traj, frames, episode_metadata, traj_info):
 
     # If the trajectory has a counterfactual, we need to generate the correct yaw for the counterfactual part
     if "cf" in traj_name:
-        cf_start = end - (images.shape[0] - num_non_white)
+        cf_start = end - (frames.shape[0] - num_non_white)
         cf_new = np.arctan2(traj_pos[cf_start+1:, 1] - traj_pos[cf_start:-1, 1], traj_pos[cf_start+1:, 0] - traj_pos[cf_start:-1, 0]) + cf_orig_yaw[:, -1]
         new_yaw = np.concatenate([new_yaw, cf_new], axis=0)
         assert new_yaw.shape == traj_yaw.shape
