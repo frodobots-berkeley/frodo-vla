@@ -191,15 +191,6 @@ def main(args):
             traj_info = pickle.load(f)
         traj_infos.update(traj_info)
 
-    # decode + resize images (and depth images)
-    dataset = dataset.frame_map(
-        partial(
-            apply_obs_transform,
-            decode,
-        ),
-        num_parallel_calls,
-    )
-
     # Write dataset as RLDS
     features_spec = builder.info.features
     
