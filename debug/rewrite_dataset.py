@@ -10,7 +10,7 @@ import sys
 import dlimp as dl
 from functools import partial
 from typing import Callable, Mapping, Optional, Sequence, Tuple, Union
-import torch.multiprocessing as mp
+# import torch.multiprocessing as mp
 import os.path as osp
 import traceback
 import tyro
@@ -143,7 +143,7 @@ def apply_obs_transform(fn: Callable[[dict], dict], frame: dict) -> dict:
 def work_fn(worker_id, path_shard, output_dir, traj_infos, pbar_queue=None):
     try:
         tf.config.set_visible_devices([], "GPU")
-        torch.cuda.set_device(worker_id)
+        # torch.cuda.set_device(worker_id)
         paths = path_shards[worker_id]
         for path in paths:
 
