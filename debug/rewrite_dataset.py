@@ -87,10 +87,10 @@ def fix_traj(traj, frames, episode_metadata, traj_info):
     
     # Check the yaw
     traj_yaw = traj["observation"]["yaw"]
-    non_cf_yaw = traj_yaw[:, :num_non_white]
+    non_cf_yaw = traj_yaw[:num_non_white - 1, ...]
     orig_yaw = curr_traj_info["yaw"]
     breakpoint()
-    end = np.min(traj_start + num_non_white, traj_end)
+    end = np.min((traj_start + num_non_white, traj_end))
     curr_orig_yaw = orig_yaw[:, traj_start:end+1]
     breakpoint()
 
