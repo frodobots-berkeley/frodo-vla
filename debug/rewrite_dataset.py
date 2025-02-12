@@ -141,6 +141,7 @@ def apply_obs_transform(fn: Callable[[dict], dict], frame: dict) -> dict:
     return frame
 
 def work_fn(worker_id, path_shard, output_dir, traj_infos, pbar_queue=None):
+    print(f"Worker {worker_id} starting")
     try:
         tf.config.set_visible_devices([], "GPU")
         # torch.cuda.set_device(worker_id)
