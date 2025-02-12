@@ -137,7 +137,7 @@ def apply_obs_transform(fn: Callable[[dict], dict], frame: dict) -> dict:
     return frame
 
 def reorganize_traj(traj):
-    
+    breakpoint()
     new_traj = {}
 
     # Observation
