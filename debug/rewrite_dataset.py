@@ -140,7 +140,7 @@ def apply_obs_transform(fn: Callable[[dict], dict], frame: dict) -> dict:
     frame["observation_decoded"] = fn(frame["observation"])
     return frame
 
-def work_fn(worker_id, path_shard, output_dir, traj_infos, pbar_queue=None):
+def work_fn(worker_id, path_shards, output_dir, traj_infos, pbar_queue=None):
     print(f"Worker {worker_id} starting")
     # try:
     # tf.config.set_visible_devices([], "GPU")
