@@ -250,7 +250,7 @@ def reorganize_traj(traj):
             "is_first": tfds.features.Scalar(is_first[i,...]),
             "is_last": tfds.features.Scalar(is_last[i,...]),
             "is_terminal": tfds.features.Scalar(is_terminal[i,...]),
-            "language_instruction": tfds.features.Tensor(language_instruction[i,...]),
+            "language_instruction": tfds.features.Tensor(language_instruction),
         }
 
     # Vectorized map over the first dimension (steps)
