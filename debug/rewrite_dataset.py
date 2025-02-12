@@ -70,9 +70,8 @@ def fix_traj(traj, frames, episode_metadata, traj_info):
     print(curr_traj_info)
 
     # Check the number of non-white images in the traj
-    image_non_white = np.any(frames != 255, axis=0)
+    image_non_white = np.sum(np.any(frames != 255, axis=-1), axis=(1, 2)) > 0
     num_non_white = np.sum(image_non_white)
-    breakpoint()
 
     # Check two things: 
     # 1. Is the spacing between points close to that of the expected normalization factor
