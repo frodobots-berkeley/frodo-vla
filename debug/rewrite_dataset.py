@@ -194,6 +194,7 @@ def reorganize_traj(traj):
             "language_instruction": tf.TensorSpec(shape=language_instruction.shape, dtype=language_instruction.dtype)  # Assuming it's a string
         }
     )
+    breakpoint()
     new_traj["steps"] = steps
     new_traj["episode_metadata"] = traj["traj_metadata"]["episode_metadata"]
 
