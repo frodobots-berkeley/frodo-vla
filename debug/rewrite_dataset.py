@@ -87,25 +87,22 @@ def fix_traj(traj, frames, episode_metadata, traj_info):
     
     # Check the yaw
     traj_yaw = traj["observation"]["yaw"]
-    non_cf_yaw = traj_yaw[:num_non_white - 1, ...]
+    non_cf_yaw = tf.squeeze(traj_yaw[:num_non_white], axis=-1).numpy()
     orig_yaw = curr_traj_info["yaw"]
-    breakpoint()
     end = np.min((traj_start + num_non_white, traj_end))
-    curr_orig_yaw = orig_yaw[:, traj_start:end+1]
+    curr_orig_yaw = orig_yaw[traj_start:end]
     breakpoint()
 
     assert non_cf_yaw.shape == curr_orig_yaw.shape
 
-    # Compute the yaw of the original part of the trajectory 
-    new_yaw = orig_yaw[traj_start:end + 1]
-
     # If the trajectory has a counterfactual, we need to generate the correct yaw for the counterfactual part
     if "cf" in traj_name:
-        cf_start = end - num_non_white
-        cf_end = traj_end
-        cf_orig_yaw = orig_yaw[traj_start:cf_start]
+        cf_start = end - (images.shape[0] - num_non_white)
         cf_new = np.arctan2(traj_pos[cf_start+1:, 1] - traj_pos[cf_start:-1, 1], traj_pos[cf_start+1:, 0] - traj_pos[cf_start:-1, 0]) + cf_orig_yaw[:, -1]
         new_yaw = np.concatenate([new_yaw, cf_new], axis=0)
+        assert new_yaw.shape == traj_yaw.shape
+    else:
+        new_yaw = curr_orig_yaw
     
     traj["observation"]["yaw"] = new_yaw
     traj["observation"]["yaw_rotmat"] = tf.stack([tf.cos(new_yaw), -tf.sin(new_yaw), tf.sin(new_yaw), tf.cos(new_yaw)], axis=-1)
