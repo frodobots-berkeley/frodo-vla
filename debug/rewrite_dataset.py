@@ -162,10 +162,12 @@ def work_fn(worker_id, path_shard, output_dir, traj_infos, pbar_queue=None):
                 # serialize and write
                 example["steps"] = traj
                 writer.write(new_features.serialize_example(example))
-                pbar_queue.put(1)
+
+                # pbar_queue.put(1)
             writer.close()
     except Exception:
-        pbar_queue.put(traceback.format_exc())
+        # pbar_queue.put(traceback.format_exc())
+        pass
 
 def main(args):
 
