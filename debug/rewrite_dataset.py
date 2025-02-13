@@ -11,7 +11,7 @@ from tqdm import tqdm
 import dlimp as dl
 from functools import partial
 from typing import Callable, Mapping, Optional, Sequence, Tuple, Union
-# import torch.multiprocessing as mp
+import torch.multiprocessing as mp
 import os.path as osp
 import traceback
 # import tyro
@@ -104,7 +104,7 @@ def fix_traj(traj, frames, episode_metadata, traj_info):
         new_yaw = np.expand_dims(curr_orig_yaw, 1)
     
     assert new_yaw.shape == traj_yaw.shape, f"New yaw shape {new_yaw.shape} does not match traj yaw shape {traj_yaw.shape}"
-    
+
     traj["observation"]["yaw"] = new_yaw
     traj["observation"]["yaw_rotmat"] =  np.stack([np.cos(new_yaw), -np.sin(new_yaw), np.zeros(new_yaw.shape), np.sin(new_yaw), np.cos(new_yaw), np.zeros(new_yaw.shape), np.zeros(new_yaw.shape), np.zeros(new_yaw.shape), np.ones(new_yaw.shape)], axis=-1)
     traj["observation"]["yaw_rotmat"] = traj["observation"]["yaw_rotmat"].reshape(-1, 3, 3)
@@ -113,39 +113,39 @@ def fix_traj(traj, frames, episode_metadata, traj_info):
 
 def work_fn(worker_id, path_shards, output_dir, traj_infos, features, pbar_queue=None):
     print(f"Worker {worker_id} starting")
-    # try:
-    # tf.config.set_visible_devices([], "GPU")
-    # torch.cuda.set_device(worker_id)
-    paths = path_shards[worker_id]
-    for path in tqdm(paths):
+    try:
+        tf.config.set_visible_devices([], "TPU")
+        torch.cuda.set_device(worker_id)
+        paths = path_shards[worker_id]
+        for path in tqdm(paths):
 
-        if osp.join(output_dir, osp.basename(path)) in tf.io.gfile.glob(f"{output_dir}/*.tfrecord*"):
-            continue
+            if osp.join(output_dir, osp.basename(path)) in tf.io.gfile.glob(f"{output_dir}/*.tfrecord*"):
+                continue
 
-        writer = tf.io.TFRecordWriter(osp.join(output_dir, osp.basename(path)))
-        dataset = tf.data.TFRecordDataset([path]).map(features.deserialize_example)
+            writer = tf.io.TFRecordWriter(osp.join(output_dir, osp.basename(path)))
+            dataset = tf.data.TFRecordDataset([path]).map(features.deserialize_example)
 
-        for example in dataset:
+            for example in dataset:
 
-            traj = example["steps"].batch(int(1e9)).get_single_element()
-            del example["steps"]
+                traj = example["steps"].batch(int(1e9)).get_single_element()
+                del example["steps"]
 
-            example = tf.nest.map_structure(lambda x: x.numpy(), example)
-            traj = tf.nest.map_structure(lambda x: x.numpy(), traj)
-            frames = traj["observation"]["image"]
-            episode_metadata = example["episode_metadata"]
+                example = tf.nest.map_structure(lambda x: x.numpy(), example)
+                traj = tf.nest.map_structure(lambda x: x.numpy(), traj)
+                frames = traj["observation"]["image"]
+                episode_metadata = example["episode_metadata"]
 
-            traj = fix_traj(traj, frames, episode_metadata, traj_infos)
-            
-            # serialize and write
-            example["steps"] = traj
-            writer.write(features.serialize_example(example))
+                traj = fix_traj(traj, frames, episode_metadata, traj_infos)
+                
+                # serialize and write
+                example["steps"] = traj
+                writer.write(features.serialize_example(example))
 
-            # pbar_queue.put(1)
-        writer.close()
-    # except Exception:
-    #     # pbar_queue.put(traceback.format_exc())
-    #     pass
+                pbar_queue.put(1)
+            writer.close()
+    except Exception:
+        pbar_queue.put(traceback.format_exc())
+        pass
 
 def main(args):
 
@@ -173,6 +173,7 @@ def main(args):
 
     # Write dataset as RLDS
     features_spec = builder.info.features
+    builder.info.write_to_directory(output_dir)
     
     if num_workers == 1:
         worker_id = 0
