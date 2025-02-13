@@ -8,11 +8,10 @@ import pickle
 import argparse
 import sys
 import tqdm
-import torch
 import dlimp as dl
 from functools import partial
 from typing import Callable, Mapping, Optional, Sequence, Tuple, Union
-import torch.multiprocessing as mp
+import multiprocessing as mp
 import os.path as osp
 import traceback
 # import tyro
@@ -115,8 +114,6 @@ def fix_traj(traj, frames, episode_metadata, traj_info):
 def work_fn(worker_id, path_shards, output_dir, traj_infos, features, pbar_queue=None):
     print(f"Worker {worker_id} starting")
     try:
-        tf.config.set_visible_devices([], "TPU")
-        torch.cuda.set_device(worker_id)
         paths = path_shards[worker_id]
         for path in tqdm.tqdm(paths):
 
