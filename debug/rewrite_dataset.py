@@ -104,7 +104,7 @@ def fix_traj(traj, frames, episode_metadata, traj_info):
     else:
         new_yaw = np.expand_dims(curr_orig_yaw, 1)
     
-    assert new_yaw.shape == traj_yaw.shape, f"New yaw shape {new_yaw.shape} does not match traj yaw shape {traj_yaw.shape}"
+    assert new_yaw.shape == traj_yaw.shape, f"New yaw shape {new_yaw.shape} does not match traj yaw shape {traj_yaw.shape}, positions shape {traj_pos.shape}"
 
     traj["observation"]["yaw"] = new_yaw
     traj["observation"]["yaw_rotmat"] =  np.stack([np.cos(new_yaw), -np.sin(new_yaw), np.zeros(new_yaw.shape), np.sin(new_yaw), np.cos(new_yaw), np.zeros(new_yaw.shape), np.zeros(new_yaw.shape), np.zeros(new_yaw.shape), np.ones(new_yaw.shape)], axis=-1)
@@ -139,7 +139,7 @@ def work_fn(worker_id, path_shards, output_dir, traj_infos, features, tqdm_func=
             example["steps"] = traj
             writer.write(features.serialize_example(example))
 
-        global_tqdm.update()
+        global_tqdm.update(1)
         writer.close()
 
 def main(args):
@@ -177,7 +177,7 @@ def main(args):
         tasks = [(work_fn, (i, path_shards[i], output_dir, traj_infos, features_spec)) for i in range(args.num_workers)]
         pool = TqdmMultiProcessPool(args.num_workers)
         print("Starting multiprocessing")
-        with tqdm.tqdm(total=len(tasks), 
+        with tqdm.tqdm(total=len(paths), 
                 dynamic_ncols=True,
                 position=0,
                 desc="Total progress"
