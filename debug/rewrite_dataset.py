@@ -8,6 +8,7 @@ import pickle
 import argparse
 import sys
 import tqdm
+import torch
 import dlimp as dl
 from functools import partial
 from typing import Callable, Mapping, Optional, Sequence, Tuple, Union
