@@ -178,7 +178,7 @@ def main(args):
         worker_id = 0
         work_fn(worker_id, path_shards, output_dir, traj_infos, features_spec)
     else:
-        tasks = [(work_fn, (i, path_shards[i], output_dir, tar_infos, features_spec)) for i in range(args.num_workers)]
+        tasks = [(work_fn, (i, path_shards[i], output_dir, traj_infos, features_spec)) for i in range(args.num_workers)]
         pool = TqdmMultiProcessPool(args.num_workers)
         print("Starting multiprocessing")
         with tqdm(total=len(tasks), 
