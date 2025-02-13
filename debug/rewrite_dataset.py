@@ -115,8 +115,8 @@ def fix_traj(traj, frames, episode_metadata, traj_info):
 def work_fn(worker_id, path_shards, output_dir, traj_infos, features, tqdm_func=None, global_tqdm=None):
     print(f"Worker {worker_id} starting")
     print(output_dir)
-    paths = path_shards[worker_id]
-    for path in paths:
+    # paths = path_shards[worker_id]
+    for path in paths_shards:
 
         if osp.join(output_dir, osp.basename(path)) in tf.io.gfile.glob(f"{output_dir}/*.tfrecord*"):
             continue
