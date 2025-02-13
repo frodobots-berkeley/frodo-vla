@@ -104,6 +104,8 @@ def fix_traj(traj, frames, episode_metadata, traj_info):
     else:
         print("shape of curr_orig_yaw", curr_orig_yaw.shape)
         new_yaw = np.expand_dims(curr_orig_yaw, 1)
+        if new_yaw.shape[0] < traj_pos.shape[0]:
+            new_yaw = np.concatenate([new_yaw, new_yaw[[-1]]], axis=0)
     
     assert new_yaw.shape == traj_yaw.shape, f"New yaw shape {new_yaw.shape} does not match traj yaw shape {traj_yaw.shape}, positions shape {traj_pos.shape}, curr orig yaw shape {curr_orig_yaw.shape}"
 
