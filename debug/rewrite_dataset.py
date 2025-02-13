@@ -14,6 +14,7 @@ from typing import Callable, Mapping, Optional, Sequence, Tuple, Union
 import multiprocessing as mp
 import os.path as osp
 import traceback
+from tqdm_multiprocess import TqdmMultiProcessPool
 # import tyro
 
 # import octo.data.obs_transforms as obs_transforms
@@ -111,11 +112,11 @@ def fix_traj(traj, frames, episode_metadata, traj_info):
 
     return traj
 
-def work_fn(worker_id, path_shards, output_dir, traj_infos, features, pbar_queue=None):
+def work_fn(worker_id, path_shards, output_dir, traj_infos, features, tqdm_func=None, global_tqdm=None):
     print(f"Worker {worker_id} starting")
     try:
         paths = path_shards[worker_id]
-        for path in tqdm.tqdm(paths):
+        for path in tqdm_func(paths):
 
             if osp.join(output_dir, osp.basename(path)) in tf.io.gfile.glob(f"{output_dir}/*.tfrecord*"):
                 continue
@@ -139,7 +140,7 @@ def work_fn(worker_id, path_shards, output_dir, traj_infos, features, pbar_queue
                 example["steps"] = traj
                 writer.write(features.serialize_example(example))
 
-                pbar_queue.put(1)
+                global_tqdm.update(1)
             writer.close()
     except Exception:
         pbar_queue.put(traceback.format_exc())
@@ -177,38 +178,15 @@ def main(args):
         worker_id = 0
         work_fn(worker_id, path_shards, output_dir, traj_infos, features_spec)
     else:
-        ctx = mp.get_context("spawn")
-        pbar_queue = ctx.SimpleQueue()
-        
-        pcontext = mp.spawn(
-            work_fn,
-            nprocs=num_workers,
-            args=(
-                path_shards,
-                output_dir,
-                traj_infos,
-                features_spec,
-                pbar_queue,
-            ),
-            join=False,
-        )
-        pbar = tqdm.tqdm(total=builder.info.splits["all"].num_examples)
-        n_running = num_workers
-        while True:
-            n = pbar_queue.get()
-            if isinstance(n, str):
-                print(n)
-                break
-            elif n is None:
-                n_running -= 1
-                if n_running == 0:
-                    break
-            else:
-                pbar.update(n)
-        pbar.close()
-        pbar_queue.close()
-        if not pcontext.join(timeout=5):
-            raise RuntimeError("Failed to join processes.")
+        tasks = [(work_fn, (i, path_shards[i], output_dir, tar_infos, features_spec)) for i in range(args.num_workers)]
+        pool = TqdmMultiProcessPool(args.num_workers)
+        print("Starting multiprocessing")
+        with tqdm(total=len(tasks), 
+                dynamic_ncols=True,
+                position=0,
+                desc="Total progress"
+        ) as pbar:
+            pool.map(pbar, tasks, lambda _: None, lambda _: None)
 
 
 if __name__ == "__main__":
