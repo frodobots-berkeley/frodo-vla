@@ -102,9 +102,10 @@ def fix_traj(traj, frames, episode_metadata, traj_info):
         assert (curr_orig_yaw[-1] - cf_new[0]) < 0.5, f"Yaw difference between orig and cf {curr_orig_yaw[-1] - cf_new[0]}"
         new_yaw = np.expand_dims(np.concatenate([curr_orig_yaw, cf_new, cf_new[[-1]]], axis=0), 1)
     else:
+        print("shape of curr_orig_yaw", curr_orig_yaw.shape)
         new_yaw = np.expand_dims(curr_orig_yaw, 1)
     
-    assert new_yaw.shape == traj_yaw.shape, f"New yaw shape {new_yaw.shape} does not match traj yaw shape {traj_yaw.shape}, positions shape {traj_pos.shape}"
+    assert new_yaw.shape == traj_yaw.shape, f"New yaw shape {new_yaw.shape} does not match traj yaw shape {traj_yaw.shape}, positions shape {traj_pos.shape}, curr orig yaw shape {curr_orig_yaw.shape}"
 
     traj["observation"]["yaw"] = new_yaw
     traj["observation"]["yaw_rotmat"] =  np.stack([np.cos(new_yaw), -np.sin(new_yaw), np.zeros(new_yaw.shape), np.sin(new_yaw), np.cos(new_yaw), np.zeros(new_yaw.shape), np.zeros(new_yaw.shape), np.zeros(new_yaw.shape), np.ones(new_yaw.shape)], axis=-1)
