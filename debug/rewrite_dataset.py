@@ -126,6 +126,7 @@ def work_fn(worker_id, path_shards, output_dir, traj_infos, features, pbar_queue
             del example["steps"]
 
             example = tf.nest.map_structure(lambda x: x.numpy(), example)
+            traj = tf.nest.map_structure(lambda x: x.numpy(), traj)
             frames = traj["observation"]["image"]
             episode_metadata = example["episode_metadata"]
 
