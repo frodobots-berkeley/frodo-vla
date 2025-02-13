@@ -116,33 +116,31 @@ def work_fn(worker_id, path_shards, output_dir, traj_infos, features, tqdm_func=
     print(f"Worker {worker_id} starting")
     print(output_dir)
     paths = path_shards[worker_id]
-    with tqdm_func(total=len(paths), dynamic_ncols=True, position=worker_id, desc=f"Worker {worker_id}") as progress1:
-        for path in paths:
+    for path in paths:
 
-            if osp.join(output_dir, osp.basename(path)) in tf.io.gfile.glob(f"{output_dir}/*.tfrecord*"):
-                continue
+        if osp.join(output_dir, osp.basename(path)) in tf.io.gfile.glob(f"{output_dir}/*.tfrecord*"):
+            continue
 
-            writer = tf.io.TFRecordWriter(osp.join(output_dir, osp.basename(path)))
-            dataset = tf.data.TFRecordDataset([path]).map(features.deserialize_example)
-            for example in dataset:
+        writer = tf.io.TFRecordWriter(osp.join(output_dir, osp.basename(path)))
+        dataset = tf.data.TFRecordDataset([path]).map(features.deserialize_example)
+        for example in dataset:
 
-                traj = example["steps"].batch(int(1e9)).get_single_element()
-                del example["steps"]
+            traj = example["steps"].batch(int(1e9)).get_single_element()
+            del example["steps"]
 
-                example = tf.nest.map_structure(lambda x: x.numpy(), example)
-                traj = tf.nest.map_structure(lambda x: x.numpy(), traj)
-                frames = traj["observation"]["image"]
-                episode_metadata = example["episode_metadata"]
+            example = tf.nest.map_structure(lambda x: x.numpy(), example)
+            traj = tf.nest.map_structure(lambda x: x.numpy(), traj)
+            frames = traj["observation"]["image"]
+            episode_metadata = example["episode_metadata"]
 
-                traj = fix_traj(traj, frames, episode_metadata, traj_infos)
-                
-                # serialize and write
-                example["steps"] = traj
-                writer.write(features.serialize_example(example))
+            traj = fix_traj(traj, frames, episode_metadata, traj_infos)
+            
+            # serialize and write
+            example["steps"] = traj
+            writer.write(features.serialize_example(example))
 
-            global_tqdm.update()
-            progress1.update()
-            writer.close()
+        global_tqdm.update()
+        writer.close()
 
 def main(args):
 
