@@ -114,37 +114,33 @@ def fix_traj(traj, frames, episode_metadata, traj_info):
 
 def work_fn(worker_id, path_shards, output_dir, traj_infos, features, tqdm_func=None, global_tqdm=None):
     print(f"Worker {worker_id} starting")
-    try:
-        paths = path_shards[worker_id]
-        for path in tqdm_func(paths):
+    paths = path_shards[worker_id]
+    for path in tqdm_func(paths):
 
-            if osp.join(output_dir, osp.basename(path)) in tf.io.gfile.glob(f"{output_dir}/*.tfrecord*"):
-                continue
+        if osp.join(output_dir, osp.basename(path)) in tf.io.gfile.glob(f"{output_dir}/*.tfrecord*"):
+            continue
 
-            writer = tf.io.TFRecordWriter(osp.join(output_dir, osp.basename(path)))
-            dataset = tf.data.TFRecordDataset([path]).map(features.deserialize_example)
+        writer = tf.io.TFRecordWriter(osp.join(output_dir, osp.basename(path)))
+        dataset = tf.data.TFRecordDataset([path]).map(features.deserialize_example)
 
-            for example in dataset:
+        for example in dataset:
 
-                traj = example["steps"].batch(int(1e9)).get_single_element()
-                del example["steps"]
+            traj = example["steps"].batch(int(1e9)).get_single_element()
+            del example["steps"]
 
-                example = tf.nest.map_structure(lambda x: x.numpy(), example)
-                traj = tf.nest.map_structure(lambda x: x.numpy(), traj)
-                frames = traj["observation"]["image"]
-                episode_metadata = example["episode_metadata"]
+            example = tf.nest.map_structure(lambda x: x.numpy(), example)
+            traj = tf.nest.map_structure(lambda x: x.numpy(), traj)
+            frames = traj["observation"]["image"]
+            episode_metadata = example["episode_metadata"]
 
-                traj = fix_traj(traj, frames, episode_metadata, traj_infos)
-                
-                # serialize and write
-                example["steps"] = traj
-                writer.write(features.serialize_example(example))
+            traj = fix_traj(traj, frames, episode_metadata, traj_infos)
+            
+            # serialize and write
+            example["steps"] = traj
+            writer.write(features.serialize_example(example))
 
-                global_tqdm.update(1)
-            writer.close()
-    except Exception:
-        pbar_queue.put(traceback.format_exc())
-        pass
+            global_tqdm.update(1)
+        writer.close()
 
 def main(args):
 
