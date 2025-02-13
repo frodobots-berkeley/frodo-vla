@@ -181,7 +181,7 @@ def main(args):
         tasks = [(work_fn, (i, path_shards[i], output_dir, traj_infos, features_spec)) for i in range(args.num_workers)]
         pool = TqdmMultiProcessPool(args.num_workers)
         print("Starting multiprocessing")
-        with tqdm(total=len(tasks), 
+        with tqdm.tqdm(total=len(tasks), 
                 dynamic_ncols=True,
                 position=0,
                 desc="Total progress"
