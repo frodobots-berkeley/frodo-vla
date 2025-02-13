@@ -94,7 +94,7 @@ def fix_traj(traj, frames, episode_metadata, traj_info):
     assert non_cf_yaw.shape == curr_orig_yaw.shape, f"Non cf yaw shape {non_cf_yaw.shape} does not match orig yaw shape {curr_orig_yaw.shape}"
 
     # If the trajectory has a counterfactual, we need to generate the correct yaw for the counterfactual part
-    if "cf" in traj_name and num_non_white < traj_pos.shape[0]:
+    if "cf" in traj_name and num_non_white < traj_pos.shape[0] - 1:
         cf_start = num_non_white
         cf_new = np.arctan2(traj_pos[cf_start+1:, 1] - traj_pos[cf_start:-1, 1], traj_pos[cf_start+1:, 0] - traj_pos[cf_start:-1, 0])
         cf_new = cf_new - cf_new[0] + curr_orig_yaw[-1]
