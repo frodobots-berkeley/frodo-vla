@@ -116,7 +116,7 @@ def work_fn(worker_id, path_shards, output_dir, traj_infos, features, tqdm_func=
     print(f"Worker {worker_id} starting")
     print(output_dir)
     # paths = path_shards[worker_id]
-    for path in paths_shards:
+    for path in path_shards:
 
         if osp.join(output_dir, osp.basename(path)) in tf.io.gfile.glob(f"{output_dir}/*.tfrecord*"):
             continue
