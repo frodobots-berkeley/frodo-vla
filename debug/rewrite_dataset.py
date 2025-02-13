@@ -98,16 +98,14 @@ def fix_traj(traj, frames, episode_metadata, traj_info):
         cf_new = np.arctan2(traj_pos[cf_start+1:, 1] - traj_pos[cf_start:-1, 1], traj_pos[cf_start+1:, 0] - traj_pos[cf_start:-1, 0])
         cf_new = cf_new - cf_new[0] + curr_orig_yaw[-1]
         assert (curr_orig_yaw[-1] - cf_new[0]) < 0.5, f"Yaw difference between orig and cf {curr_orig_yaw[-1] - cf_new[0]}"
-        breakpoint()
         new_yaw = np.expand_dims(np.concatenate([curr_orig_yaw, cf_new, cf_new[[-1]]], axis=0), 1)
         assert new_yaw.shape == traj_yaw.shape, f"New yaw shape {new_yaw.shape} does not match traj yaw shape {traj_yaw.shape}"
     else:
         new_yaw = np.expand_dims(curr_orig_yaw, 1)
     
     traj["observation"]["yaw"] = new_yaw
-    traj["observation"]["yaw_rotmat"] =  np.stack([np.cos(new_yaw), -np.sin(new_yaw), np.zeros(new_yaw.shape), np.sin(new_yaw), np.cos(new_yaw), np.zeros(new_yaw.shape), np.zeros(new_yaw.shape), np.zeros(new_yaw.shape), np.ones(new_yaw.shape)], axis=0)
-    breakpoint()
-    traj["observation"]["yaw"] = traj["observation"]["yaw"].reshape(-1, 3, 3)
+    traj["observation"]["yaw_rotmat"] =  np.stack([np.cos(new_yaw), -np.sin(new_yaw), np.zeros(new_yaw.shape), np.sin(new_yaw), np.cos(new_yaw), np.zeros(new_yaw.shape), np.zeros(new_yaw.shape), np.zeros(new_yaw.shape), np.ones(new_yaw.shape)], axis=-1)
+    traj["observation"]["yaw_rotmat"] = traj["observation"]["yaw_rotmat"].reshape(-1, 3, 3)
 
     breakpoint()
     return traj
