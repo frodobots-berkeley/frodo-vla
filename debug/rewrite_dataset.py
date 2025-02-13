@@ -118,6 +118,9 @@ def work_fn(worker_id, path_shards, output_dir, traj_infos, features, pbar_queue
     paths = path_shards[worker_id]
     for path in tqdm(paths):
 
+        if osp.join(output_dir, osp.basename(path)) in tf.io.gfile.glob(f"{output_dir}/*.tfrecord*"):
+            continue
+
         writer = tf.io.TFRecordWriter(osp.join(output_dir, osp.basename(path)))
         dataset = tf.data.TFRecordDataset([path]).map(features.deserialize_example)
 
