@@ -106,7 +106,7 @@ def fix_traj(traj, frames, episode_metadata, traj_info):
     traj["observation"]["yaw"] = new_yaw
     traj["observation"]["yaw_rotmat"] =  np.stack([np.cos(new_yaw), -np.sin(new_yaw), np.zeros(new_yaw.shape), np.sin(new_yaw), np.cos(new_yaw), np.zeros(new_yaw.shape), np.zeros(new_yaw.shape), np.zeros(new_yaw.shape), np.ones(new_yaw.shape)], axis=-1)
     traj["observation"]["yaw_rotmat"] = traj["observation"]["yaw_rotmat"].reshape(-1, 3, 3)
-
+    breakpoint()
     return traj
 
 def work_fn(worker_id, path_shards, output_dir, traj_infos, features, pbar_queue=None):
