@@ -7,7 +7,7 @@ import glob
 import pickle 
 import argparse
 import sys
-from tqdm import tqdm
+import tqdm
 import dlimp as dl
 from functools import partial
 from typing import Callable, Mapping, Optional, Sequence, Tuple, Union
@@ -117,7 +117,7 @@ def work_fn(worker_id, path_shards, output_dir, traj_infos, features, pbar_queue
         tf.config.set_visible_devices([], "TPU")
         torch.cuda.set_device(worker_id)
         paths = path_shards[worker_id]
-        for path in tqdm(paths):
+        for path in tqdm.tqdm(paths):
 
             if osp.join(output_dir, osp.basename(path)) in tf.io.gfile.glob(f"{output_dir}/*.tfrecord*"):
                 continue
