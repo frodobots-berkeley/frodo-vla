@@ -183,7 +183,7 @@ def main(args):
         pbar_queue = ctx.SimpleQueue()
         
         pcontext = mp.spawn(
-            fix_dataset,
+            work_fn,
             nprocs=num_workers,
             args=(
                 path_shards,
