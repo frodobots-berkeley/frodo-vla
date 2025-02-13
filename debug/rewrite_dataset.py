@@ -101,11 +101,12 @@ def fix_traj(traj, frames, episode_metadata, traj_info):
         cf_new = cf_new - cf_new[0] + curr_orig_yaw[-1]
         assert (curr_orig_yaw[-1] - cf_new[0]) < 0.5, f"Yaw difference between orig and cf {curr_orig_yaw[-1] - cf_new[0]}"
         new_yaw = np.expand_dims(np.concatenate([curr_orig_yaw, cf_new, cf_new[[-1]]], axis=0), 1)
-    else:
-        print("shape of curr_orig_yaw", curr_orig_yaw.shape)
+    elif "cf" in traj_name and num_non_white >= traj_pos.shape[0] - 1:
         new_yaw = np.expand_dims(curr_orig_yaw, 1)
         if new_yaw.shape[0] < traj_pos.shape[0]:
             new_yaw = np.concatenate([new_yaw, new_yaw[[-1]]], axis=0)
+    else:
+        new_yaw = orig_yaw[traj_start:end+1].squeeze()
     
     assert new_yaw.shape == traj_yaw.shape, f"New yaw shape {new_yaw.shape} does not match traj yaw shape {traj_yaw.shape}, positions shape {traj_pos.shape}, curr orig yaw shape {curr_orig_yaw.shape}"
 
