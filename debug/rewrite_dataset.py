@@ -114,6 +114,7 @@ def fix_traj(traj, frames, episode_metadata, traj_info):
 
 def work_fn(worker_id, path_shards, output_dir, traj_infos, features, tqdm_func=None, global_tqdm=None):
     print(f"Worker {worker_id} starting")
+    print(output_dir)
     paths = path_shards[worker_id]
     with tqdm_func(total=len(paths), dynamic_ncols=True, position=worker_id, desc=f"Worker {worker_id}") as progress1:
         for path in paths:
@@ -176,7 +177,6 @@ def main(args):
         work_fn(worker_id, path_shards, output_dir, traj_infos, features_spec)
     else:
         tasks = [(work_fn, (i, path_shards[i], output_dir, traj_infos, features_spec)) for i in range(args.num_workers)]
-        print(tasks)
         pool = TqdmMultiProcessPool(args.num_workers)
         print("Starting multiprocessing")
         with tqdm.tqdm(total=len(tasks), 
