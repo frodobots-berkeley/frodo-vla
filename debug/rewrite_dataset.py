@@ -114,7 +114,7 @@ def fix_traj(traj, frames, episode_metadata, traj_info):
     traj["observation"]["yaw_rotmat"] =  np.stack([np.cos(new_yaw), -np.sin(new_yaw), np.zeros(new_yaw.shape), np.sin(new_yaw), np.cos(new_yaw), np.zeros(new_yaw.shape), np.zeros(new_yaw.shape), np.zeros(new_yaw.shape), np.ones(new_yaw.shape)], axis=-1)
     traj["observation"]["yaw_rotmat"] = traj["observation"]["yaw_rotmat"].reshape(-1, 3, 3)
 
-    return traj
+    return traj, normalization_factor
 
 def work_fn(worker_id, path_shards, output_dir, traj_infos, features, tqdm_func=None, global_tqdm=None):
     print(f"Worker {worker_id} starting")
@@ -137,10 +137,12 @@ def work_fn(worker_id, path_shards, output_dir, traj_infos, features, tqdm_func=
             frames = traj["observation"]["image"]
             episode_metadata = example["episode_metadata"]
 
-            traj = fix_traj(traj, frames, episode_metadata, traj_infos)
+            traj, normalization_factor = fix_traj(traj, frames, episode_metadata, traj_infos)
             
             # serialize and write
             example["steps"] = traj
+            example["episode_metadata"]["normalization_factor"] = normalization_factor
+
             writer.write(features.serialize_example(example))
 
         global_tqdm.update(1)
@@ -171,7 +173,18 @@ def main(args):
         traj_infos.update(traj_info)
 
     # Write dataset as RLDS
-    features_spec = builder.info.features
+    old_features = builder.info.features
+    new_features = new_features = tfds.features.FeaturesDict(
+        {
+            **builder.info.features,
+            "episode_metadata": tfds.features.FeaturesDict(
+                { **builder.info.features["episode_metadata"],
+                {"normalization_factor" : tfds.features.Tensor(shape=(), dtype=tf.float32),}
+                }
+            ),
+        }
+    )
+    builder.info._features = new_features
     builder.info.write_to_directory(output_dir)
     
     if num_workers == 1:
