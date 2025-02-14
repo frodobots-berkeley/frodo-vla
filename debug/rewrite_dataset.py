@@ -179,7 +179,7 @@ def main(args):
             **builder.info.features,
             "episode_metadata": tfds.features.FeaturesDict(
                 { **builder.info.features["episode_metadata"],
-                {"normalization_factor" : tfds.features.Tensor(shape=(), dtype=tf.float32),}
+                {"normalization_factor" : tfds.features.Tensor(shape=(), dtype=tf.float32),},
                 }
             ),
         }
