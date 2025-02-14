@@ -67,7 +67,7 @@ def get_config():
                 "dataset_kwargs_list": {
                     "cf_kwargs": {
                         "name": "cf_v2_dataset_128",
-                        "data_dir": "gs://vlm-guidance-data/test",
+                        "data_dir": "gs://vlm-guidance-data/cleaned",
                         "image_obs_keys": {"primary": "image"},
                         "proprio_obs_key": "position",
                         "language_key" : "language_instruction",
