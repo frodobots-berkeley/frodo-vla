@@ -116,7 +116,7 @@ def fix_traj(traj, frames, episode_metadata, traj_info):
 
     return traj, normalization_factor
 
-def work_fn(worker_id, path_shards, output_dir, traj_infos, features, tqdm_func=None, global_tqdm=None):
+def work_fn(worker_id, path_shards, output_dir, traj_infos, old_features, new_features, tqdm_func=None, global_tqdm=None):
     print(f"Worker {worker_id} starting")
     print(output_dir)
     # paths = path_shards[worker_id]
@@ -126,7 +126,7 @@ def work_fn(worker_id, path_shards, output_dir, traj_infos, features, tqdm_func=
             continue
 
         writer = tf.io.TFRecordWriter(osp.join(output_dir, osp.basename(path)))
-        dataset = tf.data.TFRecordDataset([path]).map(features.deserialize_example)
+        dataset = tf.data.TFRecordDataset([path]).map(old_features.deserialize_example)
         for example in dataset:
 
             traj = example["steps"].batch(int(1e9)).get_single_element()
@@ -143,7 +143,7 @@ def work_fn(worker_id, path_shards, output_dir, traj_infos, features, tqdm_func=
             example["steps"] = traj
             example["episode_metadata"]["normalization_factor"] = normalization_factor
 
-            writer.write(features.serialize_example(example))
+            writer.write(new_features.serialize_example(example))
 
         global_tqdm.update(1)
         writer.close()
@@ -189,9 +189,9 @@ def main(args):
     
     if num_workers == 1:
         worker_id = 0
-        work_fn(worker_id, path_shards, output_dir, traj_infos, features_spec)
+        work_fn(worker_id, path_shards, output_dir, traj_infos, old_features, new_features)
     else:
-        tasks = [(work_fn, (i, path_shards[i], output_dir, traj_infos, features_spec)) for i in range(args.num_workers)]
+        tasks = [(work_fn, (i, path_shards[i], output_dir, traj_infos, old_features, new_features)) for i in range(args.num_workers)]
         pool = TqdmMultiProcessPool(args.num_workers)
         print("Starting multiprocessing")
         with tqdm.tqdm(total=len(paths), 
