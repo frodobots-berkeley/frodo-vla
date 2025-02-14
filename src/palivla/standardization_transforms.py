@@ -911,59 +911,48 @@ def gnm_dataset_transform(trajectory: Dict[str, Any], action_horizon=1) -> Dict[
     ]  # delta waypoints
 
     # smooth and find yaw
-    curr_pos_shift = curr_pos - curr_pos[:, 0:1, :]
-    smooth_pos = tf.where(
-        tf.abs(curr_pos_shift) < 1e-2, tf.zeros_like(curr_pos_shift), curr_pos_shift
-    )
+    # curr_pos_shift = curr_pos - curr_pos[:, 0:1, :]
+    # smooth_pos = tf.where(
+    #     tf.abs(curr_pos_shift) < 1e-2, tf.zeros_like(curr_pos_shift), curr_pos_shift
+    # )
 
-    non_zero_mask = tf.reduce_any(smooth_pos != 0, axis=2)
-    first_non_zero_index = tf.argmax(tf.cast(non_zero_mask, tf.int32), axis=1)
-    first_non_zero_index = tf.math.maximum(tf.cast(3, tf.int64), first_non_zero_index)
-    first_values = curr_pos[:, 0, :]
+    # non_zero_mask = tf.reduce_any(smooth_pos != 0, axis=2)
+    # first_non_zero_index = tf.argmax(tf.cast(non_zero_mask, tf.int32), axis=1)
+    # first_non_zero_index = tf.math.maximum(tf.cast(3, tf.int64), first_non_zero_index)
+    # first_values = curr_pos[:, 0, :]
 
-    batch_indices = tf.range(tf.shape(smooth_pos)[0], dtype=tf.int64)
-    gather_indices = tf.stack([batch_indices, first_non_zero_index], axis=1)
-    first_non_zero_values = tf.gather_nd(smooth_pos, gather_indices)
+    # batch_indices = tf.range(tf.shape(smooth_pos)[0], dtype=tf.int64)
+    # gather_indices = tf.stack([batch_indices, first_non_zero_index], axis=1)
+    # first_non_zero_values = tf.gather_nd(smooth_pos, gather_indices)
 
-    curr_yaw = tf.math.atan2(first_non_zero_values[:, 1] - first_values[:,1], first_non_zero_values[:, 0] - first_values[:,0])
+    # curr_yaw = tf.math.atan2(first_non_zero_values[:, 1] - first_values[:,1], first_non_zero_values[:, 0] - first_values[:,0])
     # Get yaw for each trajectory
     # delta = trajectory["observation"]["state"][1:, :2] - trajectory["observation"]["state"][:-1, :2]
     # yaw = tf.math.atan2(delta[:, 1], delta[:, 0])
     # curr_yaw = tf.pad(yaw, [[0, 1]], constant_values=yaw[-1])
     # curr_yaw = trajectory["observation"]["yaw"]
-    curr_yaw_rotmat = tf.convert_to_tensor(
-        [
-            [tf.cos(curr_yaw), -tf.sin(curr_yaw)],
-            [tf.sin(curr_yaw), tf.cos(curr_yaw)],
-        ]
-    )
-    curr_yaw_rotmat = tf.reshape(curr_yaw_rotmat, [1, 2, 2, -1])
-    curr_yaw_rotmat = tf.transpose(curr_yaw_rotmat, [3, 0, 1, 2])
-    curr_yaw_rotmat = curr_yaw_rotmat[:tf.shape(global_waypoints)[0], :, :, :]
+    # curr_yaw_rotmat = tf.convert_to_tensor(
+    #     [
+    #         [tf.cos(curr_yaw), -tf.sin(curr_yaw)],
+    #         [tf.sin(curr_yaw), tf.cos(curr_yaw)],
+    #     ]
+    # )
+    # curr_yaw_rotmat = tf.reshape(curr_yaw_rotmat, [1, 2, 2, -1])
+    # curr_yaw_rotmat = tf.transpose(curr_yaw_rotmat, [3, 0, 1, 2])
+    # curr_yaw_rotmat = curr_yaw_rotmat[:tf.shape(global_waypoints)[0], :, :, :]
     
     global_waypoints -= curr_pos
     global_waypoints = tf.expand_dims(global_waypoints, 2)
     actions = tf.squeeze(
         tf.linalg.matmul(
             global_waypoints,
-            # tf.expand_dims(trajectory["observation"]["yaw_rotmat"][:, :2, :2], 1),
-            curr_yaw_rotmat,
+            tf.expand_dims(trajectory["observation"]["yaw_rotmat"][:, :2, :2], 1),
         ),
         2,
     )
-    # actions = tf.squeeze(global_waypoints, 2)
-    normalization_factor = 1.0
-    # match_found = False
-    for dataset_name, value in METRIC_WAYPOINT_SPACING.items():
-        if tf.strings.regex_full_match(
-            trajectory["traj_metadata"]["episode_metadata"]["file_path"][0],
-            f".*{dataset_name}.*",
-        ):
-            normalization_factor = value
-            # match_found = True
-    # if not match_found:
-    #     # Likely from go_stanford
-    #     normalization_factor = 0.12
+    trajectory["action_sequence"] = tf.squeeze(tf.linalg.matmul(global_waypoints, tf.expand_dims(
+        trajectory['observation']['yaw_rotmat'][:, :2, :2], 1)), 2)
+    normalization_factor = trajectory["traj_metadata"]["episode_metadata"]["normalization_factor"]
 
     normalization_factor = tf.cast(normalization_factor, tf.float64)
     actions = actions / normalization_factor
