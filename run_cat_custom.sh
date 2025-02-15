@@ -54,7 +54,7 @@ if $UPDATE; then
     cd ..
     gcloud alpha compute tpus tpu-vm ssh $TPU_VM_NAME --zone=us-central2-b --command="bash update.sh"
 fi
-
+echo "Launching Script"
 gcloud alpha compute tpus tpu-vm ssh $TPU_VM_NAME --zone=us-central2-b --command="cd ~/bigvision-palivla &&
                                                                                   source ~/.local/bin/env &&
                                                                                   source .venv/bin/activate &&
