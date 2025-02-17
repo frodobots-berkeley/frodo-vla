@@ -40,7 +40,7 @@ def get_config():
             "eval_batch_size": 128,
             "num_steps": num_train_steps,
             # Checkpoint settings
-            "save_path": "gs://vlm-guidance-logs",
+            "save_path": "gs://cat-logs",
             "save_interval": 10000,
             "max_to_keep": 10,
             # Multi-device settings
@@ -67,7 +67,17 @@ def get_config():
                 "dataset_kwargs_list": {
                     "cf_kwargs": {
                         "name": "cf_v2_dataset_128",
-                        "data_dir": "gs://vlm-guidance-data/cleaned",
+                        "data_dir": "gs://cat-datasets/cleaned",
+                        "image_obs_keys": {"primary": "image"},
+                        "proprio_obs_key": "position",
+                        "language_key" : "language_instruction",
+                        "action_proprio_normalization_type": NormalizationType.NORMAL,
+                        "standardize_fn" : transform,   
+                        "force_recompute_dataset_statistics": False,
+                    },
+                    "cf_kwargs": {
+                        "name": "cf_v3_dataset_128",
+                        "data_dir": "gs://cat-datasets/cleaned",
                         "image_obs_keys": {"primary": "image"},
                         "proprio_obs_key": "position",
                         "language_key" : "language_instruction",

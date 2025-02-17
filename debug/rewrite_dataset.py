@@ -206,7 +206,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--data_dir", type=str, required=True)
     parser.add_argument("--dataset_name", type=str, required=True)
-    parser.add_argument("--output_dir", type=str, default="gs://vlm-guidance-data/test")
+    parser.add_argument("--output_dir", type=str, default="gs://cat-datasets/cleaned")
     parser.add_argument("--num_workers", type=int, default=1)
     args = parser.parse_args()
     main(args)
