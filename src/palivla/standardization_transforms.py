@@ -950,15 +950,12 @@ def gnm_dataset_transform(trajectory: Dict[str, Any], action_horizon=1) -> Dict[
         ),
         2,
     )
-    trajectory["action_sequence"] = tf.squeeze(tf.linalg.matmul(global_waypoints, tf.expand_dims(
-        trajectory['observation']['yaw_rotmat'][:, :2, :2], 1)), 2)
     normalization_factor = trajectory["traj_metadata"]["episode_metadata"]["normalization_factor"]
 
     normalization_factor = tf.cast(normalization_factor, tf.float64)
     actions = actions / normalization_factor
 
     trajectory["action"] = actions
-    breakpoint()
 
     trajectory["observation"]["proprio"] = trajectory["observation"]["state"]
     return trajectory
