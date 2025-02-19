@@ -92,9 +92,9 @@ def fix_traj(traj, frames, episode_metadata, traj_info):
     end = np.min((traj_start + num_non_white, traj_end))
     curr_orig_yaw = orig_yaw[traj_start:end].squeeze()
     print(traj_name)
-    if "cf" in traj_name:
+    try:
         assert non_cf_yaw.shape == curr_orig_yaw.shape, f"Non cf yaw shape {non_cf_yaw.shape} does not match orig yaw shape {curr_orig_yaw.shape}"
-    else:
+    except:
         breakpoint()
 
     # If the trajectory has a counterfactual, we need to generate the correct yaw for the counterfactual part
