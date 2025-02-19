@@ -91,7 +91,7 @@ def fix_traj(traj, frames, episode_metadata, traj_info):
     orig_yaw = curr_traj_info["yaw"]
     end = np.min((traj_start + num_non_white, traj_end))
     curr_orig_yaw = orig_yaw[traj_start:end].squeeze()
-
+    print(traj_name)
     if "cf" in traj_name:
         assert non_cf_yaw.shape == curr_orig_yaw.shape, f"Non cf yaw shape {non_cf_yaw.shape} does not match orig yaw shape {curr_orig_yaw.shape}"
     else:
@@ -196,7 +196,7 @@ def main(args):
     
     if num_workers == 1:
         worker_id = 0
-        work_fn(worker_id, path_shards, output_dir, traj_infos, old_features, new_features)
+        work_fn(worker_id, path_shards[0], output_dir, traj_infos, old_features, new_features)
     else:
         tasks = [(work_fn, (i, path_shards[i], output_dir, traj_infos, old_features, new_features)) for i in range(args.num_workers)]
         pool = TqdmMultiProcessPool(args.num_workers)
