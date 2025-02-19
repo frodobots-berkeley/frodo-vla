@@ -91,6 +91,8 @@ def fix_traj(traj, frames, episode_metadata, traj_info):
     orig_yaw = curr_traj_info["yaw"]
     end = np.min((traj_start + num_non_white, traj_end))
     curr_orig_yaw = orig_yaw[traj_start:end].squeeze()
+    if len(curr_orig_yaw.shape) < 1:
+        curr_orig_yaw = np.expand_dims(curr_orig_yaw, 0)
     print(traj_name)
     try:
         assert non_cf_yaw.shape == curr_orig_yaw.shape, f"Non cf yaw shape {non_cf_yaw.shape} does not match orig yaw shape {curr_orig_yaw.shape}"
