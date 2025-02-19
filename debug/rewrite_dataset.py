@@ -111,7 +111,7 @@ def fix_traj(traj, frames, episode_metadata, traj_info):
         if new_yaw.shape[0] < traj_pos.shape[0]:
             new_yaw = np.concatenate([new_yaw, new_yaw[[-1]]], axis=0)
     else:
-        new_yaw = orig_yaw[traj_start:end+1].squeeze()
+        new_yaw = orig_yaw[traj_start:end+1]
         if new_yaw.shape[0] > traj_pos.shape[0]:
             new_yaw = new_yaw[:-1]
         if len(new_yaw.shape) < 2:
