@@ -40,7 +40,7 @@ def get_config():
             "eval_batch_size": 128,
             "num_steps": num_train_steps,
             # Checkpoint settings
-            "save_path": "gs://vlm-guidance-logs",
+            "save_path": "gs://cat-logs",
             "save_interval": 10000,
             "max_to_keep": 10,
             # Multi-device settings
@@ -67,7 +67,7 @@ def get_config():
                 "dataset_kwargs_list": {
                     # "lcbc_kwargs": {
                     #     "name": "lcbc_orig_dataset_128",
-                    #     "data_dir": "gs://vlm-guidance-data",
+                    #     "data_dir": "gs://cat-datasets",
                     #     "image_obs_keys": {"primary": "image"},
                     #     "proprio_obs_key": "position",
                     #     "language_key" : "language_instruction",
@@ -77,7 +77,7 @@ def get_config():
                     # },
                     "lcbc_filtered_kwargs": {
                         "name": "lcbc_filtered_128",
-                        "data_dir": "gs://vlm-guidance-data",
+                        "data_dir": "gs://cat-datasets",
                         "image_obs_keys": {"primary": "image"},
                         "proprio_obs_key": "position",
                         "language_key" : "language_instruction",
@@ -87,7 +87,7 @@ def get_config():
                     },
                     "lcbc_filtered_v2_kwargs": {
                         "name": "lcbc_filtered_v2_dataset",
-                        "data_dir": "gs://vlm-guidance-data",
+                        "data_dir": "gs://cat-datasets",
                         "image_obs_keys": {"primary": "image"},
                         "proprio_obs_key": "position",
                         "language_key" : "language_instruction",
@@ -97,7 +97,7 @@ def get_config():
                     },
                     "cf_kwargs": {
                         "name": "cf_v2_dataset_128",
-                        "data_dir": "gs://vlm-guidance-data",
+                        "data_dir": "gs://cat-datasets",
                         "image_obs_keys": {"primary": "image"},
                         "proprio_obs_key": "position",
                         "language_key" : "language_instruction",
@@ -107,7 +107,7 @@ def get_config():
                     },
                     "cf_v3_kwargs": {
                         "name": "cf_v3_dataset_128",
-                        "data_dir": "gs://vlm-guidance-data",
+                        "data_dir": "gs://cat-datasets",
                         "image_obs_keys": {"primary": "image"},
                         "proprio_obs_key": "position",
                         "language_key" : "language_instruction",
@@ -117,7 +117,7 @@ def get_config():
                     },
                     "cf_v4_kwargs": {
                         "name": "cf_v4_dataset",
-                        "data_dir": "gs://vlm-guidance-data",
+                        "data_dir": "gs://cat-datasets",
                         "image_obs_keys": {"primary": "image"},
                         "proprio_obs_key": "position",
                         "language_key" : "language_instruction",
@@ -127,7 +127,7 @@ def get_config():
                     },
                     # "outdoor_kwargs": {
                     #     "name": "outdoor_dataset_128",
-                    #     "data_dir": "gs://vlm-guidance-data",
+                    #     "data_dir": "gs://cat-datasets",
                     #     "image_obs_keys": {"primary": "image"},
                     #     "proprio_obs_key": "position",
                     #     "language_key" : "language_instruction",
@@ -137,7 +137,7 @@ def get_config():
                     # },
                     "outdoor_filtered_kwargs": {
                         "name": "outdoor_filtered_dataset_128",
-                        "data_dir": "gs://vlm-guidance-data",
+                        "data_dir": "gs://cat-datasets",
                         "image_obs_keys": {"primary": "image"},
                         "proprio_obs_key": "position",
                         "language_key" : "language_instruction",
@@ -147,7 +147,7 @@ def get_config():
                     },
                     "outdoor_filtered_v2_kwargs": {
                         "name": "outdoor_filtered_v2_dataset",
-                        "data_dir": "gs://vlm-guidance-data",
+                        "data_dir": "gs://cat-datasets",
                         "image_obs_keys": {"primary": "image"},
                         "proprio_obs_key": "position",
                         "language_key" : "language_instruction",
