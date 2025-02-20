@@ -242,9 +242,6 @@ def main(_):
                     wandb_list.append(wandb.Image(save_path))
                     plt.close()
                     
-
-                    
-                # breakpoint()
                 if jax.process_index() == 0:
                     wandb.log({"action_prediction": wandb_list}, commit=False)
                     wandb.log(eval_info, step=i + 1, commit=False)

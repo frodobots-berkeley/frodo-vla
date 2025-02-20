@@ -24,7 +24,6 @@ def compute_stats(
     ) / jnp.mean(target_mask_loss)
     pred_valid_tokens = jnp.count_nonzero(jnp.argmax(pred_logits, axis=-1) > 257153)
     valid_cnt = pred_valid_tokens / pred_logits.shape[-2] 
-    # print("Target mask: ", target_mask_loss)
     metrics = {"loss": loss, "accuracy": accuracy, "valid_cnt": valid_cnt}
     return loss, metrics
 
@@ -49,11 +48,7 @@ def step_fn(
             target_tokens=batch["gen"]["tokens"][..., 1:],
             target_mask_loss=batch["gen"]["mask_loss"][..., 1:],
         )
-        # return compute_stats(
-        #     pred_logits=logits[..., :-1, :],
-        #     target_tokens=batch["gen"]["tokens"][..., 1:],
-        #     target_mask_loss=batch["invalid_mask"][..., 1:],
-        # )
+        
     grad_fn = jax.grad(loss_fn, has_aux=True)
 
     key, dropout_key = jax.random.split(key)
