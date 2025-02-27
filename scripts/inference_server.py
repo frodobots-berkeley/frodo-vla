@@ -79,7 +79,7 @@ def gen_action():
         config = flags.FLAGS.config
 
         # Overwrite the config with the one from input
-        config.resume_checkpoint_dir = f"gs://vlm-guidance-logs/{flags.FLAGS.resume_checkpoint_dir}"
+        config.resume_checkpoint_dir = f"gs://cat-logs/{flags.FLAGS.resume_checkpoint_dir}"
         config.resume_checkpoint_step = flags.FLAGS.resume_checkpoint_step
 
         input_prompt = flags.FLAGS.prompt
@@ -131,7 +131,7 @@ if __name__ == "__main__":
             "config", "configs/smoke_test.py", "Path to the config file."
     )
     flags.DEFINE_string("platform", "gpu", "Platform to run on.")
-    flags.DEFINE_string("resume_checkpoint_dir", "gs://vlm-guidance-logs/pleasant-hill-251", "Path to the checkpoint directory.")
+    flags.DEFINE_string("resume_checkpoint_dir", "gs://cat-logs/pleasant-hill-251", "Path to the checkpoint directory.")
     flags.DEFINE_integer("resume_checkpoint_step", 10000, "Step to resume from.")
     flags.DEFINE_string("prompt", "", "Prompt to generate action from.")
     app.run()

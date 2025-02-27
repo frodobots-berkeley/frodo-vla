@@ -12,7 +12,7 @@ policys = {
         #    "cf_obs": ("restful-resonance-255", 100000),
         #    "obs_only" : ("young-fog-250", 90000),
         #    "all" : ("glowing-dust-253", 90000),
-         "cf_filtered_rotated" : ("spring-donkey-289", 40000)
+         "cf_filtered" : ("serene-field-298", 90000)
            }
 NUM_TRIALS = 3
 
