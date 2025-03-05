@@ -1,5 +1,5 @@
-from typing import Any as origAny
 from typing import Dict, Mapping, Sequence, Union
+import typing
 
 import chex
 from flax.typing import Collection, VariableDict
@@ -10,4 +10,4 @@ Params = Collection
 Variables = VariableDict
 Updates = ArrayTree
 Data = ArrayTree
-Info = Dict[str, origAny]
+Info = Dict[str, typing.Any]
