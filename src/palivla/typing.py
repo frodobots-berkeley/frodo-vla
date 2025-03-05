@@ -1,13 +1,12 @@
-from typing import Dict, Mapping, Sequence, Union
 import typing
 
 import chex
 from flax.typing import Collection, VariableDict
 
 Array = chex.Array
-ArrayTree = Union[chex.Array, Mapping[str, "ArrayTree"], Sequence["ArrayTree"]]
+ArrayTree = typing.Union[chex.Array, typing.Mapping[str, "ArrayTree"], typing.Sequence["ArrayTree"]]
 Params = Collection
 Variables = VariableDict
 Updates = ArrayTree
 Data = ArrayTree
-Info = Dict[str, typing.Any]
+Info = typing.Dict[str, typing.Any]
