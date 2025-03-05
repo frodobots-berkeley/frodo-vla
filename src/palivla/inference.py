@@ -275,7 +275,7 @@ if __name__ == "__main__":
     manager = ocp.CheckpointManager(config.resume_checkpoint_dir, options=ocp.CheckpointManagerOptions())
     model.load_state(config.resume_checkpoint_step, manager)
     prompt = flags.FLAGS.prompt
-    obs = Image.fromarray(np.random.randn(1, 96, 96, 3).astype(np.uint8))
+    obs = Image.fromarray(np.random.randn(96, 96, 3).astype(np.uint8))
     run_inference(model, prompt, obs, config)
 
 
