@@ -8,7 +8,7 @@ from PIL import Image
 from jax.experimental import multihost_utils
 
 from palivla.critic.model_components import CriticModelComponents
-from palivla.typing import Data
+from palivla.palivla_typing import Data
 
 
 def apply_critic_to_trajectory(

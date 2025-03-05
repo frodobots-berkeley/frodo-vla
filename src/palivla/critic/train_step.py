@@ -7,7 +7,7 @@ import jax.numpy as jnp
 import optax
 from palivla.components.train_state import TrainState
 from palivla.critic.vla_critic import PaliVLACritic
-from palivla.typing import Data, Params
+from palivla.palivla_typing import Data, Params
 
 
 def hl_gauss_target(

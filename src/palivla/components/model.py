@@ -13,7 +13,7 @@ from big_vision.models.proj.paligemma.gemma_bv import Model as GemmaModel
 from big_vision.models.proj.paligemma.paligemma import make_attn_mask
 from big_vision.models.vit import Model as ViTModel
 from palivla.spec import ModuleSpec
-from palivla.typing import Data, Info
+from palivla.palivla_typing import Data, Info
 
 
 def get_default_config():

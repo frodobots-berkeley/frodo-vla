@@ -6,7 +6,7 @@ from einops import repeat
 
 from big_vision.models.proj.paligemma.paligemma import make_attn_mask
 from palivla.components.model import PaliVLAModel
-from palivla.typing import Data
+from palivla.palivla_typing import Data
 
 
 def make_attn_mask_for_critic(input_mask, input_mask_ar, n_actions):

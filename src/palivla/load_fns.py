@@ -5,7 +5,7 @@ import jax.numpy as jnp
 
 from big_vision.utils import Registry
 from palivla.model_components import ModelComponents
-from palivla.typing import Params
+from palivla.palivla_typing import Params
 from ml_collections import FrozenConfigDict
 
 

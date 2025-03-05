@@ -13,7 +13,7 @@ from palivla.components.train_state import ShardingMetadata, TrainState
 from palivla.critic.train_step import train_step, loss_fn
 from palivla.model_components import ModelComponents
 from palivla.spec import ModuleSpec, OptimizerSpec
-from palivla.typing import Data
+from palivla.palivla_typing import Data
 
 
 def make_train_step_fn(sharding: ShardingMetadata, **kwargs):

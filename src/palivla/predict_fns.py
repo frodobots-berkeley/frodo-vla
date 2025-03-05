@@ -31,7 +31,7 @@ import numpy as np
 import big_vision.utils as u
 from big_vision.pp import registry
 from palivla.components.model import PaliVLAModel
-from palivla.typing import Data, Params, Variables
+from palivla.palivla_typing import Data, Params, Variables
 
 P = jax.sharding.PartitionSpec
 
