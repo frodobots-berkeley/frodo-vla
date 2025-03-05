@@ -261,7 +261,7 @@ if __name__ == "__main__":
     print("Config:", config)
 
     # Overwrite the config with the one from input
-    config.resume_checkpoint_dir = f"gs://vlm-guidance-logs/{flags.FLAGS.resume_checkpoint_dir}"
+    config.resume_checkpoint_dir = f"{flags.FLAGS.resume_checkpoint_dir}"
     config.resume_checkpoint_step = flags.FLAGS.resume_checkpoint_step
 
     input_prompt = flags.FLAGS.prompt
