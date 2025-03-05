@@ -276,7 +276,10 @@ if __name__ == "__main__":
     model.load_state(config.resume_checkpoint_step, manager)
     prompt = flags.FLAGS.prompt
     obs = Image.fromarray(np.random.randn(96, 96, 3).astype(np.uint8))
-    run_inference(model, prompt, obs, config)
+    predicted_actions, viz = run_inference(model, prompt, obs, config)
+    print("Predicted actions: ", predicted_actions)
+    print("Viz: ", viz)
+    print("Done!")
 
 
 
