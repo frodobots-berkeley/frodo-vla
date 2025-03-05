@@ -51,7 +51,9 @@ from scalax.sharding import (
 jax.config.update("jax_compilation_cache_dir", "/tmp/jax_cache")
 jax.config.update("jax_persistent_cache_min_entry_size_bytes", -1)
 jax.config.update("jax_persistent_cache_min_compile_time_secs", 0)
-tf.config.set_visible_devices([], "GPU")
+physical_devices = tf.config.list_physical_devices('GPU')
+tf.config.set_visible_devices(physical_devices, "GPU")
+print("VISIBLE DEVICES: ", jax.devices())
 
 tf.random.set_seed(jax.process_index())
 wandb.login()

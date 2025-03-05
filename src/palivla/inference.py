@@ -32,9 +32,10 @@ from scalax.sharding import (
 jax.config.update("jax_compilation_cache_dir", "/tmp/jax_cache")
 jax.config.update("jax_persistent_cache_min_entry_size_bytes", -1)
 jax.config.update("jax_persistent_cache_min_compile_time_secs", 0)
-tf.config.set_visible_devices([], "GPU")
-
-print(logging.Client())
+print("VISIBLE DEVICES: ", jax.devices())
+physical_devices = tf.config.list_physical_devices('GPU')
+tf.config.set_visible_devices(physical_devices, "GPU")
+print("VISIBLE DEVICES: ", jax.devices())
 
 # Load data config
 METRIC_WAYPOINT_SPACING = {
@@ -247,6 +248,10 @@ if "__name__" == "__main__":
     flags.DEFINE_string("resume_checkpoint_dir", "gs://vlm-guidance-logs/pleasant-hill-251", "Path to the checkpoint directory.")
     flags.DEFINE_integer("resume_checkpoint_step", 10000, "Step to resume from.")
     flags.DEFINE_string("prompt", "", "Prompt to generate action from.")
+
+    os.environ["XLA_PYTHON_CLIENT_PREALLOCATE"]="false"
+    os.environ["XLA_PYTHON_CLIENT_MEM_FRACTION"]=".XX"
+    os.environ["XLA_PYTHON_CLIENT_ALLOCATOR"]="platform"
 
     FLAGS = flags.FLAGS
     FLAGS(sys.argv) 
