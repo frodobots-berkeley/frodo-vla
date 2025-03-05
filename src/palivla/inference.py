@@ -240,7 +240,7 @@ def run_inference(model, prompt, image, config):
     viz = {"inference": "~/temp_viz/inference.jpg", "projected": "~/temp_viz/projected.jpg"}
     return predicted_actions, viz
 
-if "__name__" == "__main__":
+if __name__ == "__main__":
     config_flags.DEFINE_config_file(
             "config", "configs/smoke_test.py", "Path to the config file."
     )
