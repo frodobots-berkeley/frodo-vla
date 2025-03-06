@@ -211,7 +211,7 @@ def run_inference(model, prompt, image, config):
 
     os.makedirs("~/temp_viz", exist_ok=True)
     action_horizon = config["dataset_kwargs"]["traj_transform_kwargs"]["action_horizon"]
-    image = np.expand_dims(np.array(image), 0).repeat(4, axis=0)
+    image = np.expand_dims(np.array(image), 0)
 
     batch = {"task" : 
                 {"language_instruction" : np.array([prompt.encode("utf-8")]), 
