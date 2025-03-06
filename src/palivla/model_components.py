@@ -106,7 +106,7 @@ class ModelComponents:
         from tensorflow import io
 
         io.gfile.makedirs(path)
-        print(f"Saving model to {path}")
+
         # Huggingface can't load from GCS, so we need to stage the tokenizer to a local directory
         with write_staging_directory(io.gfile.join(path, "language_tokenizer")) as temp_dir:
             self.language_tokenizer.save_pretrained(temp_dir)
@@ -123,11 +123,20 @@ class ModelComponents:
         self.train_state.save_state(step, checkpoint_manager)
 
     @classmethod
-    def load_static(cls, path: PathLike, sharding: ShardingMetadata):
+    def load_static(
+        cls,
+        path: Any,
+        sharding: ShardingMetadata,
+        *,
+        weights_only: bool = False,
+        **kwargs,
+    ):
         from tensorflow import io
 
         # Huggingface can't load from GCS, so we need to stage the tokenizer to a local directory
-        with read_staging_directory(io.gfile.join(path, "language_tokenizer")) as temp_dir:
+        with read_staging_directory(
+            io.gfile.join(path, "language_tokenizer")
+        ) as temp_dir:
             language_tokenizer = AutoTokenizer.from_pretrained(temp_dir)
 
         action_tokenizer = ActionTokenizer.load(path)
@@ -137,11 +146,12 @@ class ModelComponents:
             example_batch = cloudpickle.load(f)
         with io.gfile.GFile(io.gfile.join(path, "rng.pkl"), "rb") as f:
             rng = cloudpickle.load(f)
-
+        print("Loading train state")
         train_state = TrainState.load_static(
             path,
             sharding=sharding,
             example_batch=example_batch,
+            weights_only=weights_only,
         )
         return cls(
             language_tokenizer=language_tokenizer,
@@ -153,8 +163,16 @@ class ModelComponents:
             example_batch=example_batch,
         )
 
-    def load_state(self, step: int, checkpoint_manager: ocp.CheckpointManager):
-        self.train_state = self.train_state.load_state(step, checkpoint_manager)
+    def load_state(
+        self,
+        step: int,
+        checkpoint_manager: ocp.CheckpointManager,
+        *,
+        weights_only: bool = False,
+    ):
+        self.train_state = self.train_state.load_state(
+            step, checkpoint_manager, weights_only=weights_only
+        )
 
     def train_step(self, batch: Any):
         # Tokenize the batch and build sequences
@@ -181,30 +199,23 @@ class ModelComponents:
 
     def eval_step(self, batch):
         gt_actions = batch["action"][:, -1, :, :]
-        action_horizon = gt_actions.shape[1]
+
         predicted_actions, actions_mask, tokens = self.predict(
-            batch, action_dim=gt_actions.shape[-1], action_horizon=action_horizon, return_tokens=True
+            batch, action_dim=gt_actions.shape[-1], return_tokens=True
         )
+
         predicted_actions = np.nan_to_num(predicted_actions)
 
-        gt_actions = jax.experimental.multihost_utils.process_allgather(gt_actions).reshape(predicted_actions.shape)
-        # print("PRED: ", predicted_actions)
-        # print("GT: ", gt_actions)
-        tokens["target"] = jax.experimental.multihost_utils.process_allgather(tokens["target"]).reshape(tokens["predicted"].shape)
-        tokens["mask"] = jax.experimental.multihost_utils.process_allgather(tokens["mask"]).reshape(tokens["predicted"].shape)
-        gen_valid_pct = actions_mask.mean()
-        gen_l2 = np.mean(np.square(predicted_actions - gt_actions) * actions_mask) / actions_mask.mean()
-        gen_l1 = np.mean(np.abs(predicted_actions - gt_actions) * actions_mask) / actions_mask.mean()
-        gen_acc = np.mean((tokens["predicted"] == tokens["target"]) * tokens["mask"]) / tokens["mask"].mean()
-                              
-        return {"eval_info":{
-            "gen_valid_pct": gen_valid_pct,
-            "gen_l2": gen_l2,
-            "gen_l1": gen_l1,
-            "gen_acc": gen_acc,},
-            "eval_data":{
-            "pred_actions": predicted_actions,
-            "gt_actions": gt_actions,}
+        return {
+            "gen_valid_pct": actions_mask.mean(),
+            "gen_l2": np.mean(np.square(predicted_actions - gt_actions) * actions_mask)
+            / actions_mask.mean(),
+            "gen_l1": np.mean(np.abs(predicted_actions - gt_actions) * actions_mask)
+            / actions_mask.mean(),
+            "gen_acc": np.mean(
+                (tokens["predicted"] == tokens["target"]) * tokens["mask"]
+            )
+            / tokens["mask"].mean(),
         }
 
     def predict(
@@ -237,6 +248,7 @@ class ModelComponents:
             pass
         else:
             inputs = self.sharding.mesh.local_data_to_global_array(inputs)
+
         # Run the train step
         with self.sharding.mesh.mesh, nn.logical_axis_rules([("act_batch", "fsdp")]):
             from palivla.predict_fns import _decode
@@ -249,7 +261,7 @@ class ModelComponents:
                 mesh=self.sharding.mesh.mesh,
                 out_sharding=PartitionSpec("fsdp"),
                 max_decode_len=sequences["gen"]["tokens"].shape[1],
-                eos_token=1,
+                eos_token=self.language_tokenizer.eos_token_id,
             )
             tokens = self.data_gather_fn(tokens)
 
@@ -261,9 +273,7 @@ class ModelComponents:
                 action_dim=action_dim,
                 action_horizon=action_horizon,
             )
-            # print("Generated tokens: ", tokens[0])
-            # print("GT tokens: ", sequences["gen"]["tokens"][0])
-            # print("Actions mask: ", actions_mask[0])
+
             if return_tokens:
                 return (
                     actions,
@@ -271,7 +281,8 @@ class ModelComponents:
                     {
                         "predicted": tokens,
                         "target": sequences["gen"]["tokens"],
-                        "mask": sequences["gen"]["mask"],                    },
+                        "mask": sequences["gen"]["mask"],
+                    },
                 )
             else:
                 return actions, actions_mask

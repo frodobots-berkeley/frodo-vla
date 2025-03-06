@@ -51,8 +51,8 @@ from scalax.sharding import (
 jax.config.update("jax_compilation_cache_dir", "/tmp/jax_cache")
 jax.config.update("jax_persistent_cache_min_entry_size_bytes", -1)
 jax.config.update("jax_persistent_cache_min_compile_time_secs", 0)
-# physical_devices = tf.config.list_physical_devices('GPU')
-# tf.config.set_visible_devices(physical_devices, "GPU")
+physical_devices = tf.config.list_physical_devices('GPU')
+tf.config.set_visible_devices(physical_devices, "GPU")
 print("VISIBLE DEVICES: ", jax.devices())
 
 tf.random.set_seed(jax.process_index())
@@ -93,9 +93,9 @@ def gen_action():
         sharding_metadata = make_sharding(config)
 
         # print("\nLoading model...", config.resume_checkpoint_dir)
-        model = ModelComponents.load_static(config.resume_checkpoint_dir, sharding_metadata)
+        model = ModelComponents.load_static(config.resume_checkpoint_dir, sharding_metadata, weights_only=True)
         manager = ocp.CheckpointManager(config.resume_checkpoint_dir, options=ocp.CheckpointManagerOptions())
-        model.load_state(config.resume_checkpoint_step, manager)
+        model.load_state(config.resume_checkpoint_step, manager, weights_only=True)
         print("\nModel loaded!")
 
     # Receive data 

@@ -879,6 +879,46 @@ METRIC_WAYPOINT_SPACING = {
 def gnm_dataset_transform(trajectory: Dict[str, Any], action_horizon=1) -> Dict[str, Any]:
     traj_len = tf.shape(trajectory["action"])[0]
 
+    # Pad trajectory states
+    padding = tf.tile(trajectory["observation"]["state"][-1:, :], [action_horizon, 1])
+    trajectory["observation"]["state"] = tf.concat(
+        (trajectory["observation"]["state"], padding), axis=0
+    )
+
+    # Get next len_seq_pred indices
+    indices = tf.reshape(tf.range(traj_len), [-1, 1]) + tf.range(1, action_horizon + 1)
+    global_waypoints = tf.gather(trajectory["observation"]["state"], indices)[:, :, :2]
+
+    # Get current position indices
+    curr_pos_indices = tf.reshape(tf.range(traj_len), [-1, 1]) + tf.range(
+        0, action_horizon
+    )
+    curr_pos = tf.gather(trajectory["observation"]["state"], curr_pos_indices)[
+        :, :, :2
+    ]  # delta waypoints
+    
+    global_waypoints -= curr_pos
+    global_waypoints = tf.expand_dims(global_waypoints, 2)
+    actions = tf.squeeze(
+        tf.linalg.matmul(
+            global_waypoints,
+            tf.expand_dims(trajectory["observation"]["yaw_rotmat"][:, :2, :2], 1),
+        ),
+        2,
+    )
+    normalization_factor = trajectory["traj_metadata"]["episode_metadata"]["normalization_factor"]
+
+    normalization_factor = tf.cast(normalization_factor[0], tf.float64)
+    actions = actions / normalization_factor
+
+    trajectory["action"] = actions
+
+    trajectory["observation"]["proprio"] = trajectory["observation"]["state"]
+    return trajectory
+
+def old_gnm_dataset_transform(trajectory: Dict[str, Any], action_horizon=1) -> Dict[str, Any]:
+    traj_len = tf.shape(trajectory["action"])[0]
+
     # rotate trajectory to align with x-axis
     # positions = trajectory["observation"]["state"][:, :2]
     # positions_shifted = positions - positions[0]
@@ -960,7 +1000,7 @@ def gnm_dataset_transform(trajectory: Dict[str, Any], action_horizon=1) -> Dict[
     trajectory["observation"]["proprio"] = trajectory["observation"]["state"]
     return trajectory
 
-def old_gnm_dataset_transform(trajectory: Dict[str, Any]) -> Dict[str, Any]:
+def old_old_gnm_dataset_transform(trajectory: Dict[str, Any]) -> Dict[str, Any]:
     def subsampled_traj():
         # first compute per-dataset scaling factor from first action and first 2 positions
         scaling_factor = tf.linalg.norm(trajectory["action"][0]) / tf.linalg.norm(
