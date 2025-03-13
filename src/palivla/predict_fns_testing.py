@@ -20,6 +20,7 @@ Modified from PaliGemma in big_vision: https://github.com/google-research/big_vi
 
 import collections
 import functools
+import time
 
 import einops
 import jax
@@ -31,7 +32,7 @@ import numpy as np
 import big_vision.utils as u
 from big_vision.pp import registry
 from palivla.components.model import PaliVLAModel
-from palivla.typing import Data, Params, Variables
+from palivla.palivla_typing import Data, Params, Variables
 
 P = jax.sharding.PartitionSpec
 
@@ -50,15 +51,18 @@ def get_all(model):
     return {name: functools.partial(fn, model=model) for name, fn in fns.items()}
 
 
-def _logits(params, batch, *, model):
-    images, text, mask = batch["image"], batch["text"], batch["mask_ar"]
-    text_logits, out = model.apply(
+def _logits(params, data, *, model):
+    # print("data", data)
+    data["gen"]["tokens"] = data["gen"]["tokens"].astype(jnp.int32)
+    logits, info = model.apply(
         {"params": params},
-        images,
-        text[:, :-1],
-        mask[:, :-1],
+        data["sensors"],
+        data["sensors_mask"],
+        data["prompt"],
+        data["gen"],
+        train=False,
     )
-    return text_logits, out
+    return logits, info
 
 
 def _image_avg_repr(
@@ -94,30 +98,30 @@ def _decode_with_logp(
     """Sample token continuations to the input sequences."""
     replicate_sharding = jax.sharding.NamedSharding(mesh, P())
     out_sharding = jax.sharding.NamedSharding(mesh, out_sharding)
-
     # Prefill the model cache and generate logits for first token.
-    logits, cache = jax.jit(
-        _prefill_cache,
-        out_shardings=out_sharding,
-        static_argnames=("model", "max_decode_len"),
-    )(
-        params,
-        data,
-        model=model,
-        max_decode_len=max_decode_len,
-    )
-    logits, cache = jax.block_until_ready((logits, cache))
+    # logits, cache = jax.jit(
+    #     _prefill_cache,
+    #     out_shardings=out_sharding,
+    #     static_argnames=("model", "max_decode_len"),
+    # )(
+    #     params,
+    #     data,
+    #     model=model,
+    #     max_decode_len=max_decode_len,
+    # )
+    # logits, cache = jax.block_until_ready((logits, cache))
+    # print(logits)
+    # breakpoint()
     # Mask indicating real examples. False if example is used to pad the batch.
     if "_mask" in data:
         mask = data["_mask"]
     else:
         mask = jnp.ones_like(data["prompt"]["tokens"][:, 0], dtype=jnp.bool_)
-
+    start_time = time.time()
     # Repeat example in case we are picking the best of n.
-    logits, cache, mask = jax.jit(_bon_repeat, static_argnames=("n",))(
-        (logits, cache, mask), n=best_of_n
-    )
-
+    # logits, cache, mask = jax.jit(_bon_repeat, static_argnames=("n",))(
+    #     (logits, cache, mask), n=best_of_n
+    # )
     decode_sample_output = jax.jit(
         _decode_sample_output,
         static_argnames=("max_decode_len", "sampler"),
@@ -133,33 +137,48 @@ def _decode_with_logp(
         static_argnames=("model",),
     )
 
+    logits_fn = jax.jit(
+        _logits,
+        static_argnames=("model",),
+    )
+
     # Keep sampling tokens from last logits until EOS or max_decode_len.
     state = None
+    logits, out = model.apply(
+        {"params" : params}, data["sensors"], data["sensors_mask"], data["prompt"], data["gen"], train=False
+    )
     # Setting `eos_look_behind>0` removes blocking transfer with small batches.
     stops = collections.deque(maxlen=1 + eos_look_behind)
+    start_time = time.time()
     for idx in range(max_decode_len):
+        start_time = time.time()
         tokens, state = decode_sample_output(
             state, logits, max_decode_len=max_decode_len, sampler=sampler
         )
-
+        logits, out = model.apply(
+            {"params" : params}, data["sensors"], data["sensors_mask"], data["prompt"], data["gen"], train=False
+        )
+        # print(tokens)
         if idx + 1 >= max_decode_len:
             break
-
+        
+        start_time = time.time()
         stops.append(decode_early_stop(state, mask, eos_token=eos_token))
         if len(stops) == stops.maxlen and jax.device_get(stops[0]):
             break
 
         # Compute logits for next token
-        logits, cache = extend_cache(params, cache, tokens, model=model)
-        logits, cache = jax.block_until_ready((logits, cache))
+        # logits, cache = extend_cache(params, cache, tokens, model=model)
+        # logits, info = logits_fn(params, data, model=model)
+        # logits, info = jax.block_until_ready((logits, info))
 
+    # print(f"decode time: {time.time() - start_time}")
     # Select the best of n sample for each example.
     _, tokens, logp = jax.jit(
         _bon_select,
         out_shardings=replicate_sharding,
         static_argnames=("n", "eos_token"),
     )(state, n=best_of_n, eos_token=eos_token)
-
     return tokens, logp
 
 
@@ -249,6 +268,7 @@ def _prefill_cache(
 ):
     """Initialize the model cache for decoding with the prompts."""
     variables = {"params": params}
+    start_time = time.time()
     x, mask, mask_ar, _, _ = model.apply(
         variables,
         data["sensors"],
@@ -257,6 +277,7 @@ def _prefill_cache(
         None,
         method=model.embed_sensors_and_text,
     )
+    start_time = time.time()
     last_logits, variables = model.apply(
         variables,
         x,
@@ -400,6 +421,7 @@ def _beam_decode(
 
         # Compute logits for next token
         logits, cache = extend_cache(params, cache, tokens, model=model)
+
 
     return jax.jit(_beam_make_output, out_shardings=out_sharding)(state)
 

@@ -262,9 +262,9 @@ class ModelComponents:
             from palivla.predict_fns import _decode
             start_time = time.time()
             params = self.train_state.get_params(use_ema_params=use_ema_params)
-            print(f"Time to get params: {time.time() - start_time}")
+            # print(f"Time to get params: {time.time() - start_time}")
             start_time = time.time()
-            print(sequences["gen"]["tokens"].shape[1])
+            # print(sequences["gen"]["tokens"].shape[1])
             tokens = _decode(
                 params,
                 inputs,
@@ -274,7 +274,7 @@ class ModelComponents:
                 max_decode_len=sequences["gen"]["tokens"].shape[1],
                 eos_token=self.language_tokenizer.eos_token_id,
             )
-            print(f"Time to decode: {time.time() - start_time}")
+            # print(f"Time to decode: {time.time() - start_time}")
             tokens = self.data_gather_fn(tokens)
             start_time = time.time()
             actions, actions_mask = self.sequence_builder.batch_get_actions(
@@ -285,7 +285,7 @@ class ModelComponents:
                 action_dim=action_dim,
                 action_horizon=action_horizon,
             )
-            print(f"Time to get actions: {time.time() - start_time}")
+            # print(f"Time to get actions: {time.time() - start_time}")
 
             if return_tokens:
                 return (
