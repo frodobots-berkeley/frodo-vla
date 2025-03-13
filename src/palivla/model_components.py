@@ -1,6 +1,7 @@
 from functools import partial
 from os import PathLike
 from typing import Any
+import time
 
 import cloudpickle
 import flax.linen as nn
@@ -236,6 +237,7 @@ class ModelComponents:
         include_action_tokens: bool = True,
     ):
         # Tokenize the batch and build sequences
+        start_time = time.time()
         sequences = self.sequence_builder.build_sequence(
             batch,
             self.language_tokenizer,
@@ -255,12 +257,14 @@ class ModelComponents:
             pass
         else:
             inputs = self.sharding.mesh.local_data_to_global_array(inputs)
-
         # Run the train step
         with self.sharding.mesh.mesh, nn.logical_axis_rules([("act_batch", "fsdp")]):
             from palivla.predict_fns import _decode
-
+            start_time = time.time()
             params = self.train_state.get_params(use_ema_params=use_ema_params)
+            print(f"Time to get params: {time.time() - start_time}")
+            start_time = time.time()
+            print(sequences["gen"]["tokens"].shape[1])
             tokens = _decode(
                 params,
                 inputs,
@@ -270,8 +274,9 @@ class ModelComponents:
                 max_decode_len=sequences["gen"]["tokens"].shape[1],
                 eos_token=self.language_tokenizer.eos_token_id,
             )
+            print(f"Time to decode: {time.time() - start_time}")
             tokens = self.data_gather_fn(tokens)
-
+            start_time = time.time()
             actions, actions_mask = self.sequence_builder.batch_get_actions(
                 tokens,
                 self.language_tokenizer,
@@ -280,6 +285,7 @@ class ModelComponents:
                 action_dim=action_dim,
                 action_horizon=action_horizon,
             )
+            print(f"Time to get actions: {time.time() - start_time}")
 
             if return_tokens:
                 return (

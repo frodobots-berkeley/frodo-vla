@@ -8,6 +8,7 @@ import jax
 import jax.numpy as jnp
 from einops import repeat
 from flax.core import FrozenDict
+import time
 
 from big_vision.models.proj.paligemma.gemma_bv import Model as GemmaModel
 from big_vision.models.proj.paligemma.paligemma import make_attn_mask

@@ -57,6 +57,7 @@ def main(args):
         prompt = eval_trial_info[0]
         policy = policys[eval_trial_info[1]]
         trial_num = eval_trial_info[2]
+        print("Running eval:", eval_trial_info)
         try:
             os.system(f"python ~/bigvision-palivla/scripts/inference_server.py\
                 --config ~/bigvision-palivla/configs/nav_config_inference.py\

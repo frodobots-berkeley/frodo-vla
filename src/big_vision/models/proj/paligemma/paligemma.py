@@ -192,6 +192,7 @@ class Model(nn.Module):
   def extend_cache(self, x):
     """Advances decoding cache with `x` [B, 1, E]."""
     if hasattr(self._llm, "prefill_cache"):
+      print("Using extend_cache")
       return self._llm.extend_cache(x)
     else:
       return self._fallback_extend_cache(x)

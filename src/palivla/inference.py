@@ -4,6 +4,7 @@ import jax.numpy as jnp
 import numpy as np
 import sys
 import wandb
+import time
 import cv2
 from ml_collections import config_flags, ConfigDict
 import tensorflow as tf
@@ -29,10 +30,10 @@ from scalax.sharding import (
     FSDPShardingRule,
     PartitionSpec,
 )
-jax.config.update("jax_compilation_cache_dir", "/tmp/jax_cache")
-jax.config.update("jax_persistent_cache_min_entry_size_bytes", -1)
-jax.config.update("jax_persistent_cache_min_compile_time_secs", 0)
-print("VISIBLE DEVICES: ", jax.devices())
+
+# jax.config.update("jax_compilation_cache_dir", "/tmp/jax_cache")
+# jax.config.update("jax_persistent_cache_min_entry_size_bytes", -1)
+# jax.config.update("jax_persistent_cache_min_compile_time_secs", 0)
 physical_devices = tf.config.list_physical_devices('GPU')
 tf.config.set_visible_devices(physical_devices, "GPU")
 print("VISIBLE DEVICES: ", jax.devices())
@@ -207,20 +208,37 @@ def make_sharding(config: ConfigDict):
     )
     return sharding_metadata
 
-def run_inference(model, prompt, image, config):
+def run_inference(model, prompt, image, config, inference_device="gpu"):
+
+    if config.get("inference_device") is not None:
+        infererence_device = config["inference_device"]
 
     os.makedirs("~/temp_viz", exist_ok=True)
     action_horizon = config["dataset_kwargs"]["traj_transform_kwargs"]["action_horizon"]
-    image = np.expand_dims(np.array(image), 0)
 
-    batch = {"task" : 
-                {"language_instruction" : np.array([prompt.encode("utf-8")]), 
-                "pad_mask_dict": {"language_instruction": np.array([1])}},
-            "observation": 
-                {"image_primary": image, 
-                "pad_mask_dict": {"image_primary": np.array([1], dtype=bool)}},
-            "action": np.random.randn(1, 1, 2).astype(np.float64),    
-            }
+    if inference_device == "tpu":
+        image = np.expand_dims(np.array(image), 0).repeat(4, axis=0)
+
+        batch = {"task" : 
+                    {"language_instruction" : np.array([prompt.encode("utf-8")]*4), 
+                    "pad_mask_dict": {"language_instruction": np.array([1]*4)}},
+                "observation": 
+                    {"image_primary": image, 
+                    "pad_mask_dict": {"image_primary": np.array([1]*4, dtype=bool)}},
+                "action": np.random.randn(4, 1, 2).astype(np.float64),    
+                }
+    else:
+        image = np.expand_dims(np.array(image), 0).repeat(2, axis=0)
+
+        batch = {"task" : 
+                    {"language_instruction" : np.array([prompt.encode("utf-8")]*2), 
+                    "pad_mask_dict": {"language_instruction": np.array([]*2)}},
+                "observation": 
+                    {"image_primary": image, 
+                    "pad_mask_dict": {"image_primary": np.array([1]*2, dtype=bool)}},
+                "action": np.random.randn(2, 1, 2).astype(np.float64),    
+                }
+
     # Predict the output 
     predicted_actions, actions_mask, tokens = model.predict(batch, action_dim=2, action_horizon=action_horizon, return_tokens=True, include_action_tokens=False)
     predicted_actions = predicted_actions[0].squeeze()
@@ -228,16 +246,18 @@ def run_inference(model, prompt, image, config):
     summed_actions -= summed_actions[0]
 
     # Plot on the image 
-    viz_image = Image.fromarray(image[0]).resize(VIZ_IMAGE_SIZE)
-    out = draw_trajectory(np.array(viz_image), summed_actions)
-    # Plot the image and the waypoints
-    fig, ax = plt.subplots(1, 2, figsize=(5, 10))
-    ax[0].imshow(image[0])
-    ax[0].set_title("Image")
-    ax[1].plot(summed_actions[:, 0], summed_actions[:, 1])
-    ax[1].set_title("Output")
-    plt.savefig("~/temp_viz/inference.jpg")
-    viz = {"inference": "~/temp_viz/inference.jpg", "projected": "~/temp_viz/projected.jpg"}
+    # viz_image = Image.fromarray(image[0]).resize(VIZ_IMAGE_SIZE)
+    
+    # out = draw_trajectory(np.array(viz_image), summed_actions)
+    # # Plot the image and the waypoints
+    # fig, ax = plt.subplots(1, 2, figsize=(5, 10))
+    # ax[0].imshow(image[0])
+    # ax[0].set_title("Image")
+    # ax[1].plot(summed_actions[:, 0], summed_actions[:, 1])
+    # ax[1].set_title("Output")
+    # plt.savefig("~/temp_viz/inference.jpg")
+    # viz = {"inference": "~/temp_viz/inference.jpg", "projected": "~/temp_viz/projected.jpg"}
+    viz = None
     return predicted_actions, viz
 
 if __name__ == "__main__":
@@ -275,11 +295,15 @@ if __name__ == "__main__":
     manager = ocp.CheckpointManager(config.resume_checkpoint_dir, options=ocp.CheckpointManagerOptions())
     model.load_state(config.resume_checkpoint_step, manager, weights_only=config.weights_only)
     prompt = flags.FLAGS.prompt
-    obs = Image.fromarray(np.random.randn(96, 96, 3).astype(np.uint8))
-    predicted_actions, viz = run_inference(model, prompt, obs, config)
-    print("Predicted actions: ", predicted_actions)
-    print("Viz: ", viz)
-    print("Done!")
+    
+    start_time = time.time()
+    for i in range(10):
+        obs = Image.fromarray(np.random.randn(96, 96, 3).astype(np.uint8))
+        predicted_actions, viz = run_inference(model, prompt, obs, config)
+        print(f"Inference took: {time.time() - start_time} seconds")
+        print("Predicted actions: ", predicted_actions)
+        print("Viz: ", viz)
+        print("Done!")
 
 
 

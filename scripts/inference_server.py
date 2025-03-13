@@ -37,7 +37,7 @@ from palivla.inference import (
 from palivla.components.train_state import ShardingMetadata
 from palivla.inference import run_inference, pil_to_base64, make_sharding
 from octo.data import traj_transforms
-
+print("Done importing")
 # Jax imports
 import jax
 import jax.numpy as jnp
@@ -48,9 +48,10 @@ from scalax.sharding import (
     FSDPShardingRule,
     PartitionSpec,
 )
-jax.config.update("jax_compilation_cache_dir", "/tmp/jax_cache")
-jax.config.update("jax_persistent_cache_min_entry_size_bytes", -1)
-jax.config.update("jax_persistent_cache_min_compile_time_secs", 0)
+print("Inference server running...")
+# jax.config.update("jax_compilation_cache_dir", "/tmp/jax_cache")
+# jax.config.update("jax_persistent_cache_min_entry_size_bytes", -1)
+# jax.config.update("jax_persistent_cache_min_compile_time_secs", 0)
 physical_devices = tf.config.list_physical_devices('GPU')
 tf.config.set_visible_devices(physical_devices, "GPU")
 print("VISIBLE DEVICES: ", jax.devices())
@@ -121,9 +122,9 @@ def gen_action():
     avg_time.append(run_time)
 
     print(f"Avg. run time: {np.array(avg_time).mean()}s")
-    
-    viz = {k: wandb.Image(v) for k, v in viz.items()}
-    run.log(viz)
+    if viz is not None:
+        viz = {k: wandb.Image(v) for k, v in viz.items()}
+        run.log(viz)
     response = jsonify(action=action.tolist())
     return response
 

@@ -8,7 +8,7 @@ from octo.utils.spec import ModuleSpec
 placeholder(int)._value
 
 def get_config():
-    num_train_steps = FieldReference(100000, int)
+    num_train_steps = FieldReference(300000, int)
 
     model_config = get_default_config()
     action_horizon = 8
@@ -20,7 +20,7 @@ def get_config():
             #Tokenizers
             "language_tokenizer": "google/paligemma-3b-mix-224",
             "action_tokenizer": f"action_tokenizer.bin(min_action_value=-1, max_action_value=1, action_vocab_size=128, action_horizon={action_horizon})",
-            "sequence_builder": "sequence_builder.default(prompt_pad_length=20, gen_pad_length=20)",
+            "sequence_builder": "sequence_builder.default(prompt_pad_length=100, gen_pad_length=20)",
             # Initialization
             "load_fns": [
                 (
@@ -31,13 +31,13 @@ def get_config():
                     },
                 )
             ],
-            "resume_checkpoint_dir": "gs://cat-logs/restful-galaxy-294",
-            "resume_checkpoint_step": 30000,
-            "weights_only": True,
+            "resume_checkpoint_dir": "gs://cat-logs/solar-haze-301",
+            "resume_checkpoint_step": 50000,
+            "weights_only": False,
             # Overfit
             "overfit_dataset": False,
             # Training settings
-            "batch_size": 192,
+            "batch_size": 768,
             "eval_batch_size": 128,
             "num_steps": num_train_steps,
             # Checkpoint settings
@@ -156,8 +156,68 @@ def get_config():
                         "standardize_fn" : transform,   
                         "force_recompute_dataset_statistics": False,
                     },
+                    "atomic_forward_kwargs": {
+                        "name": "atomic_forward_dataset",
+                        "data_dir": "gs://cat-datasets",
+                        "image_obs_keys": {"primary": "image"},
+                        "proprio_obs_key": "position",
+                        "language_key" : "language_instruction",
+                        "action_proprio_normalization_type": NormalizationType.NORMAL,
+                        "standardize_fn" : transform,   
+                        "force_recompute_dataset_statistics": False,
+                    },
+                    "atomic_turn_left_kwargs": {
+                        "name": "atomic_turn_left_dataset",
+                        "data_dir": "gs://cat-datasets",
+                        "image_obs_keys": {"primary": "image"},
+                        "proprio_obs_key": "position",
+                        "language_key" : "language_instruction",
+                        "action_proprio_normalization_type": NormalizationType.NORMAL,
+                        "standardize_fn" : transform,   
+                        "force_recompute_dataset_statistics": False,
+                    },
+                    "atomic_turn_right_kwargs": {
+                        "name": "atomic_turn_right_dataset",
+                        "data_dir": "gs://cat-datasets",
+                        "image_obs_keys": {"primary": "image"},
+                        "proprio_obs_key": "position",
+                        "language_key" : "language_instruction",
+                        "action_proprio_normalization_type": NormalizationType.NORMAL,
+                        "standardize_fn" : transform,   
+                        "force_recompute_dataset_statistics": False,
+                    },
+                    "atomic_adjust_left_kwargs": {
+                        "name": "atomic_adjust_left_dataset",
+                        "data_dir": "gs://cat-datasets",
+                        "image_obs_keys": {"primary": "image"},
+                        "proprio_obs_key": "position",
+                        "language_key" : "language_instruction",
+                        "action_proprio_normalization_type": NormalizationType.NORMAL,
+                        "standardize_fn" : transform,   
+                        "force_recompute_dataset_statistics": False,
+                    },
+                    "atomic_adjust_right_kwargs": {
+                        "name": "atomic_adjust_right_dataset",
+                        "data_dir": "gs://cat-datasets",
+                        "image_obs_keys": {"primary": "image"},
+                        "proprio_obs_key": "position",
+                        "language_key" : "language_instruction",
+                        "action_proprio_normalization_type": NormalizationType.NORMAL,
+                        "standardize_fn" : transform,   
+                        "force_recompute_dataset_statistics": False,
+                    },
+                    "atomic_stop_kwargs": {
+                        "name": "atomic_stop_dataset",
+                        "data_dir": "gs://cat-datasets",
+                        "image_obs_keys": {"primary": "image"},
+                        "proprio_obs_key": "position",
+                        "language_key" : "language_instruction",
+                        "action_proprio_normalization_type": NormalizationType.NORMAL,
+                        "standardize_fn" : transform,   
+                        "force_recompute_dataset_statistics": False,
+                    },
                 },
-                "sample_weights": [0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5],
+                "sample_weights": [0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.4, 0.7, 0.7, 0.7, 0.7, 0.9],
                 "traj_transform_kwargs": {
                     "window_size": 1,
                     "action_horizon": action_horizon,

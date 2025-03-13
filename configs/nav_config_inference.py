@@ -35,6 +35,7 @@ def get_config():
             "resume_checkpoint_step": 10000,
             # Overfit
             "overfit_dataset": False,
+            "weights_only": True,
             # Training settings
             "batch_size": 192,
             "eval_batch_size": 128,
