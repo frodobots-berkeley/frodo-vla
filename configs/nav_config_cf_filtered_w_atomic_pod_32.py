@@ -42,7 +42,7 @@ def get_config():
             "num_steps": num_train_steps,
             # Checkpoint settings
             "save_path": "gs://cat-logs",
-            "save_interval": 10000,
+            "save_interval": 100,
             "max_to_keep": 10,
             # Multi-device settings
             "data_axis_size": 1,
