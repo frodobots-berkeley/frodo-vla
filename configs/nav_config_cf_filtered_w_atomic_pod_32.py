@@ -43,7 +43,7 @@ def get_config():
             # Checkpoint settings
             "save_path": "gs://cat-logs",
             "save_interval": 10,
-            "max_to_keep": 10,
+            "max_to_keep": 5000,
             # Multi-device settings
             "data_axis_size": 1,
             "fsdp_axis_size": -1,
