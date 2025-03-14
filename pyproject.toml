@@ -18,7 +18,7 @@ dependencies = [
     "numpy<2.0.0",
     "octo",
     "optax>=0.2.3",
-    "orbax-checkpoint=0.7.0",
+    "orbax-checkpoint==0.7.0",
     "overrides>=7.7.0",
     "pip",
     "scalax>=0.2.4",
