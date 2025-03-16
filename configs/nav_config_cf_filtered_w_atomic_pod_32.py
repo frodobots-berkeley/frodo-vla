@@ -31,7 +31,7 @@ def get_config():
                     },
                 )
             ],
-            "resume_checkpoint_dir": "gs://cat-logs/solar-haze-301",
+            "resume_checkpoint_dir": "gs://cat-logs/pecan-crumble-310",
             "resume_checkpoint_step": 60000,
             "weights_only": False,
             # Overfit
