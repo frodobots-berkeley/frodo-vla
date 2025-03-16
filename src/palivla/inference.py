@@ -30,12 +30,13 @@ from scalax.sharding import (
     FSDPShardingRule,
     PartitionSpec,
 )
+jax.config.update("jax_explain_cache_misses", True)
 
 # jax.config.update("jax_compilation_cache_dir", "/tmp/jax_cache")
 # jax.config.update("jax_persistent_cache_min_entry_size_bytes", -1)
 # jax.config.update("jax_persistent_cache_min_compile_time_secs", 0)
 physical_devices = tf.config.list_physical_devices('GPU')
-tf.config.set_visible_devices(physical_devices, "GPU")
+tf.config.set_visible_devices(physical_devices[:1], "GPU")
 print("VISIBLE DEVICES: ", jax.devices())
 
 # Load data config
@@ -228,15 +229,15 @@ def run_inference(model, prompt, image, config, inference_device="gpu"):
                 "action": np.random.randn(4, 1, 2).astype(np.float64),    
                 }
     else:
-        image = np.expand_dims(np.array(image), 0).repeat(2, axis=0)
+        image = np.expand_dims(np.array(image), 0)
 
         batch = {"task" : 
-                    {"language_instruction" : np.array([prompt.encode("utf-8")]*2), 
-                    "pad_mask_dict": {"language_instruction": np.array([]*2)}},
+                    {"language_instruction" : np.array([prompt.encode("utf-8")]), 
+                    "pad_mask_dict": {"language_instruction": np.array([1])}},
                 "observation": 
                     {"image_primary": image, 
-                    "pad_mask_dict": {"image_primary": np.array([1]*2, dtype=bool)}},
-                "action": np.random.randn(2, 1, 2).astype(np.float64),    
+                    "pad_mask_dict": {"image_primary": np.array([1], dtype=bool)}},
+                "action": np.random.randn(1, 1, 2).astype(np.float64),    
                 }
 
     # Predict the output 
@@ -296,8 +297,9 @@ if __name__ == "__main__":
     model.load_state(config.resume_checkpoint_step, manager, weights_only=config.weights_only)
     prompt = flags.FLAGS.prompt
     
-    start_time = time.time()
+
     for i in range(10):
+        start_time = time.time()
         obs = Image.fromarray(np.random.randn(96, 96, 3).astype(np.uint8))
         predicted_actions, viz = run_inference(model, prompt, obs, config)
         print(f"Inference took: {time.time() - start_time} seconds")
