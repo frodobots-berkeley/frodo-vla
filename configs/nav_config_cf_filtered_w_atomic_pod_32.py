@@ -31,8 +31,8 @@ def get_config():
                     },
                 )
             ],
-            "resume_checkpoint_dir": "gs://cat-logs/fallen-wildflower-311",
-            "resume_checkpoint_step": 70000,
+            "resume_checkpoint_dir": "gs://cat-logs/lively-mountain-312",
+            "resume_checkpoint_step": 120000,
             "weights_only": False,
             # Overfit
             "overfit_dataset": False,
