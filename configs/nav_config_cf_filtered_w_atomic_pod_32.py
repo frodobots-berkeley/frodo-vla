@@ -31,8 +31,8 @@ def get_config():
                     },
                 )
             ],
-            "resume_checkpoint_dir": "gs://cat-logs/lively-mountain-312",
-            "resume_checkpoint_step": 120000,
+            "resume_checkpoint_dir": "gs://cat-logs/classic-river-313",
+            "resume_checkpoint_step": 150000,
             "weights_only": False,
             # Overfit
             "overfit_dataset": False,
