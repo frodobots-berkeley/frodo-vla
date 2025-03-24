@@ -277,7 +277,8 @@ class ModelComponents:
             from palivla.predict_fns import _decode
 
             params = self.train_state.get_params(use_ema_params=use_ema_params)
-
+            print("sequence length: ", sequences["gen"]["tokens"].shape[1])
+            print("act horizon * dim:  ", action_horizon*action_dim)
             tokens = _decode(
                 params,
                 inputs,
@@ -287,6 +288,7 @@ class ModelComponents:
                 max_decode_len=action_horizon*action_dim,
                 eos_token=self.language_tokenizer.eos_token_id,
             )
+            print(tokens.shape)
             tokens = self.data_gather_fn(tokens)
 
             actions, actions_mask = self.sequence_builder.batch_get_actions(
