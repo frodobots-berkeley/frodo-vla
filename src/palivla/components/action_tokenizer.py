@@ -111,7 +111,7 @@ class DCTActionTokenizer(ActionTokenizer):
         breakpoint()
         action_tokens = self._fast_tokenizer(data[None])[0]
         action_tokens_in_pg = self._act_tokens_to_paligemma_tokens(action_tokens)
-
+        action_tokens = action_tokens.reshape(data.shape[0], -1)
         return action_tokens_in_pg
 
     def detokenize(self, tokens, *, obs=None):
