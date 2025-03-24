@@ -18,7 +18,6 @@ def compute_stats(
         target_mask_loss
         * optax.softmax_cross_entropy_with_integer_labels(pred_logits, target_tokens)
     ) / jnp.mean(target_mask_loss)
-
     accuracy = jnp.mean(
         target_mask_loss * (jnp.argmax(pred_logits, axis=-1) == target_tokens)
     ) / jnp.mean(target_mask_loss)
