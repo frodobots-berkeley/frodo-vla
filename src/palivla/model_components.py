@@ -229,7 +229,7 @@ class ModelComponents:
         gt_actions = batch["action"][:, -1, :, :]
 
         predicted_actions, actions_mask, tokens = self.predict(
-            batch, action_dim=gt_actions.shape[-1], return_tokens=True
+            batch, action_dim=gt_actions.shape[-1], action_horizon=gt_actions.shape[1], return_tokens=True
         )
 
         predicted_actions = np.nan_to_num(predicted_actions)
