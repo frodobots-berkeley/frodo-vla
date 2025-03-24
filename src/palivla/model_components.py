@@ -250,6 +250,7 @@ class ModelComponents:
         self,
         batch,
         action_dim: int,
+        action_horizon: int, 
         *,
         use_ema_params: bool = False,
         return_tokens: bool = False,
@@ -283,7 +284,7 @@ class ModelComponents:
                 model=self.train_state.model,
                 mesh=self.sharding.mesh.mesh,
                 out_sharding=PartitionSpec("fsdp"),
-                max_decode_len=10,
+                max_decode_len=action_horizon*action_dim,
                 eos_token=self.language_tokenizer.eos_token_id,
             )
             tokens = self.data_gather_fn(tokens)
@@ -294,6 +295,7 @@ class ModelComponents:
                 self.action_tokenizer,
                 boa_is_prompt=True,
                 action_dim=action_dim,
+                action_horizon=action_horizon,
             )
 
             if return_tokens:
