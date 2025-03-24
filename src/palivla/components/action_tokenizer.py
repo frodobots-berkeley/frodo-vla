@@ -5,6 +5,7 @@ import cloudpickle
 import numpy as np
 import tensorflow as tf
 from einops import rearrange, EinopsError
+from transformers import AutoProcessor
 
 from big_vision.utils import Registry
 
@@ -91,7 +92,7 @@ class DCTActionTokenizer(ActionTokenizer):
         self.action_vocab_size = action_vocab_size
         self._fast_skip_tokens = 128
         self.language_vocab_size = language_vocab_size
-        self._fast_tokenizer = AutoTokenizer.from_pretrained(fast_tokenizer_path, trust_remote_code=True)
+        self._fast_tokenizer = AutoProcessor.from_pretrained(fast_tokenizer_path, trust_remote_code=True)
 
     @property
     def num_tokens(self):
