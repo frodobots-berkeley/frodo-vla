@@ -115,7 +115,7 @@ class DCTActionTokenizer(ActionTokenizer):
         return action_tokens_in_pg
 
     def detokenize(self, tokens, *, obs=None, action_dim: int = 2):
-        action_tokens = self._paligemma_tokens_to_act_tokens(tokens)
+        action_tokens = self._act_tokens_to_paligemma_tokens(tokens)
         return self._fast_tokenizer.decode([action_tokens.tolist()], time_horizon=self.action_horizon, action_dim=self.action_dim)[0]
         # values = np.where(
         #     (tokens < 0) | (tokens >= self.vocab_size),
