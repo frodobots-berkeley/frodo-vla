@@ -113,11 +113,10 @@ class DCTActionTokenizer(ActionTokenizer):
         action_tokens = np.array(action_tokens_in_pg)
         action_tokens[action_tokens == self.language_vocab_size - 1 - self._fast_skip_tokens] = False
 
-        breakpoint()
         return action_tokens_in_pg
 
     def detokenize(self, tokens, *, obs=None, action_dim: int = 2):
-        action_tokens = self._act_tokens_to_paligemma_tokens(tokens)
+        action_tokens = self._paligemma_tokens_to_act_tokens(tokens)
         print(action_tokens)
         breakpoint()
         return self._fast_tokenizer.decode([action_tokens.tolist()], time_horizon=self.action_horizon, action_dim=self.action_dim)[0]
