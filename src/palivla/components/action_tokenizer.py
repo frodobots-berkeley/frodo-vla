@@ -109,7 +109,6 @@ class DCTActionTokenizer(ActionTokenizer):
         # data = rearrange(data, "... p a -> ... (p a)")
         action_tokens = self._fast_tokenizer(data)
         action_tokens = [action_tokens[i] + max(0, self.action_horizon * self.action_dim - len(action_tokens[i])) * [False] for i in range(len(action_tokens))]
-        breakpoint()
         action_tokens_in_pg = self._act_tokens_to_paligemma_tokens(action_tokens)
         action_tokens = np.array(action_tokens_in_pg)
         action_tokens[action_tokens == self.language_vocab_size - 1 - self._fast_skip_tokens] = False

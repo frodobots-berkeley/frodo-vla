@@ -16,6 +16,7 @@ def get_config():
     return ConfigDict(
         {
             "wandb_project": "vla-nav",
+            "wandb_run"
             "wandb_mode": "online",
             #Tokenizers
             "language_tokenizer": "google/paligemma-3b-mix-224",
