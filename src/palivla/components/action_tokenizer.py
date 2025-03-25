@@ -109,6 +109,8 @@ class DCTActionTokenizer(ActionTokenizer):
         # data = rearrange(data, "... p a -> ... (p a)")
         action_tokens = self._fast_tokenizer(data)
         action_tokens_in_pg = self._act_tokens_to_paligemma_tokens(action_tokens)
+        pad_len = max(0, self.action_horizon * self.action_dim - len(action_tokens_in_pg))
+        action_tokens = [action_tokens_in_pg[i] + pad_len * [False] for i in range(len(action_tokens_in_pg))]
         action_tokens = np.array(action_tokens).reshape(data.shape[0], -1).tolist()
         return action_tokens_in_pg
 
