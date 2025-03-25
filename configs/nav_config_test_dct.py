@@ -21,7 +21,7 @@ def get_config():
             #Tokenizers
             "language_tokenizer": "google/paligemma-3b-mix-224",
             "action_tokenizer": f"action_tokenizer.dct(min_action_value=-1, max_action_value=1, action_dim=2, action_horizon={action_horizon})",
-            "sequence_builder": "sequence_builder.default(prompt_pad_length=20, gen_pad_length=20)",
+            "sequence_builder": "sequence_builder.default(prompt_pad_length=50, gen_pad_length=20)",
             # Initialization
             "load_fns": [
                 (
@@ -36,7 +36,7 @@ def get_config():
             "resume_checkpoint_step": None,
             "weights_only": False,
             # Overfit
-            "overfit_dataset": False,
+            "overfit_dataset": True,
             # Training settings
             "batch_size": 192,
             "eval_batch_size": 128,
