@@ -107,7 +107,7 @@ class DCTActionTokenizer(ActionTokenizer):
             self.max_action_value - self.min_action_value
         )
         breakpoint()
-        data = rearrange(data, "... p a -> ... (p a)")
+        # data = rearrange(data, "... p a -> ... (p a)")
         breakpoint()
         action_tokens = self._fast_tokenizer(data[None])[0]
         action_tokens_in_pg = self._act_tokens_to_paligemma_tokens(action_tokens)
