@@ -161,7 +161,7 @@ def main(_):
             "project": config.wandb_project,
             "tags": [],
             "mode": config.wandb_mode,
-            "name": config.get("wandb_run", None) "_" + time.strftime("%Y_%m_%d_%H_%M_%S"),
+            "name": config.get("wandb_run", None) + "_" + time.strftime("%Y_%m_%d_%H_%M_%S"),
         }
 
         wandb.init(**wandb_kwargs)
