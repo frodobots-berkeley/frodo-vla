@@ -14,6 +14,8 @@ def compute_stats(
     target_tokens,
     target_mask_loss,
 ):
+    print(target_tokens.shape)
+    print(target_mask_loss.shape)
     loss = jnp.mean(
         target_mask_loss
         * optax.softmax_cross_entropy_with_integer_labels(pred_logits, target_tokens)
