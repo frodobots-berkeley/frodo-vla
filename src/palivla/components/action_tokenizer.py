@@ -116,6 +116,7 @@ class DCTActionTokenizer(ActionTokenizer):
         return action_tokens
 
     def detokenize(self, tokens, *, obs=None, action_dim: int = 2):
+        print(tokens)
         # action_tokens = self._paligemma_tokens_to_act_tokens(tokens)
         action_tokens = tokens
         return self._fast_tokenizer.decode([action_tokens.tolist()], time_horizon=self.action_horizon, action_dim=self.action_dim)[0]
