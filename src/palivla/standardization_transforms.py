@@ -888,7 +888,7 @@ def gnm_dataset_transform(trajectory: Dict[str, Any], action_horizon=1) -> Dict[
     )
 
     # Get next len_seq_pred indices
-    state_tensor = traj["observation"]["state"]
+    state_tensor = trajectory["observation"]["state"]
     indices = tf.reshape(tf.range(traj_len), [-1, 1]) + tf.range(1, action_horizon + 1)
     
     flat_indices = tf.reshape(curr_pos_indices, [-1])
