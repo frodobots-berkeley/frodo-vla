@@ -16,13 +16,14 @@ from typing import Any, Dict
 
 import tensorflow as tf
 import pdb
+
 from octo.data.utils.data_utils import (
     binarize_gripper_actions,
     invert_gripper_actions,
     rel2abs_gripper_actions,
     relabel_actions,
 )
-
+tf.compat.v1.enable_eager_execution()
 tf.data.experimental.enable_debug_mode()
 
 
@@ -880,7 +881,6 @@ METRIC_WAYPOINT_SPACING = {
 }
 
 def gnm_dataset_transform(trajectory: Dict[str, Any], action_horizon=1) -> Dict[str, Any]:
-    pdb.set_trace()
     traj_len = tf.shape(trajectory["action"])[0]
 
     # Pad trajectory states
@@ -889,7 +889,6 @@ def gnm_dataset_transform(trajectory: Dict[str, Any], action_horizon=1) -> Dict[
     trajectory["observation"]["state"] = tf.concat(
         (trajectory["observation"]["state"], padding), axis=0
     )
-    breakpoint()
     # Get next len_seq_pred indices
     # state_tensor = trajectory["observation"]["state"]
     indices = tf.reshape(tf.range(traj_len), [-1, 1]) + tf.range(1, action_horizon + 1)
@@ -899,7 +898,7 @@ def gnm_dataset_transform(trajectory: Dict[str, Any], action_horizon=1) -> Dict[
     # global_waypoints = tf.reshape(gathered, tf.shape(indices))
     
     global_waypoints = tf.gather(trajectory["observation"]["state"], indices)[:, :, :2]
-    print(global_waypoints)
+    tf.print(global_waypoints)
     # Get current position indices
     curr_pos_indices = tf.reshape(tf.range(traj_len), [-1, 1]) + tf.range(
         0, action_horizon
@@ -913,7 +912,7 @@ def gnm_dataset_transform(trajectory: Dict[str, Any], action_horizon=1) -> Dict[
     ]  # delta waypoints
     
     global_waypoints -= curr_pos
-    print(global_waypoints)
+    tf.print(global_waypoints)
     global_waypoints = tf.expand_dims(global_waypoints, 2)
     actions = tf.squeeze(
         tf.linalg.matmul(
