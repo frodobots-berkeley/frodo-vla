@@ -202,7 +202,7 @@ def main(_):
             wandb_gt_list = []    
             # Plot a sample of actions
             breakpoint()
-            gt_actions = batch["action"][]
+            gt_actions = batch["action"]
             gt_actions = np.cumsum(gt_actions, axis=1)
             gt_actions = gt_actions - gt_actions[:, 0, :].reshape(-1, 1, 2)
             plt.plot(gt_actions[0,:,0], gt_actions[0,:,1], 'r')
