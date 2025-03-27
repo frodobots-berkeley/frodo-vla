@@ -888,26 +888,26 @@ def gnm_dataset_transform(trajectory: Dict[str, Any], action_horizon=1) -> Dict[
     )
 
     # Get next len_seq_pred indices
-    state_tensor = trajectory["observation"]["state"]
+    # state_tensor = trajectory["observation"]["state"]
     indices = tf.reshape(tf.range(traj_len), [-1, 1]) + tf.range(1, action_horizon + 1)
+    # print(tf.shape(indices))
+    # flat_indices = tf.reshape(indices, [-1])
+    # gathered = tf.gather(state_tensor, flat_indices)
+    # global_waypoints = tf.reshape(gathered, tf.shape(indices))
     
-    flat_indices = tf.reshape(indices, [-1])
-    gathered = tf.gather(state_tensor, flat_indices)
-    global_waypoints = tf.reshape(gathered, tf.shape(indices))
-    
-    # global_waypoints = tf.gather(trajectory["observation"]["state"], indices)[:, :, :2]
+    global_waypoints = tf.gather(trajectory["observation"]["state"], indices)[:, :, :2]
 
     # Get current position indices
     curr_pos_indices = tf.reshape(tf.range(traj_len), [-1, 1]) + tf.range(
         0, action_horizon
     )
 
-    flat_indices = tf.reshape(curr_pos_indices, [-1])
-    gathered = tf.gather(state_tensor, flat_indices)
-    curr_pos = tf.reshape(gathered, tf.shape(curr_pos_indices))
-    # curr_pos = tf.gather(trajectory["observation"]["state"], curr_pos_indices)[
-    #     :, :, :2
-    # ]  # delta waypoints
+    # flat_indices = tf.reshape(curr_pos_indices, [-1])
+    # gathered = tf.gather(state_tensor, flat_indices)
+    # curr_pos = tf.reshape(gathered, tf.shape(curr_pos_indices))
+    curr_pos = tf.gather(trajectory["observation"]["state"], curr_pos_indices)[
+        :, :, :2
+    ]  # delta waypoints
     
     global_waypoints -= curr_pos
     global_waypoints = tf.expand_dims(global_waypoints, 2)
