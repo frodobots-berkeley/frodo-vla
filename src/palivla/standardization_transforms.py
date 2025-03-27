@@ -891,7 +891,7 @@ def gnm_dataset_transform(trajectory: Dict[str, Any], action_horizon=1) -> Dict[
     state_tensor = trajectory["observation"]["state"]
     indices = tf.reshape(tf.range(traj_len), [-1, 1]) + tf.range(1, action_horizon + 1)
     
-    flat_indices = tf.reshape(curr_pos_indices, [-1])
+    flat_indices = tf.reshape(indices, [-1])
     gathered = tf.gather(state_tensor, flat_indices)
     global_waypoints = tf.reshape(gathered, tf.concat([tf.shape(curr_pos_indices), tf.shape(state_tensor)[1:]], axis=0))
     
