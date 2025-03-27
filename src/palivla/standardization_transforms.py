@@ -23,6 +23,9 @@ from octo.data.utils.data_utils import (
     relabel_actions,
 )
 
+tf.config.run_functions_eagerly(True)
+
+
 
 def bridge_dataset_transform(trajectory: Dict[str, Any]) -> Dict[str, Any]:
     # NOTE: this is not actually the official OXE copy of bridge, it is our own more up-to-date copy that you
@@ -876,6 +879,7 @@ METRIC_WAYPOINT_SPACING = {
 
 }
 
+@tf.function
 def gnm_dataset_transform(trajectory: Dict[str, Any], action_horizon=1) -> Dict[str, Any]:
     
     traj_len = tf.shape(trajectory["action"])[0]
@@ -886,7 +890,7 @@ def gnm_dataset_transform(trajectory: Dict[str, Any], action_horizon=1) -> Dict[
     trajectory["observation"]["state"] = tf.concat(
         (trajectory["observation"]["state"], padding), axis=0
     )
-
+    breakpoint()
     # Get next len_seq_pred indices
     # state_tensor = trajectory["observation"]["state"]
     indices = tf.reshape(tf.range(traj_len), [-1, 1]) + tf.range(1, action_horizon + 1)
@@ -896,7 +900,7 @@ def gnm_dataset_transform(trajectory: Dict[str, Any], action_horizon=1) -> Dict[
     # global_waypoints = tf.reshape(gathered, tf.shape(indices))
     
     global_waypoints = tf.gather(trajectory["observation"]["state"], indices)[:, :, :2]
-
+    print(global_waypoints)
     # Get current position indices
     curr_pos_indices = tf.reshape(tf.range(traj_len), [-1, 1]) + tf.range(
         0, action_horizon
@@ -910,6 +914,7 @@ def gnm_dataset_transform(trajectory: Dict[str, Any], action_horizon=1) -> Dict[
     ]  # delta waypoints
     
     global_waypoints -= curr_pos
+    print(global_waypoints)
     global_waypoints = tf.expand_dims(global_waypoints, 2)
     actions = tf.squeeze(
         tf.linalg.matmul(
@@ -922,6 +927,14 @@ def gnm_dataset_transform(trajectory: Dict[str, Any], action_horizon=1) -> Dict[
 
     normalization_factor = tf.cast(normalization_factor[0], tf.float64)
     actions = actions / normalization_factor
+
+    for i in range(actions.shape[0]):
+        actions_i = np.cumsum(actions[i,:,:], axis=0)
+        actions_i -= actions_i[0]
+        plt.plot(actions_i[0,0], actions_i[0,1], "ro")
+        plt.plot(actions_i[:,0], actions_i[:,1], label="chunk {}".format(i))
+    plt.legend()
+    plt.savefig(f"actions_test.png")
 
     trajectory["action"] = actions
 
