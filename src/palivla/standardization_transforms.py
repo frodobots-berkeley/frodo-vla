@@ -15,7 +15,7 @@ step = {
 from typing import Any, Dict
 
 import tensorflow as tf
-
+import matplotlib.pyplot as plt
 from octo.data.utils.data_utils import (
     binarize_gripper_actions,
     invert_gripper_actions,
