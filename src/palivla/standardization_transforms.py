@@ -893,7 +893,7 @@ def gnm_dataset_transform(trajectory: Dict[str, Any], action_horizon=1) -> Dict[
     indices = tf.reshape(tf.range(traj_len), [-1, 1]) + tf.range(1, action_horizon + 1)
     
     global_waypoints = tf.gather(trajectory["observation"]["state"], indices)[:, :, :2]
-    tf.print(global_waypoints)
+    # tf.print(global_waypoints)
     # Get current position indices
     curr_pos_indices = tf.reshape(tf.range(traj_len), [-1, 1]) + tf.range(
         0, action_horizon
@@ -904,7 +904,7 @@ def gnm_dataset_transform(trajectory: Dict[str, Any], action_horizon=1) -> Dict[
     ]  # delta waypoints
     
     global_waypoints -= curr_pos
-    tf.print(global_waypoints)
+    # tf.print(global_waypoints)
     global_waypoints = tf.expand_dims(global_waypoints, 2)
     actions = tf.squeeze(
         tf.linalg.matmul(

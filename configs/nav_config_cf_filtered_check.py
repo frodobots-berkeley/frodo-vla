@@ -86,6 +86,7 @@ def get_config():
                         "action_proprio_normalization_type": NormalizationType.NORMAL,
                         "standardize_fn" : transform,   
                         "force_recompute_dataset_statistics": False,
+                        "skip_norm"
                     },
                     "lcbc_filtered_v2_kwargs": {
                         "name": "lcbc_filtered_v2_dataset",
