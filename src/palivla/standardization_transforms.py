@@ -921,7 +921,7 @@ def gnm_dataset_transform(trajectory: Dict[str, Any], action_horizon=1) -> Dict[
         ),
         2,
     )
-    yaw_traj = tf.math.atan2(actions[:, :, 1], actions[:, :, 0])
+    yaw_traj = tf.math.atan2(actions[:, 0, 1], actions[:, 0, 0])
     tf.print("yaw_traj", yaw_traj)
     yaw_traj = tf.expand_dims(yaw_traj, 1)
     normalization_factor = trajectory["traj_metadata"]["episode_metadata"]["normalization_factor"]
