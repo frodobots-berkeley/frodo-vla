@@ -260,80 +260,14 @@ class ModelComponents:
         #     / tokens["mask"].mean(),
         # }
 
-    def predict(
-        self,
-        batch,
-        action_dim: int,
-        action_horizon: int, 
-        *,
-        use_ema_params: bool = False,
-        return_tokens: bool = False,
-    ):
-        # Tokenize the batch and build sequences
-        sequences = self.sequence_builder.build_sequence(
-            batch,
-            self.language_tokenizer,
-            self.action_tokenizer,
-            boa_is_prompt=True,
-        )
-
-        # Shard the batch to devices
-        inputs = {
-            "sensors": batch["observation"],
-            "sensors_mask": batch["observation"]["pad_mask_dict"],
-            "prompt": sequences["prompt"],
-            "gen": sequences["gen"],
-        }
-        inputs = self.sharding.mesh.local_data_to_global_array(inputs)
-
-        # Run the train step
-        with self.sharding.mesh.mesh, nn.logical_axis_rules([("act_batch", "fsdp")]):
-            from palivla.predict_fns import _decode
-
-            params = self.train_state.get_params(use_ema_params=use_ema_params)
-            tokens = _decode(
-                params,
-                inputs,
-                model=self.train_state.model,
-                mesh=self.sharding.mesh.mesh,
-                out_sharding=PartitionSpec("fsdp"),
-                max_decode_len=sequences["gen"]["tokens"].shape[1],
-                eos_token=self.language_tokenizer.eos_token_id,
-            )
-            tokens = self.data_gather_fn(tokens)
-
-            actions, actions_mask = self.sequence_builder.batch_get_actions(
-                tokens,
-                self.language_tokenizer,
-                self.action_tokenizer,
-                boa_is_prompt=True,
-                action_dim=action_dim,
-                action_horizon=action_horizon,
-            )
-
-            if return_tokens:
-                return (
-                    actions,
-                    actions_mask,
-                    {
-                        "predicted": tokens,
-                        "target": sequences["gen"]["tokens"],
-                        "mask": sequences["gen"]["mask"],
-                    },
-                )
-            else:
-                return actions, actions_mask
-
-
     # def predict(
     #     self,
     #     batch,
     #     action_dim: int,
-    #     action_horizon: int,
+    #     action_horizon: int, 
     #     *,
     #     use_ema_params: bool = False,
     #     return_tokens: bool = False,
-    #     include_action_tokens: bool = True,
     # ):
     #     # Tokenize the batch and build sequences
     #     sequences = self.sequence_builder.build_sequence(
@@ -341,7 +275,6 @@ class ModelComponents:
     #         self.language_tokenizer,
     #         self.action_tokenizer,
     #         boa_is_prompt=True,
-    #         include_action_tokens=include_action_tokens,
     #     )
 
     #     # Shard the batch to devices
@@ -351,18 +284,13 @@ class ModelComponents:
     #         "prompt": sequences["prompt"],
     #         "gen": sequences["gen"],
     #     }
-    #     if batch["action"].shape[0] == 1:
-    #         pass
-    #     else:
-    #         inputs = self.sharding.mesh.local_data_to_global_array(inputs)
+    #     inputs = self.sharding.mesh.local_data_to_global_array(inputs)
+
     #     # Run the train step
     #     with self.sharding.mesh.mesh, nn.logical_axis_rules([("act_batch", "fsdp")]):
     #         from palivla.predict_fns import _decode
-    #         start_time = time.time()
+
     #         params = self.train_state.get_params(use_ema_params=use_ema_params)
-    #         # print(f"Time to get params: {time.time() - start_time}")
-    #         start_time = time.time()
-    #         # print(sequences["gen"]["tokens"].shape[1])
     #         tokens = _decode(
     #             params,
     #             inputs,
@@ -372,9 +300,8 @@ class ModelComponents:
     #             max_decode_len=sequences["gen"]["tokens"].shape[1],
     #             eos_token=self.language_tokenizer.eos_token_id,
     #         )
-    #         # print(f"Time to decode: {time.time() - start_time}")
     #         tokens = self.data_gather_fn(tokens)
-    #         start_time = time.time()
+
     #         actions, actions_mask = self.sequence_builder.batch_get_actions(
     #             tokens,
     #             self.language_tokenizer,
@@ -383,7 +310,6 @@ class ModelComponents:
     #             action_dim=action_dim,
     #             action_horizon=action_horizon,
     #         )
-    #         # print(f"Time to get actions: {time.time() - start_time}")
 
     #         if return_tokens:
     #             return (
@@ -397,3 +323,77 @@ class ModelComponents:
     #             )
     #         else:
     #             return actions, actions_mask
+
+
+    def predict(
+        self,
+        batch,
+        action_dim: int,
+        action_horizon: int,
+        *,
+        use_ema_params: bool = False,
+        return_tokens: bool = False,
+        include_action_tokens: bool = True,
+    ):
+        # Tokenize the batch and build sequences
+        sequences = self.sequence_builder.build_sequence(
+            batch,
+            self.language_tokenizer,
+            self.action_tokenizer,
+            boa_is_prompt=True,
+            include_action_tokens=include_action_tokens,
+        )
+
+        # Shard the batch to devices
+        inputs = {
+            "sensors": batch["observation"],
+            "sensors_mask": batch["observation"]["pad_mask_dict"],
+            "prompt": sequences["prompt"],
+            "gen": sequences["gen"],
+        }
+        if batch["action"].shape[0] == 1:
+            pass
+        else:
+            inputs = self.sharding.mesh.local_data_to_global_array(inputs)
+        # Run the train step
+        with self.sharding.mesh.mesh, nn.logical_axis_rules([("act_batch", "fsdp")]):
+            from palivla.predict_fns import _decode
+            start_time = time.time()
+            params = self.train_state.get_params(use_ema_params=use_ema_params)
+            # print(f"Time to get params: {time.time() - start_time}")
+            start_time = time.time()
+            # print(sequences["gen"]["tokens"].shape[1])
+            tokens = _decode(
+                params,
+                inputs,
+                model=self.train_state.model,
+                mesh=self.sharding.mesh.mesh,
+                out_sharding=PartitionSpec("fsdp"),
+                max_decode_len=sequences["gen"]["tokens"].shape[1],
+                eos_token=self.language_tokenizer.eos_token_id,
+            )
+            # print(f"Time to decode: {time.time() - start_time}")
+            tokens = self.data_gather_fn(tokens)
+            start_time = time.time()
+            actions, actions_mask = self.sequence_builder.batch_get_actions(
+                tokens,
+                self.language_tokenizer,
+                self.action_tokenizer,
+                boa_is_prompt=True,
+                action_dim=action_dim,
+                action_horizon=action_horizon,
+            )
+            # print(f"Time to get actions: {time.time() - start_time}")
+
+            if return_tokens:
+                return (
+                    actions,
+                    actions_mask,
+                    {
+                        "predicted": tokens,
+                        "target": sequences["gen"]["tokens"],
+                        "mask": sequences["gen"]["mask"],
+                    },
+                )
+            else:
+                return actions, actions_mask

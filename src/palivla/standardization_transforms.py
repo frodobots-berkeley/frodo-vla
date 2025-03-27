@@ -880,6 +880,7 @@ def gnm_dataset_transform(trajectory: Dict[str, Any], action_horizon=1) -> Dict[
     traj_len = tf.shape(trajectory["action"])[0]
 
     # Pad trajectory states
+    trajectory["observation"]["state"] = tf.concat(trajectory["observation"]["position"], trajectory["observation"]["yaw"], axis=-1)
     padding = tf.tile(trajectory["observation"]["state"][-1:, :], [action_horizon, 1])
     trajectory["observation"]["state"] = tf.concat(
         (trajectory["observation"]["state"], padding), axis=0
