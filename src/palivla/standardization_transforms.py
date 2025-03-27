@@ -23,7 +23,7 @@ from octo.data.utils.data_utils import (
     relabel_actions,
 )
 
-tf.config.run_functions_eagerly(True)
+tf.data.experimental.enable_debug_mode(True)
 
 
 
