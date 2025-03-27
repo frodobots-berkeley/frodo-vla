@@ -198,33 +198,6 @@ class ModelComponents:
 
         return info
 
-    # def eval_step(self, batch):
-    #     gt_actions = batch["action"][:, -1, :, :]
-
-    #     predicted_actions, actions_mask, tokens = self.predict(
-    #         batch, action_dim=gt_actions.shape[-1], action_horizon=gt_actions.shape[1], return_tokens=True
-    #     )
-
-    #     predicted_actions = np.nan_to_num(predicted_actions)
-
-    #     gt_actions = jax.experimental.multihost_utils.process_allgather(gt_actions).reshape(predicted_actions.shape)
-        
-    #     tokens["target"] = jax.experimental.multihost_utils.process_allgather(tokens["target"]).reshape(tokens["predicted"].shape)
-    #     tokens["mask"] = jax.experimental.multihost_utils.process_allgather(tokens["mask"]).reshape(tokens["predicted"].shape)
-    #     gen_valid_pct = actions_mask.mean()
-    #     gen_l2 = np.mean(np.square(predicted_actions - gt_actions) * actions_mask) / actions_mask.mean()
-    #     gen_l1 = np.mean(np.abs(predicted_actions - gt_actions) * actions_mask) / actions_mask.mean()
-    #     gen_acc = np.mean((tokens["predicted"] == tokens["target"]) * tokens["mask"]) / tokens["mask"].mean()
-                              
-    #     return {"eval_info":{
-    #         "gen_valid_pct": gen_valid_pct,
-    #         "gen_l2": gen_l2,
-    #         "gen_l1": gen_l1,
-    #         "gen_acc": gen_acc,},
-    #         "eval_data":{
-    #         "pred_actions": predicted_actions,
-    #         "gt_actions": gt_actions,}}
-
     def eval_step(self, batch):
         gt_actions = batch["action"][:, -1, :, :]
 
@@ -234,6 +207,10 @@ class ModelComponents:
 
         predicted_actions = np.nan_to_num(predicted_actions)
 
+        gt_actions = jax.experimental.multihost_utils.process_allgather(gt_actions).reshape(predicted_actions.shape)
+        
+        tokens["target"] = jax.experimental.multihost_utils.process_allgather(tokens["target"]).reshape(tokens["predicted"].shape)
+        tokens["mask"] = jax.experimental.multihost_utils.process_allgather(tokens["mask"]).reshape(tokens["predicted"].shape)
         gen_valid_pct = actions_mask.mean()
         gen_l2 = np.mean(np.square(predicted_actions - gt_actions) * actions_mask) / actions_mask.mean()
         gen_l1 = np.mean(np.abs(predicted_actions - gt_actions) * actions_mask) / actions_mask.mean()
@@ -247,6 +224,29 @@ class ModelComponents:
             "eval_data":{
             "pred_actions": predicted_actions,
             "gt_actions": gt_actions,}}
+
+    # def eval_step(self, batch):
+    #     gt_actions = batch["action"][:, -1, :, :]
+
+    #     predicted_actions, actions_mask, tokens = self.predict(
+    #         batch, action_dim=gt_actions.shape[-1], action_horizon=gt_actions.shape[1], return_tokens=True
+    #     )
+
+    #     predicted_actions = np.nan_to_num(predicted_actions)
+
+    #     gen_valid_pct = actions_mask.mean()
+    #     gen_l2 = np.mean(np.square(predicted_actions - gt_actions) * actions_mask) / actions_mask.mean()
+    #     gen_l1 = np.mean(np.abs(predicted_actions - gt_actions) * actions_mask) / actions_mask.mean()
+    #     gen_acc = np.mean((tokens["predicted"] == tokens["target"]) * tokens["mask"]) / tokens["mask"].mean()
+                              
+    #     return {"eval_info":{
+    #         "gen_valid_pct": gen_valid_pct,
+    #         "gen_l2": gen_l2,
+    #         "gen_l1": gen_l1,
+    #         "gen_acc": gen_acc,},
+    #         "eval_data":{
+    #         "pred_actions": predicted_actions,
+    #         "gt_actions": gt_actions,}}
 
         # return {
         #     "gen_valid_pct": actions_mask.mean(),
