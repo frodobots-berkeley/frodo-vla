@@ -877,6 +877,8 @@ METRIC_WAYPOINT_SPACING = {
 }
 
 def gnm_dataset_transform(trajectory: Dict[str, Any], action_horizon=1) -> Dict[str, Any]:
+    
+    print("IN STANDARDIZATION TRANSFORM")
     traj_len = tf.shape(trajectory["action"])[0]
 
     # Pad trajectory states
