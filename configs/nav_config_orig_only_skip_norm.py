@@ -17,7 +17,7 @@ def get_config():
         {
             "wandb_project": "vla-nav",
             "wandb_mode": "online",
-            "wandb_run": "orig_only_skip_norm"
+            "wandb_run": "orig_only_skip_norm",
             #Tokenizers
             "language_tokenizer": "google/paligemma-3b-mix-224",
             "action_tokenizer": f"action_tokenizer.bin(min_action_value=-1, max_action_value=1, action_vocab_size=128, action_horizon={action_horizon})",
