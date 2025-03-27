@@ -878,7 +878,6 @@ METRIC_WAYPOINT_SPACING = {
 
 def gnm_dataset_transform(trajectory: Dict[str, Any], action_horizon=1) -> Dict[str, Any]:
     
-    print("IN STANDARDIZATION TRANSFORM")
     traj_len = tf.shape(trajectory["action"])[0]
 
     # Pad trajectory states
@@ -889,16 +888,26 @@ def gnm_dataset_transform(trajectory: Dict[str, Any], action_horizon=1) -> Dict[
     )
 
     # Get next len_seq_pred indices
+    state_tensor = traj["observation"]["state"]
     indices = tf.reshape(tf.range(traj_len), [-1, 1]) + tf.range(1, action_horizon + 1)
-    global_waypoints = tf.gather(trajectory["observation"]["state"], indices)[:, :, :2]
+    
+    flat_indices = tf.reshape(curr_pos_indices, [-1])
+    gathered = tf.gather(state_tensor, flat_indices)
+    global_waypoints = tf.reshape(gathered, tf.concat([tf.shape(curr_pos_indices), tf.shape(state_tensor)[1:]], axis=0))
+    
+    # global_waypoints = tf.gather(trajectory["observation"]["state"], indices)[:, :, :2]
 
     # Get current position indices
     curr_pos_indices = tf.reshape(tf.range(traj_len), [-1, 1]) + tf.range(
         0, action_horizon
     )
-    curr_pos = tf.gather(trajectory["observation"]["state"], curr_pos_indices)[
-        :, :, :2
-    ]  # delta waypoints
+
+    flat_indices = tf.reshape(curr_pos_indices, [-1])
+    gathered = tf.gather(state_tensor, flat_indices)
+    curr_pos = tf.reshape(gathered, tf.concat([tf.shape(curr_pos_indices), tf.shape(state_tensor)[1:]], axis=0))
+    # curr_pos = tf.gather(trajectory["observation"]["state"], curr_pos_indices)[
+    #     :, :, :2
+    # ]  # delta waypoints
     
     global_waypoints -= curr_pos
     global_waypoints = tf.expand_dims(global_waypoints, 2)
@@ -916,7 +925,7 @@ def gnm_dataset_transform(trajectory: Dict[str, Any], action_horizon=1) -> Dict[
 
     trajectory["action"] = actions
 
-    trajectory["observation"]["proprio"] = trajectory["observation"]["state"]
+    trajectory["observation"]["proprio"] = actions
     return trajectory
 
 def old_gnm_dataset_transform(trajectory: Dict[str, Any], action_horizon=1) -> Dict[str, Any]:
