@@ -23,8 +23,8 @@ from octo.data.utils.data_utils import (
     rel2abs_gripper_actions,
     relabel_actions,
 )
-tf.compat.v1.enable_eager_execution()
-tf.data.experimental.enable_debug_mode()
+# tf.compat.v1.enable_eager_execution()
+# tf.data.experimental.enable_debug_mode()
 
 
 
