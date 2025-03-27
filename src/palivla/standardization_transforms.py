@@ -923,7 +923,7 @@ def gnm_dataset_transform(trajectory: Dict[str, Any], action_horizon=1) -> Dict[
     normalization_factor = tf.cast(normalization_factor[0], tf.float64)
     actions = actions / normalization_factor
 
-    trajectory["action"] = tf.zeros_like(actions)
+    trajectory["action"] = actions
 
     trajectory["observation"]["proprio"] = actions
     return trajectory
