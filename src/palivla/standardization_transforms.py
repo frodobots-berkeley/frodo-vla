@@ -940,7 +940,7 @@ def gnm_dataset_transform(trajectory: Dict[str, Any], action_horizon=1) -> Dict[
     trajectory["action"] = actions
 
     trajectory["observation"]["proprio"] = actions
-    breakpoint()
+    # breakpoint()
     return trajectory
 
 def old_gnm_dataset_transform(trajectory: Dict[str, Any], action_horizon=1) -> Dict[str, Any]:
