@@ -198,6 +198,16 @@ def main(_):
         for i in pbar:
             if not config.overfit_dataset:
                 batch = next(train_it)
+                
+            # Plot a sample of actions
+            gt_actions = batch["action"]
+            gt_actions = np.cumsum(gt_actions, axis=1)
+            gt_actions = gt_actions - gt_actions[:, 0, :].reshape(-1, 1, 2)
+            plt.plot(gt_actions[0,:,0], gt_actions[0,:,1], 'r')
+            plt.plot(gt_actions[0,-1,0], gt_actions[0,-1,1], 'ro')
+            plt.savefig(f"images/gt_{i+1}.png")
+            plt.close()
+            breakpoint()
 
             # Rotate each gt actions in the batch by the initial yaw of the chunk 
             # actions = np.cumsum(batch["action"], axis=2)
@@ -225,7 +235,7 @@ def main(_):
                 gt_viz = np.cumsum(gt_viz, axis=1)
                 gt_viz = gt_viz - gt_viz[:, 0, :].reshape(-1, 1, 2)
 
-                pred_viz = eval_plots["pred_actions"][idxs, :, :]
+                pred_viz = eval_plots["pred_actions"][idxs, ...]
                 pred_viz = np.cumsum(pred_viz, axis=1)
                 pred_viz = pred_viz - pred_viz[:, 0, :].reshape(-1, 1, 2)
                 
