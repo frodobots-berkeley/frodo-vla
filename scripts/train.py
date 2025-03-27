@@ -190,7 +190,8 @@ def main(_):
 
     if config.overfit_dataset:
         batch = next(train_it)
-    
+        
+    os.makedirs("images", exist_ok=True)
 
     with tqdm.trange(
         start_step, config.num_steps, desc="Training", dynamic_ncols=True
@@ -198,17 +199,20 @@ def main(_):
         for i in pbar:
             if not config.overfit_dataset:
                 batch = next(train_it)
-                
+            wandb_gt_list = []    
             # Plot a sample of actions
             gt_actions = batch["action"]
             gt_actions = np.cumsum(gt_actions, axis=1)
             gt_actions = gt_actions - gt_actions[:, 0, :].reshape(-1, 1, 2)
             plt.plot(gt_actions[0,:,0], gt_actions[0,:,1], 'r')
             plt.plot(gt_actions[0,-1,0], gt_actions[0,-1,1], 'ro')
-            print("saving image")
-            plt.savefig(f"gt_{i+1}.png")
-            plt.close()
-            breakpoint()
+            
+            plt.savefig(f"images/gt_{i+1}.png")
+            wandb_gt_list.append(wandb.Image(f"images/gt_{i+1}.png"))
+            
+            if jax.process_index() == 0:
+                wandb.log({"gt_actions": wandb_gt_list}, commit=False)
+                
 
             # Rotate each gt actions in the batch by the initial yaw of the chunk 
             # actions = np.cumsum(batch["action"], axis=2)
@@ -223,7 +227,7 @@ def main(_):
             pbar.set_postfix(
                 loss=f"{info['loss']:.4f}",
             )
-            os.makedirs("images", exist_ok=True)
+            
             if (i + 1) % config.eval_interval == 0:
                 eval_data = model.eval_step(batch)
                 eval_info = eval_data["eval_info"]
