@@ -921,6 +921,9 @@ def gnm_dataset_transform(trajectory: Dict[str, Any], action_horizon=1) -> Dict[
         ),
         2,
     )
+    yaw_traj = tf.math.atan2(actions[:, 1], actions[:, 0])
+    tf.print("yaw_traj", yaw_traj)
+    yaw_traj = tf.expand_dims(yaw_traj, 1)
     normalization_factor = trajectory["traj_metadata"]["episode_metadata"]["normalization_factor"]
 
     normalization_factor = tf.cast(normalization_factor[0], tf.float64)
@@ -937,6 +940,7 @@ def gnm_dataset_transform(trajectory: Dict[str, Any], action_horizon=1) -> Dict[
     trajectory["action"] = actions
 
     trajectory["observation"]["proprio"] = actions
+    breakpoint()
     return trajectory
 
 def old_gnm_dataset_transform(trajectory: Dict[str, Any], action_horizon=1) -> Dict[str, Any]:
