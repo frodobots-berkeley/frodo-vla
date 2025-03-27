@@ -205,7 +205,8 @@ def main(_):
             gt_actions = gt_actions - gt_actions[:, 0, :].reshape(-1, 1, 2)
             plt.plot(gt_actions[0,:,0], gt_actions[0,:,1], 'r')
             plt.plot(gt_actions[0,-1,0], gt_actions[0,-1,1], 'ro')
-            plt.savefig(f"images/gt_{i+1}.png")
+            print("saving image")
+            plt.savefig(f"gt_{i+1}.png")
             plt.close()
             breakpoint()
 
