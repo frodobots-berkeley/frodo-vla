@@ -927,13 +927,13 @@ def gnm_dataset_transform(trajectory: Dict[str, Any], action_horizon=1) -> Dict[
     normalization_factor = tf.cast(normalization_factor[0], tf.float64)
     actions = actions / normalization_factor
 
-    for i in range(tf.shape(actions)[0]):
-        actions_i = tf.math.cumsum(actions[i,:,:], axis=0)
-        actions_i -= actions_i[0]
-        plt.plot(actions_i[0,0], actions_i[0,1], "ro")
-        plt.plot(actions_i[:,0], actions_i[:,1], label="chunk {}".format(i))
-    plt.legend()
-    plt.savefig(f"actions_test.png")
+    # for i in range(tf.shape(actions)[0]):
+    #     actions_i = tf.math.cumsum(actions[i,:,:], axis=0)
+    #     actions_i -= actions_i[0]
+    #     plt.plot(actions_i[0,0], actions_i[0,1], "ro")
+    #     plt.plot(actions_i[:,0], actions_i[:,1], label="chunk {}".format(i))
+    # plt.legend()
+    # plt.savefig(f"actions_test.png")
 
     trajectory["action"] = actions
 
