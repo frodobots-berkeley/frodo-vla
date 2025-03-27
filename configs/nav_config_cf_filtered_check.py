@@ -86,7 +86,7 @@ def get_config():
                         "action_proprio_normalization_type": NormalizationType.NORMAL,
                         "standardize_fn" : transform,   
                         "force_recompute_dataset_statistics": False,
-                        "skip_norm"
+                        "skip_norm": True,
                     },
                     "lcbc_filtered_v2_kwargs": {
                         "name": "lcbc_filtered_v2_dataset",
@@ -97,6 +97,7 @@ def get_config():
                         "action_proprio_normalization_type": NormalizationType.NORMAL,
                         "standardize_fn" : transform,   
                         "force_recompute_dataset_statistics": False,
+                        "skip_norm": True,
                     },
                     "cf_kwargs": {
                         "name": "cf_v2_dataset_128",
@@ -107,6 +108,7 @@ def get_config():
                         "action_proprio_normalization_type": NormalizationType.NORMAL,
                         "standardize_fn" : transform,   
                         "force_recompute_dataset_statistics": False,
+                        "skip_norm": True,
                     },
                     "cf_v3_kwargs": {
                         "name": "cf_v3_dataset_128",
@@ -117,6 +119,7 @@ def get_config():
                         "action_proprio_normalization_type": NormalizationType.NORMAL,
                         "standardize_fn" : transform,   
                         "force_recompute_dataset_statistics": False,
+                        "skip_norm": True,
                     },
                     "cf_v4_kwargs": {
                         "name": "cf_v4_dataset",
@@ -147,6 +150,7 @@ def get_config():
                         "action_proprio_normalization_type": NormalizationType.NORMAL,
                         "standardize_fn" : transform,   
                         "force_recompute_dataset_statistics": False,
+                        "skip_norm": True,
                     },
                     "outdoor_filtered_v2_kwargs": {
                         "name": "outdoor_filtered_v2_dataset",
@@ -157,6 +161,7 @@ def get_config():
                         "action_proprio_normalization_type": NormalizationType.NORMAL,
                         "standardize_fn" : transform,   
                         "force_recompute_dataset_statistics": False,
+                        "skip_norm": True,
                     },
                 },
                 "sample_weights": [0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5],
