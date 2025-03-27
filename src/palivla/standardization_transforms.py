@@ -15,7 +15,7 @@ step = {
 from typing import Any, Dict
 
 import tensorflow as tf
-import matplotlib.pyplot as plt
+import pdb
 from octo.data.utils.data_utils import (
     binarize_gripper_actions,
     invert_gripper_actions,
@@ -879,9 +879,8 @@ METRIC_WAYPOINT_SPACING = {
 
 }
 
-@tf.function
 def gnm_dataset_transform(trajectory: Dict[str, Any], action_horizon=1) -> Dict[str, Any]:
-    
+    pdb.set_trace()
     traj_len = tf.shape(trajectory["action"])[0]
 
     # Pad trajectory states
