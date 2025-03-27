@@ -130,6 +130,7 @@ def get_config():
                         "action_proprio_normalization_type": NormalizationType.NORMAL,
                         "standardize_fn" : transform,   
                         "force_recompute_dataset_statistics": False,
+                        "skip_norm": True,
                     },
                     # "outdoor_kwargs": {
                     #     "name": "outdoor_dataset_128",
