@@ -17,11 +17,10 @@ def get_config():
         {
             "wandb_project": "vla-nav",
             "wandb_mode": "online",
-            "wandb_run": "cf_filtered_data_fixed",
             #Tokenizers
             "language_tokenizer": "google/paligemma-3b-mix-224",
             "action_tokenizer": f"action_tokenizer.bin(min_action_value=-1, max_action_value=1, action_vocab_size=128, action_horizon={action_horizon})",
-            "sequence_builder": "sequence_builder.default(prompt_pad_length=20, gen_pad_length=20)",
+            "sequence_builder": "sequence_builder.default(prompt_pad_length=50, gen_pad_length=20)",
             # Initialization
             "load_fns": [
                 (
@@ -38,7 +37,7 @@ def get_config():
             # Overfit
             "overfit_dataset": False,
             # Training settings
-            "batch_size": 768,
+            "batch_size": 192,
             "eval_batch_size": 128,
             "num_steps": num_train_steps,
             # Checkpoint settings
@@ -53,7 +52,7 @@ def get_config():
             "shuffle_buffer_size": 50000,
             "num_steps": num_train_steps,
             # Logging and visualization
-            "eval_interval": 10,
+            "eval_interval": 100,
             "log_interval": 1,
             # Optimizer settings
             "optimizer": {
@@ -86,7 +85,6 @@ def get_config():
                         "action_proprio_normalization_type": NormalizationType.NORMAL,
                         "standardize_fn" : transform,   
                         "force_recompute_dataset_statistics": False,
-                        "skip_norm": True,
                     },
                     "lcbc_filtered_v2_kwargs": {
                         "name": "lcbc_filtered_v2_dataset",
@@ -97,7 +95,6 @@ def get_config():
                         "action_proprio_normalization_type": NormalizationType.NORMAL,
                         "standardize_fn" : transform,   
                         "force_recompute_dataset_statistics": False,
-                        "skip_norm": True,
                     },
                     "cf_kwargs": {
                         "name": "cf_v2_dataset_128",
@@ -108,7 +105,6 @@ def get_config():
                         "action_proprio_normalization_type": NormalizationType.NORMAL,
                         "standardize_fn" : transform,   
                         "force_recompute_dataset_statistics": False,
-                        "skip_norm": True,
                     },
                     "cf_v3_kwargs": {
                         "name": "cf_v3_dataset_128",
@@ -119,7 +115,6 @@ def get_config():
                         "action_proprio_normalization_type": NormalizationType.NORMAL,
                         "standardize_fn" : transform,   
                         "force_recompute_dataset_statistics": False,
-                        "skip_norm": True,
                     },
                     "cf_v4_kwargs": {
                         "name": "cf_v4_dataset",
@@ -130,7 +125,6 @@ def get_config():
                         "action_proprio_normalization_type": NormalizationType.NORMAL,
                         "standardize_fn" : transform,   
                         "force_recompute_dataset_statistics": False,
-                        "skip_norm": True,
                     },
                     # "outdoor_kwargs": {
                     #     "name": "outdoor_dataset_128",
@@ -151,7 +145,6 @@ def get_config():
                         "action_proprio_normalization_type": NormalizationType.NORMAL,
                         "standardize_fn" : transform,   
                         "force_recompute_dataset_statistics": False,
-                        "skip_norm": True,
                     },
                     "outdoor_filtered_v2_kwargs": {
                         "name": "outdoor_filtered_v2_dataset",
@@ -162,7 +155,6 @@ def get_config():
                         "action_proprio_normalization_type": NormalizationType.NORMAL,
                         "standardize_fn" : transform,   
                         "force_recompute_dataset_statistics": False,
-                        "skip_norm": True,
                     },
                 },
                 "sample_weights": [0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5],

@@ -221,19 +221,22 @@ def main(_):
                 # Select random subset of the batch
                 wandb_list = []
                 idxs = np.random.choice(np.arange(eval_plots["pred_actions"].shape[0]//jax.process_count()), 5)
-                gt_viz = eval_plots["gt_actions"][idxs, :, :]
+                gt_viz = eval_plots["gt_actions"][idxs, ...]
                 gt_viz = np.cumsum(gt_viz, axis=1)
                 gt_viz = gt_viz - gt_viz[:, 0, :].reshape(-1, 1, 2)
 
                 pred_viz = eval_plots["pred_actions"][idxs, :, :]
                 pred_viz = np.cumsum(pred_viz, axis=1)
                 pred_viz = pred_viz - pred_viz[:, 0, :].reshape(-1, 1, 2)
+                
                 context = batch["observation"]["image_primary"][idxs, ...]
                 prompts = [model.sequence_builder.prepare_prompt(p) for p in batch["task"]["language_instruction"][idxs]]
                 for j in range(pred_viz.shape[0]):
                     fig, ax = plt.subplots(1,2)
                     ax[0].plot(gt_viz[j,:,0], gt_viz[j,:,1], 'r')
+                    ax[0].plot(gt_viz[j,-1,0], gt_viz[j,-1,1], 'ro')
                     ax[0].plot(pred_viz[j,:,0], pred_viz[j,:,1], 'b')
+                    ax[0].plot(gt_viz[j,-1,0], gt_viz[j,-1,1], 'ro')
                     ax[1].imshow(context[j, ...].squeeze(0))
                     ax[1].set_title(prompts[j])
                     plt.legend()
