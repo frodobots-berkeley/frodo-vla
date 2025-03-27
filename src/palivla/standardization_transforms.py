@@ -890,12 +890,7 @@ def gnm_dataset_transform(trajectory: Dict[str, Any], action_horizon=1) -> Dict[
         (trajectory["observation"]["state"], padding), axis=0
     )
     # Get next len_seq_pred indices
-    # state_tensor = trajectory["observation"]["state"]
     indices = tf.reshape(tf.range(traj_len), [-1, 1]) + tf.range(1, action_horizon + 1)
-    # print(tf.shape(indices))
-    # flat_indices = tf.reshape(indices, [-1])
-    # gathered = tf.gather(state_tensor, flat_indices)
-    # global_waypoints = tf.reshape(gathered, tf.shape(indices))
     
     global_waypoints = tf.gather(trajectory["observation"]["state"], indices)[:, :, :2]
     tf.print(global_waypoints)
@@ -904,9 +899,6 @@ def gnm_dataset_transform(trajectory: Dict[str, Any], action_horizon=1) -> Dict[
         0, action_horizon
     )
 
-    # flat_indices = tf.reshape(curr_pos_indices, [-1])
-    # gathered = tf.gather(state_tensor, flat_indices)
-    # curr_pos = tf.reshape(gathered, tf.shape(curr_pos_indices))
     curr_pos = tf.gather(trajectory["observation"]["state"], curr_pos_indices)[
         :, :, :2
     ]  # delta waypoints
@@ -921,26 +913,14 @@ def gnm_dataset_transform(trajectory: Dict[str, Any], action_horizon=1) -> Dict[
         ),
         2,
     )
-    yaw_traj = tf.math.atan2(actions[:, 0, 1], actions[:, 0, 0])
-    tf.print("yaw_traj", yaw_traj)
-    yaw_traj = tf.expand_dims(yaw_traj, 1)
     normalization_factor = trajectory["traj_metadata"]["episode_metadata"]["normalization_factor"]
 
     normalization_factor = tf.cast(normalization_factor[0], tf.float64)
     actions = actions / normalization_factor
 
-    # for i in range(tf.shape(actions)[0]):
-    #     actions_i = tf.math.cumsum(actions[i,:,:], axis=0)
-    #     actions_i -= actions_i[0]
-    #     plt.plot(actions_i[0,0], actions_i[0,1], "ro")
-    #     plt.plot(actions_i[:,0], actions_i[:,1], label="chunk {}".format(i))
-    # plt.legend()
-    # plt.savefig(f"actions_test.png")
-
     trajectory["action"] = actions
 
     trajectory["observation"]["proprio"] = actions
-    # breakpoint()
     return trajectory
 
 def old_gnm_dataset_transform(trajectory: Dict[str, Any], action_horizon=1) -> Dict[str, Any]:
