@@ -113,10 +113,6 @@ class DCTActionTokenizer(ActionTokenizer):
     def num_tokens(self):
         return self.action_horizon * self.action_dim
 
-    @property
-    def vocab_size(self):
-        return self.vocab_size
-
     def tokenize(self, data):
         return self.tokenizer(data)
 
