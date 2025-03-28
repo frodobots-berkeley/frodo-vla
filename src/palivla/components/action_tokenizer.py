@@ -118,7 +118,7 @@ class DCTActionTokenizer(ActionTokenizer):
     def tokenize(self, data):
         return self.tokenizer(data)
 
-    def detokenize(self, tokens):
+    def detokenize(self, tokens, action_dim: int):
         return self.tokenizer.decode(tokens, time_horizon=self.action_horizon, action_dim=self.action_dim)
 
     def fit(self, action_data):
@@ -131,7 +131,7 @@ class DCTActionTokenizer(ActionTokenizer):
     def save(self, path):
         self.tokenizer.save_pretrained(path)
     
-    def load_pretrained(self):
+    def load(self, path):
         self.tokenizer = AutoProcessor.from_pretrained(self.pretrained_path, trust_remote_code=True)
 
 
