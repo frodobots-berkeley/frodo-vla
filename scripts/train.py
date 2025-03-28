@@ -153,8 +153,8 @@ def main(_):
         action_data = np.concatenate([batch["action"] for batch in action_data], axis=0)
         model.action_tokenizer.fit(action_data)
 
-        print(f"Saving the action tokenizer to {action_tokenizer.save_path}")
-        model.action_tokenizer.save_pretrained(action_tokenizer.save_path)
+        print(f"Saving the action tokenizer to {model.action_tokenizer.save_path}")
+        model.action_tokenizer.save_pretrained(model.action_tokenizer.save_path)
 
     # Construct the final dataset
     # We need to do this after the model is constructed, since we need to have a tokenizer
