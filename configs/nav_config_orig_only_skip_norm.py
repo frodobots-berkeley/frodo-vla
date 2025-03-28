@@ -32,8 +32,8 @@ def get_config():
                     },
                 )
             ],
-            "resume_checkpoint_dir": None,
-            "resume_checkpoint_step": None,
+            "resume_checkpoint_dir": "gs://cat-logs/orig_only_skip_norm_2025_03_27_22_40_01",
+            "resume_checkpoint_step": 10000,
             # Overfit
             "overfit_dataset": False,
             # Training settings
