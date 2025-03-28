@@ -154,7 +154,7 @@ def main(_):
         model.action_tokenizer.fit(action_data)
 
         print(f"Saving the action tokenizer to {model.action_tokenizer.save_path}")
-        model.action_tokenizer.save_pretrained(model.action_tokenizer.save_path)
+        model.action_tokenizer.tokenizer.save_pretrained(model.action_tokenizer.save_path)
 
     # Construct the final dataset
     # We need to do this after the model is constructed, since we need to have a tokenizer
