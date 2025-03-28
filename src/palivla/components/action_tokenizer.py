@@ -128,8 +128,8 @@ class DCTActionTokenizer(ActionTokenizer):
         if self.save_path:
             self.tokenizer.save_pretrained(self.save_path)
     
-    def save(self):
-        self.tokenizer.save_pretrained(self.save_path)
+    def save(self, path):
+        self.tokenizer.save_pretrained(path)
     
     def load_pretrained(self):
         self.tokenizer = AutoProcessor.from_pretrained(self.pretrained_path, trust_remote_code=True)
