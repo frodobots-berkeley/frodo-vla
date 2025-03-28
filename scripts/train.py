@@ -79,7 +79,9 @@ def create_model(config: ConfigDict, sharding_metadata: ShardingMetadata):
     language_tokenizer = AutoTokenizer.from_pretrained(config.language_tokenizer)
     action_tokenizer: ActionTokenizer = Registry.lookup(config.action_tokenizer)()
     sequence_builder: SequenceBuilder = Registry.lookup(config.sequence_builder)()
-
+    if action_tokenizer.pretrained_path is not None:
+        action_tokenizer.load_pretrained(action_tokenizer.pretrained_path)
+    
     extra_tokens = [
         "<begin_of_action>",
     ] + [f"<act{i}>" for i in range(action_tokenizer.vocab_size)]
@@ -142,6 +144,17 @@ def main(_):
     # Make the basic dataset
     # We have to do this first, since we need to know how the dataset is set up before we can construct the model
     train_ds = make_base_dataset(**config.dataset_kwargs.to_dict(), train=True)
+
+    # For the DCT tokenizer, we need to fit the tokenizer to the dataset
+    if isinstance(model.action_tokenizer, DCTActionTokenizer) and model.action_tokenizer.pretrained_path is None:
+        # Convert the data into numpy for fitting the tokenizer
+        print("Fitting the action tokenizer")
+        action_data = train_ds.take(10000).as_numpy_iterator()
+        action_data = np.concatenate([batch["action"] for batch in action_data], axis=0)
+        model.action_tokenizer.fit(action_data)
+
+        print(f"Saving the action tokenizer to {action_tokenizer.save_path}")
+        model.action_tokenizer.save_pretrained(action_tokenizer.save_path)
 
     # Construct the final dataset
     # We need to do this after the model is constructed, since we need to have a tokenizer
