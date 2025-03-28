@@ -108,6 +108,8 @@ class DCTActionTokenizer(ActionTokenizer):
 
         if self.pretrained_path:
             self.tokenizer = AutoProcessor.from_pretrained(self.pretrained_path, trust_remote_code=True)
+        else:
+            self.tokenizer = AutoProcessor.from_pretrained("physical-intelligence/fast", trust_remote_code=True)
 
     @property
     def num_tokens(self):
