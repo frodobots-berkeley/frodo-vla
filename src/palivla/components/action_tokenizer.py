@@ -90,7 +90,7 @@ class DCTActionTokenizer(ActionTokenizer):
 
     def __init__(
         self,
-        bpe_tokenizer: PreTrainedTokenizerFast,
+        bpe_tokenizer: PreTrainedTokenizerFast = None,
         scale: float = 10,
         vocab_size: int = 1024,
         min_token: int = 0,
@@ -108,15 +108,6 @@ class DCTActionTokenizer(ActionTokenizer):
 
         if self.pretrained_path:
             self.tokenizer = AutoProcessor.from_pretrained(self.pretrained_path, trust_remote_code=True)
-        else:
-            self.tokenizer = UniversalActionProcessor(
-                bpe_tokenizer,
-                scale=scale,
-                vocab_size=vocab_size,
-                min_token=min_token,
-                action_dim=action_dim,
-                time_horizon=action_horizon,
-            )
 
     @property
     def num_tokens(self):
