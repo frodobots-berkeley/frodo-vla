@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import datetime, time
 
 from big_vision.utils import Registry
-from palivla.components.action_tokenizer import ActionTokenizer
+from palivla.components.action_tokenizer import ActionTokenizer, DCTActionTokenizer
 from palivla.components.model import PaliVLAModel
 from palivla.components.sequence_builder import SequenceBuilder
 from palivla.components.train_state import ShardingMetadata
