@@ -375,7 +375,7 @@ class ModelComponents:
             )
             # print(f"Time to decode: {time.time() - start_time}")
             tokens = self.data_gather_fn(tokens)
-            breakpoint()
+
             start_time = time.time()
             actions, actions_mask = self.sequence_builder.batch_get_actions(
                 tokens,
