@@ -68,6 +68,8 @@ class SequenceBuilder:
             action_tokens = language_tokenizer.batch_encode_plus(action_tokens)[
                 "input_ids"
             ]
+            print(action_tokens)
+            breakpoint()
         else:
             action_tokens = [[] for _ in range(len(prompt_tokens))]
 

@@ -201,6 +201,7 @@ class UniversalActionProcessor(ProcessorMixin):
         ), "Tokenizer not initialized, call encode() once or pass in time_horizon and action_dim."
 
         decoded_actions = []
+
         for token in tokens:
             try:
                 decoded_tokens = self.bpe_tokenizer.decode(token)

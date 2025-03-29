@@ -178,7 +178,7 @@ class ModelComponents:
     def train_step(self, batch: Any):
         # Tokenize the batch and build sequences
         sequences = self.sequence_builder.build_sequence(
-            batch, self.language_tokenizer, self.action_tokenizer
+            batch, self.language_tokenizer, self.action_tokenizer, include_action_tokens = True
         )
 
         # Shard the batch to devices
