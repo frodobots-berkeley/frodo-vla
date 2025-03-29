@@ -32,7 +32,7 @@ def get_config():
                     },
                 )
             ],
-            "resume_checkpoint_dir": "gs://cat-logs/orig_only_skip_norm_2025_03_27_22_40_01",
+            "resume_checkpoint_dir": "gs://cat-logs/orig_only_skip_norm_2025_03_28_17_12_48",
             "resume_checkpoint_step": 10000,
             # Overfit
             "overfit_dataset": False,
@@ -42,7 +42,7 @@ def get_config():
             "num_steps": num_train_steps,
             # Checkpoint settings
             "save_path": "gs://cat-logs",
-            "save_interval": 10000,
+            "save_interval": 5000,
             "max_to_keep": 10,
             # Multi-device settings
             "data_axis_size": 1,
