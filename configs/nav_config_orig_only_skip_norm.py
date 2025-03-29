@@ -32,7 +32,7 @@ def get_config():
                     },
                 )
             ],
-            "resume_checkpoint_dir": "gs://cat-logs/orig_only_skip_norm_2025_03_28_17_12_48",
+            "resume_checkpoint_dir": "gs://cat-logs/orig_only_skip_norm_2025_03_27_22_40_01",
             "resume_checkpoint_step": 10000,
             # Overfit
             "overfit_dataset": False,
