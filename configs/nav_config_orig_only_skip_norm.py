@@ -41,6 +41,7 @@ def get_config():
             "eval_batch_size": 128,
             "num_steps": num_train_steps,
             # Checkpoint settings
+            
             "save_path": "gs://cat-logs",
             "save_interval": 5000,
             "max_to_keep": 10,

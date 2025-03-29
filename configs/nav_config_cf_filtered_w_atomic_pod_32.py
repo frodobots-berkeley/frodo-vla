@@ -33,7 +33,7 @@ def get_config():
                 )
             ],
             "resume_checkpoint_dir": "gs://cat-logs/filtered_atomic_skip_norm_2025_03_27_22_59_21",
-            "resume_checkpoint_step": 5000,
+            "resume_checkpoint_step": 10000,
             "weights_only": False,
             # Overfit
             "overfit_dataset": False,
@@ -43,7 +43,7 @@ def get_config():
             "num_steps": num_train_steps,
             # Checkpoint settings
             "save_path": "gs://cat-logs",
-            "save_interval": 10,
+            "save_interval": 5000,
             "max_to_keep": 5000,
             # Multi-device settings
             "data_axis_size": 1,
@@ -53,7 +53,7 @@ def get_config():
             "shuffle_buffer_size": 50000,
             "num_steps": num_train_steps,
             # Logging and visualization
-            "eval_interval": 10,
+            "eval_interval": 100,
             "log_interval": 1,
             # Optimizer settings
             "optimizer": {
