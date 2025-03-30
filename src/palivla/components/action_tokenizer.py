@@ -109,6 +109,7 @@ class DCTActionTokenizer(ActionTokenizer):
         if self.pretrained_path:
             self.tokenizer = AutoProcessor.from_pretrained(self.pretrained_path, trust_remote_code=True)
         else:
+            print("Initializing new processor")
             self.tokenizer = UniversalActionProcessor(
                 bpe_tokenizer=PreTrainedTokenizerFast(tokenizer_object=ByteLevelBPETokenizer(), clean_up_tokenization_spaces=False),
                 scale=scale,
