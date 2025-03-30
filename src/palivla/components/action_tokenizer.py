@@ -209,7 +209,6 @@ class UniversalActionProcessor(ProcessorMixin):
         ), "Tokenizer not initialized, call encode() once or pass in time_horizon and action_dim."
 
         decoded_actions = []
-        breakpoint()
         for token in tokens:
             try:
                 decoded_tokens = self.bpe_tokenizer.decode(token)
@@ -225,7 +224,7 @@ class UniversalActionProcessor(ProcessorMixin):
             except Exception as e:
                 print(f"Error decoding tokens: {e}")
                 print(f"Tokens: {token}")
-                decoded_dct_coeff = np.zeros((self.time_horizon, self.action_dim))
+                decoded_dct_coeff = np.zeros((-1, self.action_dim))
             decoded_actions.append(idct(decoded_dct_coeff / self.scale, axis=0, norm="ortho"))
         breakpoint()
         return np.stack(decoded_actions)
