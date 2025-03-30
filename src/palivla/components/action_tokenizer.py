@@ -110,7 +110,7 @@ class DCTActionTokenizer(ActionTokenizer):
             self.tokenizer = AutoProcessor.from_pretrained(self.pretrained_path, trust_remote_code=True)
         else:
             self.tokenizer = UniversalActionProcessor(
-                bpe_tokenizer=ByteLevelBPETokenizer(),
+                bpe_tokenizer=PreTrainedTokenizerFast(tokenizer_object=ByteLevelBPETokenizer(), clean_up_tokenization_spaces=False),
                 scale=scale,
                 vocab_size=vocab_size,
                 min_token=min_token,
