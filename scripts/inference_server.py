@@ -82,7 +82,7 @@ def gen_action():
         config = flags.FLAGS.config
 
         # Overwrite the config with the one from input
-        config.resume_checkpoint_dir = f"gs://cat-logs/{flags.FLAGS.resume_checkpoint_dir}"
+        config.resume_checkpoint_dir = f"gs://{flags.FLAGS.resume_checkpoint_dir}"
         config.resume_checkpoint_step = flags.FLAGS.resume_checkpoint_step
 
         input_prompt = flags.FLAGS.prompt
