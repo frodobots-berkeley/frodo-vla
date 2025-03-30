@@ -20,7 +20,7 @@ def get_config():
             "wandb_mode": "online",
             #Tokenizers
             "language_tokenizer": "google/paligemma-3b-mix-224",
-            "action_tokenizer": f"action_tokenizer.dct(action_dim=2, action_horizon={action_horizon}, save_path='gs://cat-logs/action-tokenizer-dct', pretrained_path=None)",
+            "action_tokenizer": f"action_tokenizer.dct(action_dim=2, time_horizon=1, save_path='gs://cat-logs/action-tokenizer-dct', pretrained_path=None)",
             "sequence_builder": "sequence_builder.default(prompt_pad_length=50, gen_pad_length=20)",
             # Initialization
             "load_fns": [
