@@ -184,6 +184,7 @@ class SequenceBuilder:
         ]
 
         actions_mask = np.array([action is not None for action in actions])
+        breakpoint()
         actions = np.stack(
             [
                 (
