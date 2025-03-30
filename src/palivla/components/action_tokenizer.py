@@ -109,7 +109,14 @@ class DCTActionTokenizer(ActionTokenizer):
         if self.pretrained_path:
             self.tokenizer = AutoProcessor.from_pretrained(self.pretrained_path, trust_remote_code=True)
         else:
-            self.tokenizer = AutoProcessor.from_pretrained("physical-intelligence/fast", trust_remote_code=True)
+            self.tokenizer = UniversalActionProcessor(
+                bpe_tokenizer=ByteLevelBPETokenizer(),
+                scale=scale,
+                vocab_size=vocab_size,
+                min_token=min_token,
+                action_dim=action_dim,
+                time_horizon=action_horizon,
+            )
 
     @property
     def num_tokens(self):
@@ -219,7 +226,7 @@ class UniversalActionProcessor(ProcessorMixin):
                 print(f"Tokens: {token}")
                 decoded_dct_coeff = np.zeros((self.time_horizon, self.action_dim))
             decoded_actions.append(idct(decoded_dct_coeff / self.scale, axis=0, norm="ortho"))
-        print()
+        breakpoint()
         return np.stack(decoded_actions)
 
     @classmethod
@@ -274,7 +281,7 @@ class UniversalActionProcessor(ProcessorMixin):
         # Train the inner tokenizer (don't use ByteLevelBPETokenizer.train_from_iterator()
         # because it doesn't support custom alphabets)
         bpe._tokenizer.train_from_iterator(_token_iter(), trainer=trainer)
-
+        print("Done training tokenizer")
         return cls(
             PreTrainedTokenizerFast(tokenizer_object=bpe, clean_up_tokenization_spaces=False),
             scale=scale,
