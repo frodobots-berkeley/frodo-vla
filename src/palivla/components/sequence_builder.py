@@ -168,7 +168,7 @@ class SequenceBuilder:
         boa_id = language_tokenizer.encode("<begin_of_action>")[0]
         eos_id = language_tokenizer.encode("<eos>")[0]
         act0_id = language_tokenizer.encode("<act0>")[0]
-
+        
         actions = [
             self.get_actions(
                 tokens[i],

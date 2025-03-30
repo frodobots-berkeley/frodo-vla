@@ -219,6 +219,7 @@ class UniversalActionProcessor(ProcessorMixin):
                 print(f"Tokens: {token}")
                 decoded_dct_coeff = np.zeros((self.time_horizon, self.action_dim))
             decoded_actions.append(idct(decoded_dct_coeff / self.scale, axis=0, norm="ortho"))
+        breakpoint()
         return np.stack(decoded_actions)
 
     @classmethod
