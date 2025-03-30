@@ -96,12 +96,12 @@ class DCTActionTokenizer(ActionTokenizer):
         min_token: int = 0,
         *,
         action_dim: int | None = None,
-        action_horizon: int | None = None,
+        time_horizon: int | None = None,
         save_path: str | None = "",
         pretrained_path: str | None = "physical-intelligence/fast"
     ):
         self.action_dim = action_dim
-        self.action_horizon = action_horizon
+        self.time_horizon = time_horizon
         self.vocab_size = vocab_size
         self.save_path = save_path
         self.pretrained_path = pretrained_path
@@ -116,7 +116,7 @@ class DCTActionTokenizer(ActionTokenizer):
                 vocab_size=vocab_size,
                 min_token=min_token,
                 action_dim=action_dim,
-                time_horizon=action_horizon,
+                time_horizon=time_horizon,
             )
 
     @property
