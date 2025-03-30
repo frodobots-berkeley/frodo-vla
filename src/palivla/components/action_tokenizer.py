@@ -127,7 +127,7 @@ class DCTActionTokenizer(ActionTokenizer):
         return self.tokenizer(data)
 
     def detokenize(self, tokens, action_dim: int):
-        return self.tokenizer.decode(tokens, time_horizon=self.action_horizon, action_dim=self.action_dim)
+        return self.tokenizer.decode(tokens, time_horizon=self.time_horizon, action_dim=self.action_dim)
 
     def fit(self, action_data):
         self.tokenizer = self.tokenizer.fit(
