@@ -32,8 +32,8 @@ def get_config():
                     },
                 )
             ],
-            "resume_checkpoint_dir": "gs://cat-logs/filtered_atomic_skip_norm_2025_03_30_17_38_42",
-            "resume_checkpoint_step": 50000,
+            "resume_checkpoint_dir": "gs://cat-logs/filtered_atomic_skip_norm_2025_03_31_16_08_10",
+            "resume_checkpoint_step": 55000,
             "weights_only": False,
             # Overfit
             "overfit_dataset": False,
