@@ -151,7 +151,6 @@ class SequenceBuilder:
         # Get the action
         action = tokens[start_idx:end_idx] - act0_id
         try:
-            breakpoint()
             return action_tokenizer.detokenize(action, action_dim=action_dim)
         except ValueError:
             return None
@@ -185,7 +184,6 @@ class SequenceBuilder:
         ]
 
         actions_mask = np.array([action is not None for action in actions])
-        breakpoint()
         actions = np.stack(
             [
                 (
