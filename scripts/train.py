@@ -212,19 +212,19 @@ def main(_):
         for i in pbar:
             if not config.overfit_dataset:
                 batch = next(train_it)
-            wandb_gt_list = []    
-            # Plot a sample of actions
-            gt_actions = batch["action"][:,0,:,:]
-            gt_actions = np.cumsum(gt_actions, axis=1)
-            gt_actions = gt_actions - gt_actions[:, 0, :].reshape(-1, 1, 2)
-            plt.plot(gt_actions[0,:,0], gt_actions[0,:,1], 'r')
-            plt.plot(gt_actions[0,-1,0], gt_actions[0,-1,1], 'ro')
+            # wandb_gt_list = []    
+            # # Plot a sample of actions
+            # gt_actions = batch["action"][:,0,:,:]
+            # gt_actions = np.cumsum(gt_actions, axis=1)
+            # gt_actions = gt_actions - gt_actions[:, 0, :].reshape(-1, 1, 2)
+            # plt.plot(gt_actions[0,:,0], gt_actions[0,:,1], 'r')
+            # plt.plot(gt_actions[0,-1,0], gt_actions[0,-1,1], 'ro')
             
-            plt.savefig(f"images/gt_{i+1}.png")
-            wandb_gt_list.append(wandb.Image(f"images/gt_{i+1}.png"))
+            # plt.savefig(f"images/gt_{i+1}.png")
+            # wandb_gt_list.append(wandb.Image(f"images/gt_{i+1}.png"))
             
-            if jax.process_index() == 0:
-                wandb.log({"gt_actions": wandb_gt_list}, commit=False)
+            # if jax.process_index() == 0:
+            #     wandb.log({"gt_actions": wandb_gt_list}, commit=False)
                 
 
             # Rotate each gt actions in the batch by the initial yaw of the chunk 
