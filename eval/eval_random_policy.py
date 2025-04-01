@@ -9,7 +9,7 @@ import glob
 import cv2
 policys = {
             #  "cf_filtered" : ("vlm-guidance-logs/pleasant-hill-251", 100000)
-            "filtered_w_atomic" : ("cat-logs/filtered_atomic_skip_norm_2025_03_30_17_38_42", 40000)
+            "filtered_w_atomic" : ("cat-logs/filtered_atomic_skip_norm_2025_03_31_16_08_10", 55000)
         #    "cf_obs": ("restful-resonance-255", 100000),
         #    "obs_only" : ("young-fog-250", 90000),
         #    "all" : ("glowing-dust-253", 90000),

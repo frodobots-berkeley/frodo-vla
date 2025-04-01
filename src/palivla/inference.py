@@ -267,8 +267,8 @@ if __name__ == "__main__":
             "config", "configs/smoke_test.py", "Path to the config file."
     )
     flags.DEFINE_string("platform", "gpu", "Platform to run on.")
-    flags.DEFINE_string("resume_checkpoint_dir", "gs://cat-logs/serene-field-298", "Path to the checkpoint directory.")
-    flags.DEFINE_integer("resume_checkpoint_step", 90000, "Step to resume from.")
+    flags.DEFINE_string("resume_checkpoint_dir", "gs://cat-logs/filtered_atomic_skip_norm_2025_03_31_16_08_10", "Path to the checkpoint directory.")
+    flags.DEFINE_integer("resume_checkpoint_step", 55000, "Step to resume from.")
     flags.DEFINE_string("prompt", "", "Prompt to generate action from.")
 
     os.environ["XLA_PYTHON_CLIENT_PREALLOCATE"]="false"
