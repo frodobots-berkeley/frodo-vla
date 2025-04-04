@@ -184,6 +184,8 @@ class SequenceBuilder:
         ]
 
         actions_mask = np.array([action is not None for action in actions])
+        if (actions.shape[1] != action_horizon) or (actions.shape[2] != action_dim):
+            breakpoint()
         actions = np.stack(
             [
                 (
