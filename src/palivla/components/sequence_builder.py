@@ -184,22 +184,23 @@ class SequenceBuilder:
         ]
 
         actions_mask = np.array([action is not None for action in actions])
-        if (actions[0].shape[0] != action_horizon) or (actions[0].shape[1] != action_dim):
-            breakpoint()
-        actions = np.stack(
-            [
-                (
-                    np.pad(
-                        action,
-                        ((0, action_horizon - action.shape[0]), (0, 0)),
-                        constant_values=np.nan,
+        try:
+            actions = np.stack(
+                [
+                    (
+                        np.pad(
+                            action,
+                            ((0, action_horizon - action.shape[0]), (0, 0)),
+                            constant_values=np.nan,
+                        )
+                        if action is not None
+                        else np.zeros((action_horizon, action_dim))
                     )
-                    if action is not None
-                    else np.zeros((action_horizon, action_dim))
-                )
-                for action in actions
-            ]
-        )
+                    for action in actions
+                ]
+            )
+        except:
+            breakpoint()
         actions_mask = einops.repeat(
             actions_mask, "b -> b p a", p=action_horizon, a=action_dim
         ) & ~np.isnan(actions)
