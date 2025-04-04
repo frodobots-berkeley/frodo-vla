@@ -150,7 +150,6 @@ class SequenceBuilder:
         
         # Get the action
         action = tokens[start_idx:end_idx] - act0_id
-        breakpoint()
         try:
             return action_tokenizer.detokenize(action, action_dim=action_dim)
         except ValueError:

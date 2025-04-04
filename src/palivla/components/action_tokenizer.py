@@ -118,6 +118,7 @@ class DCTActionTokenizer(ActionTokenizer):
                 action_dim=action_dim,
                 time_horizon=time_horizon,
             )
+            
 
     @property
     def num_tokens(self):
@@ -226,7 +227,6 @@ class UniversalActionProcessor(ProcessorMixin):
                 print(f"Tokens: {token}")
                 decoded_dct_coeff = np.zeros((-1, self.action_dim))
             decoded_actions.append(idct(decoded_dct_coeff / self.scale, axis=0, norm="ortho"))
-        breakpoint()
         return np.stack(decoded_actions)
 
     @classmethod
