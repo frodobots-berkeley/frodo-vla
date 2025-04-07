@@ -198,7 +198,7 @@ def _bon_select(state, *, n, eos_token):
     return state
 
 
-def _decode_sample_output(state, logits, *, max_decode_len, sampler):
+def _decode_sample_output(state, logits, *, max_decode_len, sampler, temperature):
     if state is None:
         # Decode state keeps track of sampled tokens and their logp.
         bs = logits.shape[0]
@@ -209,7 +209,7 @@ def _decode_sample_output(state, logits, *, max_decode_len, sampler):
         (seqlen, tokens, logp) = state
 
     # Sample tokens.
-    sampled_tokens, sampled_logp = _sample_logits(logits, sampler=sampler)
+    sampled_tokens, sampled_logp = _sample_logits(logits, sampler=sampler, temperature=temperature)
 
     # Update state with sampled outputs.
     new_len = seqlen + 1
@@ -282,7 +282,7 @@ def _extend_cache(
     return last_logits, variables["cache"]
 
 
-def _sample_logits(logits: jnp.ndarray, sampler: str):
+def _sample_logits(logits: jnp.ndarray, sampler: str, temperature: float):
     """Returns a sampled token and its logp from logits."""
     # Note: Consider making it possible for evaluators to pass rng seed to
     # decode functions. For now generate it from jax.lax and avoid evaluators
@@ -292,7 +292,7 @@ def _sample_logits(logits: jnp.ndarray, sampler: str):
     # Use Registry to support specifying things like:
     #  "greedy", "nucleus(0.2)", "temperature(t=1.0)"
     sampled_tokens = registry.Registry.lookup("palivla_sampler." + sampler)(
-        logits=logits, rng=rng
+        t=temperature, logits=logits, rng=rng
     )
 
     # Find the log probability (normalized logits) of selected tokens.
