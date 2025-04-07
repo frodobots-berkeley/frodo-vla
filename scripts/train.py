@@ -79,8 +79,9 @@ def create_model(config: ConfigDict, sharding_metadata: ShardingMetadata):
     language_tokenizer = AutoTokenizer.from_pretrained(config.language_tokenizer)
     action_tokenizer: ActionTokenizer = Registry.lookup(config.action_tokenizer)()
     sequence_builder: SequenceBuilder = Registry.lookup(config.sequence_builder)()
-    if action_tokenizer.pretrained_path is not None:
-        action_tokenizer.load_pretrained(action_tokenizer.pretrained_path)
+    if isinstance(action_tokenizer, BinnedActionTokenizer):
+        if action_tokenizer.pretrained_path is not None:
+            action_tokenizer.load_pretrained(action_tokenizer.pretrained_path)
     
     extra_tokens = [
         "<begin_of_action>",
