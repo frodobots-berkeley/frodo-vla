@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import datetime, time
 
 from big_vision.utils import Registry
-from palivla.components.action_tokenizer import ActionTokenizer, DCTActionTokenizer, BinnedActionTokenizer
+from palivla.components.action_tokenizer import ActionTokenizer, DCTActionTokenizer, BinActionTokenizer
 from palivla.components.model import PaliVLAModel
 from palivla.components.sequence_builder import SequenceBuilder
 from palivla.components.train_state import ShardingMetadata
@@ -79,7 +79,7 @@ def create_model(config: ConfigDict, sharding_metadata: ShardingMetadata):
     language_tokenizer = AutoTokenizer.from_pretrained(config.language_tokenizer)
     action_tokenizer: ActionTokenizer = Registry.lookup(config.action_tokenizer)()
     sequence_builder: SequenceBuilder = Registry.lookup(config.sequence_builder)()
-    if isinstance(action_tokenizer, BinnedActionTokenizer):
+    if isinstance(action_tokenizer, DCTActionTokenizer):
         if action_tokenizer.pretrained_path is not None:
             action_tokenizer.load_pretrained(action_tokenizer.pretrained_path)
     
