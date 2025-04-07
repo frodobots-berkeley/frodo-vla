@@ -121,7 +121,7 @@ def _decode_with_logp(
 
     decode_sample_output = jax.jit(
         _decode_sample_output,
-        static_argnames=("max_decode_len", "sampler"),
+        static_argnames=("max_decode_len", "sampler", "temperature"),
     )
     decode_early_stop = jax.jit(
         _decode_early_stop,
