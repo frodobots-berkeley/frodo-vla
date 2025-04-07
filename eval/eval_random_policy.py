@@ -9,12 +9,13 @@ import glob
 import cv2
 policys = {
             #  "cf_filtered" : ("vlm-guidance-logs/pleasant-hill-251", 100000)
-            "filtered_w_atomic" : ("cat-logs/filtered_atomic_skip_norm_2025_03_31_16_08_10", 170000),
+            # "filtered_w_atomic" : ("cat-logs/filtered_atomic_skip_norm_2025_03_31_16_08_10", 170000),
             "orig_only" : ("cat-logs/orig_only_skip_norm_2025_04_01_23_49_15", 150000),
-            "cf_filtered" : ("cat-logs/cf_filtered_data_fixed_2025_03_31_20_38_00", 100000),
+            # "cf_filtered" : ("cat-logs/cf_filtered_data_fixed_2025_03_31_20_38_00", 100000),
            }
 NUM_TRIALS = 3
 
+os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 
 def check_done_evals(env_name):
     done_evals = glob.glob(f"eval_results/{env_name}/*.json")
