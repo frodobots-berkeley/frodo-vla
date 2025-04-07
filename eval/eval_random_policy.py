@@ -9,11 +9,9 @@ import glob
 import cv2
 policys = {
             #  "cf_filtered" : ("vlm-guidance-logs/pleasant-hill-251", 100000)
-            "filtered_w_atomic" : ("cat-logs/filtered_atomic_skip_norm_2025_03_31_16_08_10", 55000)
-        #    "cf_obs": ("restful-resonance-255", 100000),
-        #    "obs_only" : ("young-fog-250", 90000),
-        #    "all" : ("glowing-dust-253", 90000),
-        #  "cf_filtered" : ("serene-field-298", 90000)
+            "filtered_w_atomic" : ("cat-logs/filtered_atomic_skip_norm_2025_03_31_16_08_10", 170000),
+            "orig_only" : ("cat-logs/orig_only_skip_norm_2025_04_01_23_49_15", 150000),
+            "cf_filtered" : ("cat-logs/cf_filtered_data_fixed_2025_03_31_20_38_00", 100000),
            }
 NUM_TRIALS = 3
 

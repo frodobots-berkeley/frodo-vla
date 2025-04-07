@@ -89,6 +89,7 @@ def _decode_with_logp(
     eos_token: int,
     best_of_n: int = 1,
     sampler: str = "greedy",
+    temperature: float = 1.0,
     eos_look_behind: int = 0,
 ):
     """Sample token continuations to the input sequences."""
@@ -139,7 +140,7 @@ def _decode_with_logp(
     stops = collections.deque(maxlen=1 + eos_look_behind)
     for idx in range(max_decode_len):
         tokens, state = decode_sample_output(
-            state, logits, max_decode_len=max_decode_len, sampler=sampler
+            state, logits, max_decode_len=max_decode_len, sampler=sampler, temperature=temperature
         )
 
         if idx + 1 >= max_decode_len:
