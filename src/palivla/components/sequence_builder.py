@@ -182,7 +182,7 @@ class SequenceBuilder:
             )
             for i in range(len(tokens))
         ]
-        actions = [actions[i].squeeze(0) if actions[i] is not None and len(actions.shape) == 3 else actions[i] for i in range(len(actions))]
+        actions = [actions[i].squeeze(0) if actions[i] is not None and len(actions[i].shape) == 3 else actions[i] for i in range(len(actions))]
 
         actions_mask = np.array([action is not None for action in actions])
         try:
