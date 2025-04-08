@@ -307,7 +307,7 @@ registry.Registry.global_registry().clear()
 
 
 @registry.Registry.register("palivla_sampler.greedy")
-def _greedy_sampling(*, logits: jnp.ndarray, rng: jnp.ndarray):
+def _greedy_sampling(t=None, *, logits: jnp.ndarray, rng: jnp.ndarray):
     del rng
     return jnp.argmax(logits, axis=-1)
 
