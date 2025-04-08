@@ -32,8 +32,8 @@ def get_config():
                     },
                 )
             ],
-            "resume_checkpoint_dir": None,
-            "resume_checkpoint_step": None,
+            "resume_checkpoint_dir": "gs://cat-logs/dct_action_tokenizer_2025_04_08_01_15_22",
+            "resume_checkpoint_step": 30000,
             "weights_only": False,
             # Overfit
             "overfit_dataset": False,
