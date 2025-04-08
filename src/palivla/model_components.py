@@ -139,8 +139,10 @@ class ModelComponents:
             io.gfile.join(path, "language_tokenizer")
         ) as temp_dir:
             language_tokenizer = AutoTokenizer.from_pretrained(temp_dir)
-
-        action_tokenizer = ActionTokenizer.load(path)
+        try:
+            action_tokenizer = ActionTokenizer.load(path)
+        except:
+            action_tokenizer = DCTActionTokenizer
         sequence_builder = SequenceBuilder.load(path)
 
         with io.gfile.GFile(io.gfile.join(path, "example_batch.pkl"), "rb") as f:

@@ -31,8 +31,11 @@ class ActionTokenizer:
 
     @classmethod
     def load(cls, path: PathLike):
-        with tf.io.gfile.GFile(tf.io.gfile.join(path, "action_tokenizer.pkl"), "rb") as f:
-            return cloudpickle.load(f)
+        try:
+            with tf.io.gfile.GFile(tf.io.gfile.join(path, "action_tokenizer.pkl"), "rb") as f:
+                return cloudpickle.load(f)
+        except:
+            
 
 
 @Registry.register("action_tokenizer.bin")
