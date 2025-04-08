@@ -89,7 +89,7 @@ def _decode_with_logp(
     eos_token: int,
     best_of_n: int = 1,
     sampler: str = "greedy",
-    temperature: float = 1.0,
+    temperature: float = None,
     eos_look_behind: int = 0,
 ):
     """Sample token continuations to the input sequences."""
@@ -118,11 +118,21 @@ def _decode_with_logp(
     logits, cache, mask = jax.jit(_bon_repeat, static_argnames=("n",))(
         (logits, cache, mask), n=best_of_n
     )
+    if sampler == "greedy":
+        decode_sample_output = jax.jit(
+            _decode_sample_output,
+            static_argnames=("max_decode_len", "sampler"),
+        )
+    elif sampler == "temperature":
+        decode_sample_output = jax.jit(
+            _decode_sample_output,
+            static_argnames=("max_decode_len", "sampler", "temperature"),
+        )
+    else:
+        raise NotImplementedError(
+            f"Sampler {sampler} not implemented. Use 'greedy' or 'temperature'."
+        )
 
-    decode_sample_output = jax.jit(
-        _decode_sample_output,
-        static_argnames=("max_decode_len", "sampler", "temperature"),
-    )
     decode_early_stop = jax.jit(
         _decode_early_stop,
         out_shardings=replicate_sharding,
@@ -209,7 +219,10 @@ def _decode_sample_output(state, logits, *, max_decode_len, sampler, temperature
         (seqlen, tokens, logp) = state
 
     # Sample tokens.
-    sampled_tokens, sampled_logp = _sample_logits(logits, sampler=sampler, temperature=temperature)
+    if sampler == "greedy":
+        sampled_tokens, sampled_logp = _sample_logits(logits, sampler=sampler)
+    else:
+        sampled_tokens, sampled_logp = _sample_logits(logits, sampler=sampler, temperature=temperature)
 
     # Update state with sampled outputs.
     new_len = seqlen + 1
@@ -282,7 +295,7 @@ def _extend_cache(
     return last_logits, variables["cache"]
 
 
-def _sample_logits(logits: jnp.ndarray, sampler: str, temperature: float):
+def _sample_logits(logits: jnp.ndarray, sampler: str, temperature: float = None):
     """Returns a sampled token and its logp from logits."""
     # Note: Consider making it possible for evaluators to pass rng seed to
     # decode functions. For now generate it from jax.lax and avoid evaluators
@@ -307,7 +320,7 @@ registry.Registry.global_registry().clear()
 
 
 @registry.Registry.register("palivla_sampler.greedy")
-def _greedy_sampling(t=None, *, logits: jnp.ndarray, rng: jnp.ndarray):
+def _greedy_sampling(t: float, *, logits: jnp.ndarray, rng: jnp.ndarray):
     del rng
     return jnp.argmax(logits, axis=-1)
 

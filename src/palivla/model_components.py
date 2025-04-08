@@ -335,6 +335,8 @@ class ModelComponents:
         use_ema_params: bool = False,
         return_tokens: bool = False,
         include_action_tokens: bool = True,
+        sampler: str = "greedy", 
+        temperature: float = None,
     ):
         # Tokenize the batch and build sequences
         sequences = self.sequence_builder.build_sequence(
@@ -370,8 +372,8 @@ class ModelComponents:
                 model=self.train_state.model,
                 mesh=self.sharding.mesh.mesh,
                 out_sharding=PartitionSpec("fsdp"),
-                temperature=0.7,
-                sampler="temperature",
+                temperature=temperature,
+                sampler=sampler,
                 max_decode_len=sequences["gen"]["tokens"].shape[1],
                 eos_token=self.language_tokenizer.eos_token_id,
             )

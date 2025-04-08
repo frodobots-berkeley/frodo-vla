@@ -242,7 +242,14 @@ def run_inference(model, prompt, image, config, inference_device="gpu"):
                 }
 
     # Predict the output 
-    predicted_actions, actions_mask, tokens = model.predict(batch, action_dim=2, action_horizon=action_horizon, return_tokens=True, include_action_tokens=False)
+    if config.get("sampler") is not None:
+        sampler = config["sampler"]
+        if sampler == "greedy":
+            temperature = None
+    else:
+        sampler = "greedy"
+        temperature = None
+    predicted_actions, actions_mask, tokens = model.predict(batch, action_dim=2, action_horizon=action_horizon, return_tokens=True, include_action_tokens=False, sampler=sampler, temperature=temperature)
     predicted_actions = predicted_actions[0].squeeze()
     summed_actions = np.cumsum(predicted_actions, axis=0)
     summed_actions -= summed_actions[0]
