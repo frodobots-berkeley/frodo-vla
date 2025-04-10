@@ -75,6 +75,7 @@ def get_config(variant_config: str):
                 "force_recompute_dataset_statistics": False,
                 "action_proprio_normalization_type": NormalizationType.NORMAL,
             },
+            "sample_weights": [1.0],
             "traj_transform_kwargs": {
                 "window_size": 1,
                 "action_horizon": 1,
@@ -87,7 +88,7 @@ def get_config(variant_config: str):
             "shuffle_buffer_size": 50000,
             "traj_transform_threads": 16,
             "traj_read_threads": 16,
-            "sample_weights": [1.0],
+            
         },
         "viz_trajectories_per_dataset": 4,
         "visualization_datasets": {
