@@ -109,6 +109,7 @@ class DCTActionTokenizer(ActionTokenizer):
         self.save_path = save_path
         self.pretrained_path = pretrained_path
         self.fit = fit
+        print(f"Fit is {fit}")
         self.default_path = default_path
 
         if self.pretrained_path:
