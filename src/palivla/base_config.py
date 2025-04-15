@@ -87,6 +87,7 @@ def get_config(variant_config: str):
             "shuffle_buffer_size": 50000,
             "traj_transform_threads": 16,
             "traj_read_threads": 16,
+            "skip_norm": True
             
         },
         "viz_trajectories_per_dataset": 4,
