@@ -1,6 +1,7 @@
 import os
 import matplotlib.pyplot as plt
 import datetime, time
+import shutil
 
 from big_vision.utils import Registry
 from palivla.components.action_tokenizer import ActionTokenizer, DCTActionTokenizer, BinActionTokenizer
