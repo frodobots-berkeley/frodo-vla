@@ -82,9 +82,9 @@ def create_model(config: ConfigDict, sharding_metadata: ShardingMetadata):
     sequence_builder: SequenceBuilder = Registry.lookup(config.sequence_builder)()
     if isinstance(action_tokenizer, DCTActionTokenizer):
         if action_tokenizer.pretrained_path is not None:
-            action_tokenizer.load_pretrained(action_tokenizer.pretrained_path)
+            action_tokenizer.tokenizer.load(action_tokenizer.pretrained_path)
         elif action_tokenizer.pretrained_path is None and not action_tokenizer.fit:
-            action_tokenizer.load_pretrained(action_tokenizer.default_path)
+            action_tokenizer.tokenizer.load(action_tokenizer.default_path)
     
     extra_tokens = [
         "<begin_of_action>",
