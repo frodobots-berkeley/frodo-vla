@@ -6,7 +6,7 @@ from palivla.components.model import get_default_config
 
 def get_config(variant_config: str):
     num_train_steps = FieldReference(100000, int)
-    data_dir = FieldReference("gs://vlm-guidance-data", str)
+    data_dir = FieldReference("", str)
 
     model_config = get_default_config()
 
