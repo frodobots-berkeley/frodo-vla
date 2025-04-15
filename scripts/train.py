@@ -154,9 +154,11 @@ def main(_):
         action_data = np.concatenate([batch["action"] for batch in action_data], axis=0)
         model.action_tokenizer.fit(action_data)
 
+        # Save to temp directory
+        os.makedirs(model.action_tokenizer.save_path, exist_ok=True)
         print(f"Saving the action tokenizer to {model.action_tokenizer.save_path}")
         model.action_tokenizer.tokenizer.save_pretrained(model.action_tokenizer.save_path)
-
+        
     # Construct the final dataset
     # We need to do this after the model is constructed, since we need to have a tokenizer
     per_host_train_batch_size = config.batch_size // jax.process_count()
@@ -196,6 +198,12 @@ def main(_):
         )
 
         model.save_static(tf.io.gfile.join(checkpoint_save_path))
+    
+    # Save the action tokenizer
+    if isinstance(model.action_tokenizer, DCTActionTokenizer) and model.action_tokenizer.pretrained_path is None:
+        tf.io.gfile.copy(model.action_tokenizer.save_path, checkpoint_save_path)
+    elif isinstance(model.action_tokenizer, DCTActionTokenizer) and model.action_tokenizer.pretrained_path is not None:
+        tf.io.gfile.copy(model.action_tokenizer.pretrained_path, checkpoint_save_path)
 
     wandb_logs = []
 
