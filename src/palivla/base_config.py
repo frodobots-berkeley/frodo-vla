@@ -6,7 +6,7 @@ from palivla.components.model import get_default_config
 
 def get_config(variant_config: str):
     num_train_steps = FieldReference(100000, int)
-    data_dir = FieldReference("", str)
+    data_dir = FieldReference("gs://cat-datasets/bridge_release/data/tfds/bridge_dataset", str)
 
     model_config = get_default_config()
 
