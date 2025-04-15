@@ -235,7 +235,7 @@ class UniversalActionProcessor(ProcessorMixin):
         cls,
         action_data: list[np.array],
         scale: float = 10,
-        vocab_size: int = 1024,
+        vocab_size: int = 2049,
         *,
         time_horizon: int | None = None,
         action_dim: int | None = None,
