@@ -204,6 +204,10 @@ def main(_):
         tf.io.gfile.copy(model.action_tokenizer.save_path, tf.io.gfile.join(checkpoint_save_path, "action_tokenizer"))
     elif isinstance(model.action_tokenizer, DCTActionTokenizer) and model.action_tokenizer.pretrained_path is not None:
         tf.io.gfile.copy(model.action_tokenizer.pretrained_path, tf.io.gfile.join(checkpoint_save_path, "action_tokenizer"))
+    
+    # Remove the local save path 
+    if isinstance(model.action_tokenizer, DCTActionTokenizer) and model.action_tokenizer.pretrained_path is None:
+        shutil.rmtree(model.action_tokenizer.save_path)
 
     wandb_logs = []
 
