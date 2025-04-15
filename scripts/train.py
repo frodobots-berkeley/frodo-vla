@@ -201,6 +201,8 @@ def main(_):
     
     # Save the action tokenizer
     if isinstance(model.action_tokenizer, DCTActionTokenizer) and model.action_tokenizer.pretrained_path is None:
+        for file in tf.io.gfile.listdir(model.action_tokenizer.save_path):
+            tf.io.gfile.copy(tf.io.gfile.join(model.action_tokenizer.save_path, file), tf.io.gfile.join(checkpoint_save_path, "action_tokenizer", file))
         tf.io.gfile.copy(model.action_tokenizer.save_path, tf.io.gfile.join(checkpoint_save_path, "action_tokenizer"))
     elif isinstance(model.action_tokenizer, DCTActionTokenizer) and model.action_tokenizer.pretrained_path is not None:
         tf.io.gfile.copy(model.action_tokenizer.pretrained_path, tf.io.gfile.join(checkpoint_save_path, "action_tokenizer"))
