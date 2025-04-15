@@ -83,6 +83,8 @@ def create_model(config: ConfigDict, sharding_metadata: ShardingMetadata):
     if isinstance(action_tokenizer, DCTActionTokenizer):
         if action_tokenizer.pretrained_path is not None:
             action_tokenizer.load_pretrained(action_tokenizer.pretrained_path)
+        elif action_tokenizer.pretrained_path is None and not action_tokenizer.fit:
+            action_tokenizer.load_pretrained(action_tokenizer.default_path)
     
     extra_tokens = [
         "<begin_of_action>",
@@ -148,7 +150,7 @@ def main(_):
     train_ds = make_base_dataset(**config.dataset_kwargs.to_dict(), train=True)
 
     # For the DCT tokenizer, we need to fit the tokenizer to the dataset
-    if isinstance(model.action_tokenizer, DCTActionTokenizer) and model.action_tokenizer.pretrained_path is None:
+    if isinstance(model.action_tokenizer, DCTActionTokenizer) and model.action_tokenizer.pretrained_path is None and model.action_tokenizer.fit:
         # Convert the data into numpy for fitting the tokenizer
         print("Fitting the action tokenizer")
         action_data = train_ds.take(10000).as_numpy_iterator()
@@ -201,18 +203,18 @@ def main(_):
         model.save_static(tf.io.gfile.join(checkpoint_save_path))
     
     # Save the action tokenizer
-    if isinstance(model.action_tokenizer, DCTActionTokenizer) and model.action_tokenizer.pretrained_path is None:
-        for file in tf.io.gfile.listdir(model.action_tokenizer.save_path):
-            tf.io.gfile.copy(tf.io.gfile.join(model.action_tokenizer.save_path, file), tf.io.gfile.join(checkpoint_save_path, "action_tokenizer", file))
-        # tf.io.gfile.copy(model.action_tokenizer.save_path, tf.io.gfile.join(checkpoint_save_path, "action_tokenizer"))
-    elif isinstance(model.action_tokenizer, DCTActionTokenizer) and model.action_tokenizer.pretrained_path is not None:
-        for file in tf.io.gfile.listdir(model.action_tokenizer.save_path):
-            tf.io.gfile.copy(tf.io.gfile.join(model.action_tokenizer.save_path, file), tf.io.gfile.join(checkpoint_save_path, "action_tokenizer", file))
-        # tf.io.gfile.copy(model.action_tokenizer.pretrained_path, tf.io.gfile.join(checkpoint_save_path, "action_tokenizer"))
-    
-    # Remove the local save path 
-    if isinstance(model.action_tokenizer, DCTActionTokenizer) and model.action_tokenizer.pretrained_path is None:
-        shutil.rmtree(model.action_tokenizer.save_path)
+    if isinstance(model.action_tokenizer, DCTActionTokenizer):
+
+        # If the tokenizer is not pretrained, save the tokenizer to the checkpoint
+        if model.action_tokenizer.pretrained_path is None:
+            for file in tf.io.gfile.listdir(model.action_tokenizer.save_path):
+                tf.io.gfile.copy(tf.io.gfile.join(model.action_tokenizer.save_path, file), tf.io.gfile.join(checkpoint_save_path, "action_tokenizer", file))
+                tf.io.gfile.copy(tf.io.gfile.join(model.action_tokenizer.save_path, file), tf.io.gfile.join(model.action_tokenizer.default_path, file))
+        elif model.action_tokenizer.pretrained_path is not None:
+            for file in tf.io.gfile.listdir(model.action_tokenizer.pretrained_path):
+                tf.io.gfile.copy(tf.io.gfile.join(model.action_tokenizer.pretrained_path, file), tf.io.gfile.join(checkpoint_save_path, "action_tokenizer", file))
+                tf.io.gfile.copy(tf.io.gfile.join(model.action_tokenizer.pretrained_path, file), tf.io.gfile.join(model.action_tokenizer.default_path, file))
+        shutil.rmtree(model.action_tokenizer.save_path, ignore_errors=True)
 
     wandb_logs = []
 

@@ -99,7 +99,9 @@ class DCTActionTokenizer(ActionTokenizer):
         action_dim: int | None = None,
         time_horizon: int | None = None,
         save_path: str | None = "",
-        pretrained_path: str | None = "physical-intelligence/fast"
+        pretrained_path: str | None = "physical-intelligence/fast",
+        fit: bool = False,
+        default_path: str ='gs://cat-logs/action-tokenizer-dct',
     ):
         self.action_dim = action_dim
         self.time_horizon = time_horizon
