@@ -146,7 +146,7 @@ class DCTActionTokenizer(ActionTokenizer):
         self.tokenizer.save_pretrained(path)
     
     def load(self, path):
-        self.tokenizer = AutoProcessor.from_pretrained(path, trust_remote_code=True)
+        self.tokenizer = AutoProcessor.from_pretrained(path)
 
 
 class UniversalActionProcessor(ProcessorMixin):
