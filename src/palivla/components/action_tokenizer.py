@@ -93,7 +93,7 @@ class DCTActionTokenizer(ActionTokenizer):
         self,
         bpe_tokenizer: PreTrainedTokenizerFast = None,
         scale: float = 10,
-        vocab_size: int = 1024,
+        vocab_size: int = 4096,
         min_token: int = 0,
         *,
         action_dim: int | None = None,
@@ -108,6 +108,8 @@ class DCTActionTokenizer(ActionTokenizer):
         self.vocab_size = vocab_size
         self.save_path = save_path
         self.pretrained_path = pretrained_path
+        self.fit = fit
+        self.default_path = default_path
 
         if self.pretrained_path:
             self.tokenizer = AutoProcessor.from_pretrained(self.pretrained_path, trust_remote_code=True)
@@ -155,7 +157,7 @@ class UniversalActionProcessor(ProcessorMixin):
         self,
         bpe_tokenizer: PreTrainedTokenizerFast,
         scale: float = 10,
-        vocab_size: int = 1024,
+        vocab_size: int = 4096,
         min_token: int = 0,
         *,
         action_dim: int | None = None,
