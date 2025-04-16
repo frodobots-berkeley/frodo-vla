@@ -76,7 +76,7 @@ def create_model(config: ConfigDict, sharding_metadata: ShardingMetadata):
             "mask_loss": jax.ShapeDtypeStruct(shape=(1, 10), dtype=jnp.float32),
         },
     }
-
+    print(config)
     language_tokenizer = AutoTokenizer.from_pretrained(config.language_tokenizer)
     action_tokenizer: ActionTokenizer = Registry.lookup(config.action_tokenizer)()
     sequence_builder: SequenceBuilder = Registry.lookup(config.sequence_builder)()
