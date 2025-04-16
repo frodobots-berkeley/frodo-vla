@@ -72,7 +72,7 @@ def get_config(variant_config: str):
                 "load_depth": False,
                 "load_proprio": True,
                 "load_language": True,
-                "force_recompute_dataset_statistics": True,
+                "force_recompute_dataset_statistics": False,
                 "action_proprio_normalization_type": NormalizationType.NORMAL,
                 # "skip_norm": True,
             },
