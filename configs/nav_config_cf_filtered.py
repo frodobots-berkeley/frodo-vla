@@ -33,7 +33,7 @@ def get_config():
             ],
             "resume_checkpoint_dir": "gs://cat-logs/restful-galaxy-294",
             "resume_checkpoint_step": 30000,
-            "weights_only": True,
+            "weights_only": False,
             # Overfit
             "overfit_dataset": False,
             # Training settings
