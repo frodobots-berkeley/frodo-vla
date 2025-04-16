@@ -32,7 +32,6 @@ def make_step_fn(sharding: ShardingMetadata):
         donate_argnums=(0,),
     )
 
-
 def make_gather_fn(mesh):
     jax_gather_fn = jax.jit(
         lambda x: x,
