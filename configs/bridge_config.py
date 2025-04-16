@@ -6,7 +6,7 @@ def get_config(variant_config: str = "default"):
 
     config["data_dir"] = "gs://cat-datasets/bridge_release/data/tfds"
 
-    config["action_tokenizer"] = str(f"action_tokenizer.dct(action_dim=2, time_horizon=8, save_path='tmp', fit=True, pretrained_path=None, default_path='gs://cat-logs/action-tokenizer-dct')"),
-    config["sequence_builder"] = str("sequence_builder.default(prompt_pad_length=80, gen_pad_length=20)"),
+    config["action_tokenizer"] = f"action_tokenizer.dct(action_dim=2, time_horizon=8, save_path='tmp', fit=True, pretrained_path=None, default_path='gs://cat-logs/action-tokenizer-dct')",
+    config["sequence_builder"] = "sequence_builder.default(prompt_pad_length=80, gen_pad_length=20)",
 
     return ConfigDict(config)
