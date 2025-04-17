@@ -33,7 +33,7 @@ def get_config(variant_config: str):
         "resume_checkpoint_dir": placeholder(str),
         "resume_checkpoint_step": placeholder(int),
         # Overfit the dataset (for smoke tests/debugging)
-        "overfit_dataset": True,
+        "overfit_dataset": False,
         # Training settings
         "batch_size": placeholder(int),
         "eval_batch_size": placeholder(int),
