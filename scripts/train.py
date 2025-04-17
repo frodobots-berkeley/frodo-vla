@@ -153,6 +153,7 @@ def main(_):
     # For the DCT tokenizer, we need to fit the tokenizer to the dataset
     if isinstance(model.action_tokenizer, DCTActionTokenizer) and model.action_tokenizer.pretrained_path is None and model.action_tokenizer.fit:
         # Convert the data into numpy for fitting the tokenizer
+        breakpoint()
         print("Fitting the action tokenizer")
         action_data = train_ds.take(10000).as_numpy_iterator()
         action_data = np.concatenate([batch["action"] for batch in action_data], axis=0)
