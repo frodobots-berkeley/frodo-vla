@@ -11,6 +11,6 @@ def get_config(variant_config: str = "default"):
 
     config["dataset_kwargs"]["oxe_kwargs"]["data_dir"] = config["data_dir"]
     config["visualization_datasets"]["bridge"]["data_dir"] = config["data_dir"]
-    config["dataset_kwargs"]["oxe_kwargs"]["dataset_statistics"] = "gs://cat-datasets/bridge_release/data/tfds/bridge_statistics.json"
+    config["dataset_kwargs"]["oxe_kwargs"]["dataset_statistics"] = "gs://cat-datasets/bridge_release/data/tfds/bridge_dataset/1.0.0/bridge_statistics.json"
 
     return ConfigDict(config)
