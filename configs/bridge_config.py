@@ -6,6 +6,13 @@ def get_config(variant_config: str = "default"):
 
     config["data_dir"] = "gs://cat-datasets/bridge_release/data/tfds"
 
+    config["batch_size"] = 192
+    config["eval_batch_size"] = 128
+    config["save_path"] = "gs://cat-logs"
+    config["save_interval"] = 5000
+    config["max_to_keep"] = 10
+    
+
     config["action_tokenizer"] = f"action_tokenizer.dct(action_dim=2, time_horizon=8, save_path='tmp', do_fit=True, pretrained_path=None, default_path='gs://cat-logs/action-tokenizer-dct')"
     config["sequence_builder"] = "sequence_builder.default(prompt_pad_length=80, gen_pad_length=20)"
 
