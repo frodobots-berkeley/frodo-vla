@@ -29,7 +29,7 @@ def make_base_dataset(
         )
     else:
         dataset_kwargs_list = [dataset_kwargs_list[k] for k in dataset_kwargs_list]
-    breakpoint()   
+    
     dataset = make_interleaved_dataset(
         dataset_kwargs_list,
         sample_weights,
@@ -45,8 +45,6 @@ def make_base_dataset(
     )
 
     dataset = dataset.filter(lambda x: tf.reduce_any(x["observation"]["image_primary"] != 255))
-    
-    # dataset = dataset.filter(lambda x: x["task"]["language_instruction"] != b"")
 
     return dataset
 
