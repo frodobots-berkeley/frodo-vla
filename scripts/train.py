@@ -211,12 +211,13 @@ def main(_):
         # If the tokenizer is not pretrained, save the tokenizer to the checkpoint
         if model.action_tokenizer.pretrained_path is None:
             for file in tf.io.gfile.listdir(model.action_tokenizer.save_path):
+                if tf.io.gfile.exists(tf.io.gfile.join(model.action_tokenizer.default_path, file)):
+                    tf.io.gfile.rmtree(tf.io.gfile.join(model.action_tokenizer.default_path, file))
                 tf.io.gfile.copy(tf.io.gfile.join(model.action_tokenizer.save_path, file), tf.io.gfile.join(checkpoint_save_path, "action_tokenizer", file))
                 tf.io.gfile.copy(tf.io.gfile.join(model.action_tokenizer.save_path, file), tf.io.gfile.join(model.action_tokenizer.default_path, file))
         elif model.action_tokenizer.pretrained_path is not None:
             for file in tf.io.gfile.listdir(model.action_tokenizer.pretrained_path):
                 tf.io.gfile.copy(tf.io.gfile.join(model.action_tokenizer.pretrained_path, file), tf.io.gfile.join(checkpoint_save_path, "action_tokenizer", file))
-                tf.io.gfile.copy(tf.io.gfile.join(model.action_tokenizer.pretrained_path, file), tf.io.gfile.join(model.action_tokenizer.default_path, file))
         shutil.rmtree(model.action_tokenizer.save_path, ignore_errors=True)
 
     wandb_logs = []
