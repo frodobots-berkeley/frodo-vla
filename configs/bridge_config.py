@@ -10,7 +10,6 @@ def get_config(variant_config: str = "default"):
     config["sequence_builder"] = "sequence_builder.default(prompt_pad_length=80, gen_pad_length=20)"
 
     config["dataset_kwargs"]["oxe_kwargs"]["data_dir"] = config["data_dir"]
-    config[""]
     config["visualization_datasets"]["bridge"]["data_dir"] = config["data_dir"]
 
 
