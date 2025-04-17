@@ -44,11 +44,13 @@ class BinActionTokenizer(ActionTokenizer):
         max_action_value: np.ndarray | float,
         action_vocab_size: int = 1000,
         action_horizon: int = 10,
+        action_dim: int = 2,
     ):
         self.min_action_value = min_action_value
         self.max_action_value = max_action_value
         self.action_vocab_size = action_vocab_size
         self.action_horizon = action_horizon
+        self.action_dim = action_dim
 
     @property
     def num_tokens(self):
