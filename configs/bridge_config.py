@@ -11,7 +11,7 @@ def get_config(variant_config: str = "default"):
     config["save_path"] = "gs://cat-logs"
     config["save_interval"] = 5000
     config["max_to_keep"] = 10
-    config["action_horizon"] = 1
+    config["action_horizon"] = 8
 
 
     # config["action_tokenizer"] = f"action_tokenizer.dct(action_dim=7, time_horizon=1, save_path='tmp', do_fit=True, pretrained_path=None, default_path='gs://cat-logs/action-tokenizer-dct')"
