@@ -11,5 +11,6 @@ def get_config(variant_config: str = "default"):
 
     config["dataset_kwargs"]["oxe_kwargs"]["data_dir"] = config["data_dir"]
     config["visualization_datasets"]["bridge"]["data_dir"] = config["data_dir"]
-    
+
+
     return ConfigDict(config)
