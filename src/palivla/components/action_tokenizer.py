@@ -100,7 +100,7 @@ class DCTActionTokenizer(ActionTokenizer):
         time_horizon: int | None = None,
         save_path: str | None = "",
         pretrained_path: str | None = "physical-intelligence/fast",
-        fit: bool = False,
+        do_fit: bool = False,
         default_path: str ='gs://cat-logs/action-tokenizer-dct',
     ):
         self.action_dim = action_dim
@@ -108,8 +108,8 @@ class DCTActionTokenizer(ActionTokenizer):
         self.vocab_size = vocab_size
         self.save_path = save_path
         self.pretrained_path = pretrained_path
-        self.fit = fit
-        print(f"Fit is {fit}")
+        self.do_fit = do_fit
+        print(f"Fit is {do_fit}")
         self.default_path = default_path
 
         if self.pretrained_path:
