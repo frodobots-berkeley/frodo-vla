@@ -43,7 +43,6 @@ def step_fn(
             batch["gen"],
             train=train,
         )
-        breakpoint()
         return compute_stats(
             pred_logits=logits[..., :-1, :],
             target_tokens=batch["gen"]["tokens"][..., 1:],
