@@ -33,7 +33,7 @@ def get_config():
                     },
                 )
             ],
-            "resume_checkpoint_dir": "gs://cat-logs/filtered_only_2025_04_16_01_59_56,
+            "resume_checkpoint_dir": "gs://cat-logs/filtered_only_2025_04_16_01_59_56",
             "resume_checkpoint_step": 100000,
             "weights_only": False,
             # Overfit
