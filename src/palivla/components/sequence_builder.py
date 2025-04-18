@@ -78,6 +78,7 @@ class SequenceBuilder:
 
         batch_size = len(prompt_tokens)
         self.prompt_pad_length = prompt_pad_length
+        breakpoint()
         return {
             "prompt": {
                 "tokens": np.stack(
