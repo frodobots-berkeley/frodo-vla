@@ -9,7 +9,7 @@ from octo.utils.spec import ModuleSpec
 placeholder(int)._value
 
 def get_config():
-    num_train_steps = FieldReference(100000, int)
+    num_train_steps = FieldReference(300000, int)
 
     model_config = get_default_config()
     action_horizon = 8
@@ -33,8 +33,8 @@ def get_config():
                     },
                 )
             ],
-            "resume_checkpoint_dir": None,
-            "resume_checkpoint_step": None,
+            "resume_checkpoint_dir": "gs://cat-logs/filtered_only_2025_04_16_01_59_56,
+            "resume_checkpoint_step": 100000,
             "weights_only": False,
             # Overfit
             "overfit_dataset": False,

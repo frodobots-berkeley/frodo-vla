@@ -31,8 +31,8 @@ def get_config():
                     },
                 )
             ],
-            "resume_checkpoint_dir": "gs://cat-logs/restful-galaxy-294",
-            "resume_checkpoint_step": 30000,
+            "resume_checkpoint_dir": None,
+            "resume_checkpoint_step": None,
             "weights_only": False,
             # Overfit
             "overfit_dataset": False,
@@ -52,7 +52,7 @@ def get_config():
             "shuffle_buffer_size": 50000,
             "num_steps": num_train_steps,
             # Logging and visualization
-            "eval_interval": 10,
+            "eval_interval": 100,
             "log_interval": 1,
             # Optimizer settings
             "optimizer": {
