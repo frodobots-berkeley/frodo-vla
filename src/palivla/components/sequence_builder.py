@@ -17,6 +17,10 @@ class SequenceBuilder:
     prompt_pad_length: int
     gen_pad_length: int
 
+    def __post_init__(self):
+        self.prompt_pad_length = self.prompt_pad_length
+        self.gen_pad_length = self.gen_pad_length
+
     def save(self, path: PathLike):
         with tf.io.gfile.GFile(tf.io.gfile.join(path, "sequence_builder.pkl"), "wb") as f:
             cloudpickle.dump(self, f)
@@ -77,7 +81,7 @@ class SequenceBuilder:
             )[:pad_length]
 
         batch_size = len(prompt_tokens)
-        self.prompt_pad_length = prompt_pad_length
+
         breakpoint()
         return {
             "prompt": {
