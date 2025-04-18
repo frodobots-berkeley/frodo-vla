@@ -43,12 +43,12 @@ def step_fn(
             batch["gen"],
             train=train,
         )
+        breakpoint()
         return compute_stats(
             pred_logits=logits[..., :-1, :],
             target_tokens=batch["gen"]["tokens"][..., 1:],
             target_mask_loss=batch["gen"]["mask_loss"][..., 1:],
         )
-    breakpoint()
     grad_fn = jax.grad(loss_fn, has_aux=True)
 
     key, dropout_key = jax.random.split(key)
