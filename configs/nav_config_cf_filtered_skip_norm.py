@@ -21,7 +21,7 @@ def get_config():
             #Tokenizers
             "language_tokenizer": "google/paligemma-3b-mix-224",
             "action_tokenizer": f"action_tokenizer.bin(min_action_value=-1, max_action_value=1, action_vocab_size=128, action_horizon={action_horizon})",
-            "sequence_builder": "sequence_builder.default(prompt_pad_length=50, gen_pad_length=20)",
+            "sequence_builder": "sequence_builder.default(prompt_pad_length=70, gen_pad_length=50)",
             # Initialization
             "load_fns": [
                 (
@@ -32,8 +32,8 @@ def get_config():
                     },
                 )
             ],
-            "resume_checkpoint_dir": "gs://cat-logs/cf_filtered_data_fixed_2025_03_31_16_07_07",
-            "resume_checkpoint_step": 45000,
+            "resume_checkpoint_dir": None,
+            "resume_checkpoint_step": None,
             "weights_only": False,
             # Overfit
             "overfit_dataset": False,
