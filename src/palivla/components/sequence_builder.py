@@ -52,7 +52,6 @@ class SequenceBuilder:
         boa_prompt = "<begin_of_action>" if boa_is_prompt else ""
         boa_gen = "" if boa_is_prompt else "<begin_of_action>"
 
-
         prompt = [
             self.prepare_prompt(instruction) + boa_prompt
             for instruction in batch["task"]["language_instruction"]
@@ -78,7 +77,7 @@ class SequenceBuilder:
             )[:pad_length]
 
         batch_size = len(prompt_tokens)
-        self.prompt_pad_length = 10
+        self.prompt_pad_length = prompt_pad_length
         return {
             "prompt": {
                 "tokens": np.stack(

@@ -76,8 +76,7 @@ def create_model(config: ConfigDict, sharding_metadata: ShardingMetadata):
             "mask_loss": jax.ShapeDtypeStruct(shape=(1, 10), dtype=jnp.float32),
         },
     }
-    print(config)
-    print(config.action_tokenizer)
+
     language_tokenizer = AutoTokenizer.from_pretrained(config.language_tokenizer)
     action_tokenizer: ActionTokenizer = Registry.lookup(config.action_tokenizer)()
     sequence_builder: SequenceBuilder = Registry.lookup(config.sequence_builder)()
@@ -236,27 +235,6 @@ def main(_):
         for i in pbar:
             if not config.overfit_dataset:
                 batch = next(train_it)
-            # wandb_gt_list = []    
-            # # Plot a sample of actions
-            # gt_actions = batch["action"][:,0,:,:]
-            # gt_actions = np.cumsum(gt_actions, axis=1)
-            # gt_actions = gt_actions - gt_actions[:, 0, :].reshape(-1, 1, 2)
-            # plt.plot(gt_actions[0,:,0], gt_actions[0,:,1], 'r')
-            # plt.plot(gt_actions[0,-1,0], gt_actions[0,-1,1], 'ro')
-            
-            # plt.savefig(f"images/gt_{i+1}.png")
-            # wandb_gt_list.append(wandb.Image(f"images/gt_{i+1}.png"))
-            
-            # if jax.process_index() == 0:
-            #     wandb.log({"gt_actions": wandb_gt_list}, commit=False)
-                
-
-            # Rotate each gt actions in the batch by the initial yaw of the chunk 
-            # actions = np.cumsum(batch["action"], axis=2)
-            # actions = actions - actions[:, :, 0:1, :]
-            # yaws = np.arctan2(actions[:,:,1:2,1:2], actions[:,:,1:2,0:1])
-            # rot_mat = np.stack([np.cos(yaws), -np.sin(yaws), np.sin(yaws), np.cos(yaws)], axis=-1).reshape(-1, 2, 2)
-            # batch["action"] = (np.expand_dims(np.linalg.inv(rot_mat), 1)@batch["action"].transpose(0,1,3,2)).transpose(0,1,3,2)
             info = model.train_step(batch)
  
             info = jax.device_get(info)

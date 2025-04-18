@@ -14,8 +14,6 @@ def compute_stats(
     target_tokens,
     target_mask_loss,
 ):
-    print(target_tokens.shape)
-    print(target_mask_loss.shape)
     loss = jnp.mean(
         target_mask_loss
         * optax.softmax_cross_entropy_with_integer_labels(pred_logits, target_tokens)
@@ -50,7 +48,7 @@ def step_fn(
             target_tokens=batch["gen"]["tokens"][..., 1:],
             target_mask_loss=batch["gen"]["mask_loss"][..., 1:],
         )
-        
+    breakpoint()
     grad_fn = jax.grad(loss_fn, has_aux=True)
 
     key, dropout_key = jax.random.split(key)
