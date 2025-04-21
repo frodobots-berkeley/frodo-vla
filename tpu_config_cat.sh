@@ -22,6 +22,7 @@ git branch main -f
 git checkout main
 cd ~/bigvision-palivla
 source .venv/bin/activate
+uv python pin 3.11.12
 uv venv --python=python3.11.12
 uv sync --extra tpu  
 
