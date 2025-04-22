@@ -8,7 +8,7 @@ from octo.utils.spec import ModuleSpec
 placeholder(int)._value
 
 def get_config():
-    num_train_steps = FieldReference(100000, int)
+    num_train_steps = FieldReference(200000, int)
 
     model_config = get_default_config()
     action_horizon = 8
