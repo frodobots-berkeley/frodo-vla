@@ -45,7 +45,7 @@ def make_base_dataset(
     )
     breakpoint()
     dataset = dataset.filter(lambda x: tf.reduce_any(x["observation"]["image_primary"] != 255))
-    dataset = dataset.filter(lambda x: tf.reduce_any(x["observation"]["position"] != 0.0))
+    dataset = dataset.filter(lambda x: tf.reduce_any(x["action"] != 0.0))
 
     return dataset
 
