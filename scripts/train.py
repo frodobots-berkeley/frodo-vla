@@ -235,7 +235,6 @@ def main(_):
         for i in pbar:
             if not config.overfit_dataset:
                 batch = next(train_it)
-            breakpoint()
             info = model.train_step(batch)
  
             info = jax.device_get(info)
