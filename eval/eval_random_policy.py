@@ -9,10 +9,10 @@ import glob
 import cv2
 policys = {
             # "cf_filtered" : ("cat-logs/cf_filtered_data_fixed_2025_04_21_15_51_43", 145000), # DONE 
-            "cf_filtered_w_atomic" : ("cat-logs/cf_filtered_w_atomic_2025_04_23_00_17_54", 140000), # DONE
+            # "cf_filtered_w_atomic" : ("cat-logs/cf_filtered_w_atomic_2025_04_23_00_17_54", 140000), # DONE
             # "orig_only" : ("cat-logs/orig_only_skip_norm_2025_04_01_23_49_15", 145000),
             # "filtered_only": ("cat-logs/filtered_only_2025_04_18_21_15_50", 110000), # DONE
-            # "cf_only": ("cat-logs/cf_only_2025_04_22_22_02_52", 125000), # DONE
+            "cf_only": ("cat-logs/cf_only_2025_04_22_22_02_52", 125000), # DONE
            }
 NUM_TRIALS = 3
 
