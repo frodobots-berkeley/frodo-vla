@@ -192,7 +192,7 @@ class ModelComponents:
         }
         # batch = self.sharding.mesh.local_data_to_global_array(batch)
         # Log the batch to wandb just before step 
-        wandb.save
+
         # Run the train step
         with self.sharding.mesh.mesh, nn.logical_axis_rules([("act_batch", "fsdp")]):
             self.train_state, info, self.rng = self.step_fn(
