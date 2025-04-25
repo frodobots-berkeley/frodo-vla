@@ -919,7 +919,7 @@ def gnm_dataset_transform(trajectory: Dict[str, Any], action_horizon=1) -> Dict[
     actions = actions / normalization_factor
     # tf.print("ACTIONS IN STANDARDIZATION: ", actions)
     trajectory["action"] = actions
-
+    tf.print("ACTIONS IN STANDARDIZATION: ", actions)
     trajectory["observation"]["proprio"] = actions
     return trajectory
 
