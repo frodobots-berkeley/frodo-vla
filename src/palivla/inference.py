@@ -6,6 +6,7 @@ import sys
 import wandb
 import time
 import cv2
+import dlimp as dl
 from ml_collections import config_flags, ConfigDict
 import tensorflow as tf
 from PIL import Image
@@ -209,14 +210,16 @@ def make_sharding(config: ConfigDict):
 def run_inference(model, prompt, image, config, inference_device="gpu"):
 
     if config.get("inference_device") is not None:
-        infererence_device = config["inference_device"]
+        inference_device = config["inference_device"]
 
     os.makedirs("~/temp_viz", exist_ok=True)
     action_horizon = config["dataset_kwargs"]["traj_transform_kwargs"]["action_horizon"]
-
+    image = tf.convert_to_tensor(np.asarray(image.convert("RGB")))
+    print(image.dtype)
+    # image = dl.transforms.resize_image(image, size=[120, 160])
+    image = dl.transforms.resize_image(image, size=config["dataset_kwargs"]["frame_transform_kwargs"]["resize_size"]["primary"])
     if inference_device == "tpu":
         image = np.expand_dims(np.array(image), 0).repeat(4, axis=0)
-
         batch = {"task" : 
                     {"language_instruction" : np.array([prompt.encode("utf-8")]*4), 
                     "pad_mask_dict": {"language_instruction": np.array([1]*4)}},
@@ -230,10 +233,10 @@ def run_inference(model, prompt, image, config, inference_device="gpu"):
 
         batch = {"task" : 
                     {"language_instruction" : np.array([prompt.encode("utf-8")]), 
-                    "pad_mask_dict": {"language_instruction": np.array([1])}},
+                    "pad_mask_dict": {"language_instruction": np.array([0])}},
                 "observation": 
                     {"image_primary": image, 
-                    "pad_mask_dict": {"image_primary": np.array([1], dtype=bool)}},
+                    "pad_mask_dict": {"image_primary": np.array([0], dtype=bool)}},
                 "action": np.random.randn(1, 1, 2).astype(np.float64),    
                 }
 
@@ -242,6 +245,8 @@ def run_inference(model, prompt, image, config, inference_device="gpu"):
         sampler = config["sampler"]
         if sampler == "greedy":
             temperature = None
+        else:
+            temperature = config["temperature"]
     else:
         sampler = "greedy"
         temperature = None
@@ -272,7 +277,7 @@ if __name__ == "__main__":
     flags.DEFINE_string("platform", "gpu", "Platform to run on.")
     flags.DEFINE_string("resume_checkpoint_dir", "gs://cat-logs/filtered_atomic_skip_norm_2025_03_31_16_08_10", "Path to the checkpoint directory.")
     flags.DEFINE_integer("resume_checkpoint_step", 55000, "Step to resume from.")
-    flags.DEFINE_string("prompt", "", "Prompt to generate action from.")
+    flags.DEFINE_string("prompt", "prompt", "Prompt to generate action from.")
 
     os.environ["XLA_PYTHON_CLIENT_PREALLOCATE"]="false"
     os.environ["XLA_PYTHON_CLIENT_MEM_FRACTION"]=".XX"

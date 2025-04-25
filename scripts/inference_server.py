@@ -131,7 +131,7 @@ def gen_action():
 if __name__ == "__main__":
     # CLI FLAGS
     config_flags.DEFINE_config_file(
-            "config", "configs/smoke_test.py", "Path to the config file."
+            "config", "configs/nav_config_inference.py", "Path to the config file."
     )
     flags.DEFINE_string("platform", "gpu", "Platform to run on.")
     flags.DEFINE_string("resume_checkpoint_dir", "gs://cat-logs/serene-field-298", "Path to the checkpoint directory.")

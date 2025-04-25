@@ -31,8 +31,8 @@ def get_config():
                     },
                 )
             ],
-            "resume_checkpoint_dir": "gs://vlm-guidance-logs/pleasant-hill-251",
-            "resume_checkpoint_step": 10000,
+            "resume_checkpoint_dir": None,
+            "resume_checkpoint_step": None,
             # Overfit
             "overfit_dataset": False,
             "weights_only": True,
@@ -53,7 +53,7 @@ def get_config():
             "num_steps": num_train_steps,
             # Sampling 
             "sampler": "temperature", 
-            "temperature": 1.2,
+            "temperature": 0.9,
             # Logging and visualization
             "eval_interval": 100,
             "log_interval": 1,
@@ -69,17 +69,17 @@ def get_config():
             "dataset_kwargs": {
                 "oxe_kwargs": None,
                 "dataset_kwargs_list": {
-                    "lcbc_kwargs": {
-                        "name": "lcbc_dataset_v2",
-                        "data_dir": "gs://vlm-guidance-data",
-                        "image_obs_keys": {"primary": "image"},
-                        "proprio_obs_key": "position",
-                        "language_key" : "language_instruction",
-                        "force_recompute_dataset_statistics": False,
-                        "action_proprio_normalization_type": NormalizationType.NORMAL,
-                        "standardize_fn" : transform,   
-                        "force_recompute_dataset_statistics": False,
-                    },
+                    # "lcbc_kwargs": {
+                    #     "name": "lcbc_dataset_v2",
+                    #     "data_dir": "gs://vlm-guidance-data",
+                    #     "image_obs_keys": {"primary": "image"},
+                    #     "proprio_obs_key": "position",
+                    #     "language_key" : "language_instruction",
+                    #     "force_recompute_dataset_statistics": False,
+                    #     "action_proprio_normalization_type": NormalizationType.NORMAL,
+                    #     "standardize_fn" : transform,   
+                    #     "force_recompute_dataset_statistics": False,
+                    # },
                     # "cf_kwargs": {
                     #     "name": "cf_dataset",
                     #     "data_dir": "gs://vlm-guidance-data",

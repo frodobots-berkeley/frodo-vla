@@ -88,6 +88,8 @@ def run_inference(model, prompt, image, config, inference_device="gpu"):
         sampler = config["sampler"]
         if sampler == "greedy":
             temperature = None
+        else:
+            temperature = config["temperature"]
     else:
         sampler = "greedy"
         temperature = None

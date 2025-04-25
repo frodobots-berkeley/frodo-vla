@@ -8,10 +8,11 @@ import random
 import glob
 import cv2
 policys = {
-            #  "cf_filtered" : ("vlm-guidance-logs/pleasant-hill-251", 100000)
-            # "filtered_w_atomic" : ("cat-logs/filtered_atomic_skip_norm_2025_03_31_21_51_47", 170000),
-            # "orig_only" : ("cat-logs/orig_only_skip_norm_2025_04_01_23_49_15", 105000),
-            "cf_filtered" : ("cat-logs/cf_filtered_data_fixed_2025_03_31_20_38_00", 100000),
+            # "cf_filtered" : ("cat-logs/cf_filtered_data_fixed_2025_04_21_15_51_43", 145000), # DONE 
+            # "cf_filtered_w_atomic" : ("cat-logs/cf_filtered_w_atomic_2025_04_23_00_17_54", 140000), # DONE
+            # "orig_only" : ("cat-logs/orig_only_skip_norm_2025_04_01_23_49_15", 145000),
+            "filtered_only": ("cat-logs/filtered_only_2025_04_18_21_15_50", 110000), # DONE
+            # "cf_only": ("cat-logs/cf_only_2025_04_22_22_02_52", 125000), # DONE
            }
 NUM_TRIALS = 3
 
@@ -92,7 +93,7 @@ def main(args):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--env_info_path", type=str, default="env_info.yaml")
+    parser.add_argument("--env_info_path", type=str, default="env_configs/env_test.yaml")
     args = parser.parse_args()
     main(args)
 

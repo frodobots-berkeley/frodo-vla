@@ -4,6 +4,7 @@ from typing import Any
 import time
 
 import cloudpickle
+import pickle as pkl
 import flax.linen as nn
 import jax
 import orbax.checkpoint as ocp
@@ -189,7 +190,7 @@ class ModelComponents:
             "prompt": sequences["prompt"],
             "gen": sequences["gen"],
         }
-        batch = self.sharding.mesh.local_data_to_global_array(batch)
+        # batch = self.sharding.mesh.local_data_to_global_array(batch)
 
         # Run the train step
         with self.sharding.mesh.mesh, nn.logical_axis_rules([("act_batch", "fsdp")]):
@@ -355,6 +356,10 @@ class ModelComponents:
             "prompt": sequences["prompt"],
             "gen": sequences["gen"],
         }
+        
+        with open("inputs.pkl", "wb") as f:
+            pkl.dump(inputs, f)
+        
         if batch["action"].shape[0] == 1:
             pass
         else:
