@@ -32,8 +32,8 @@ def get_config():
                     },
                 )
             ],
-            "resume_checkpoint_dir": "gs://cat-logs/cf_filtered_data_fixed_2025_04_18_21_57_54",
-            "resume_checkpoint_step": 100000,
+            "resume_checkpoint_dir": None,
+            "resume_checkpoint_step": None,
             "weights_only": False,
             # Overfit
             "overfit_dataset": False,
