@@ -17,6 +17,7 @@ import numpy as np
 import orbax.checkpoint as ocp
 import tensorflow as tf
 import tqdm
+import pickle as pkl
 from absl import app, flags
 from absl import logging as absl_logging
 from flax.core.frozen_dict import freeze
@@ -237,7 +238,7 @@ def main(_):
                 batch = next(train_it)
             info = model.train_step(batch)
             with open("batch.pkl", "wb") as f:
-                pickle.dump(batch, f)
+                pkl.dump(batch, f)
             wandb.save("batch.pkl")
             info = jax.device_get(info)
             wandb_logs.append(info)
