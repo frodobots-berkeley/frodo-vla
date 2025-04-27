@@ -52,8 +52,8 @@ def get_config():
             "shuffle_buffer_size": 50000,
             "num_steps": num_train_steps,
             # Sampling 
-            "sampler": "temperature", 
-            "temperature": 0.9,
+            "sampler": "greedy", 
+            # "temperature": 0.9,
             # Logging and visualization
             "eval_interval": 100,
             "log_interval": 1,

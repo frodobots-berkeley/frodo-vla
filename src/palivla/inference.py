@@ -215,8 +215,6 @@ def run_inference(model, prompt, image, config, inference_device="gpu"):
     os.makedirs("~/temp_viz", exist_ok=True)
     action_horizon = config["dataset_kwargs"]["traj_transform_kwargs"]["action_horizon"]
     image = tf.convert_to_tensor(np.asarray(image.convert("RGB")))
-    print(image.dtype)
-    # image = dl.transforms.resize_image(image, size=[120, 160])
     image = dl.transforms.resize_image(image, size=config["dataset_kwargs"]["frame_transform_kwargs"]["resize_size"]["primary"])
     if inference_device == "tpu":
         image = np.expand_dims(np.array(image), 0).repeat(4, axis=0)
@@ -233,10 +231,10 @@ def run_inference(model, prompt, image, config, inference_device="gpu"):
 
         batch = {"task" : 
                     {"language_instruction" : np.array([prompt.encode("utf-8")]), 
-                    "pad_mask_dict": {"language_instruction": np.array([0])}},
+                    "pad_mask_dict": {"language_instruction": np.array([1])}},
                 "observation": 
                     {"image_primary": image, 
-                    "pad_mask_dict": {"image_primary": np.array([0], dtype=bool)}},
+                    "pad_mask_dict": {"image_primary": np.array([1], dtype=bool)}},
                 "action": np.random.randn(1, 1, 2).astype(np.float64),    
                 }
 
