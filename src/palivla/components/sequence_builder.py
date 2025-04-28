@@ -34,6 +34,7 @@ class SequenceBuilder:
         if isinstance(language_instruction, bytes):
             language_instruction = [language_instruction]
         language_instructions = np.array([l.decode("utf-8") for l in language_instruction])
+        breakpoint()
         language_instructions = language_instructions[language_instructions != ""]
         if language_instructions.shape[0] != 0:
             lang = np.random.choice(language_instructions)
@@ -58,7 +59,7 @@ class SequenceBuilder:
 
         prompt = [
             self.prepare_prompt(instruction) + boa_prompt
-            for instruction in batch["task"]["language_instruction"].decode("utf-8").lower()
+            for instruction in batch["task"]["language_instruction"]
         ]
 
         prompt_tokens = language_tokenizer.batch_encode_plus(prompt)["input_ids"]
