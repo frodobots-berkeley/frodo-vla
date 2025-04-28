@@ -58,7 +58,7 @@ class SequenceBuilder:
 
         prompt = [
             self.prepare_prompt(instruction) + boa_prompt
-            for instruction in batch["task"]["language_instruction"]
+            for instruction in batch["task"]["language_instruction"].decode("utf-8")
         ]
 
         prompt_tokens = language_tokenizer.batch_encode_plus(prompt)["input_ids"]
