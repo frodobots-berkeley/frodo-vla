@@ -34,7 +34,6 @@ class SequenceBuilder:
         if isinstance(language_instruction, bytes):
             language_instruction = [language_instruction]
         language_instructions = np.array([l.decode("utf-8") for l in language_instruction])
-        breakpoint()
         language_instructions = language_instructions[language_instructions != ""]
         if language_instructions.shape[0] != 0:
             lang = np.random.choice(language_instructions)

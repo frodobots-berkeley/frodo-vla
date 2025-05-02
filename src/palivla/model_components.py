@@ -229,106 +229,6 @@ class ModelComponents:
             "pred_actions": predicted_actions,
             "gt_actions": gt_actions,}}
 
-    # def eval_step(self, batch):
-    #     gt_actions = batch["action"][:, -1, :, :]
-
-    #     predicted_actions, actions_mask, tokens = self.predict(
-    #         batch, action_dim=gt_actions.shape[-1], action_horizon=gt_actions.shape[1], return_tokens=True
-    #     )
-
-    #     predicted_actions = np.nan_to_num(predicted_actions)
-
-    #     gen_valid_pct = actions_mask.mean()
-    #     gen_l2 = np.mean(np.square(predicted_actions - gt_actions) * actions_mask) / actions_mask.mean()
-    #     gen_l1 = np.mean(np.abs(predicted_actions - gt_actions) * actions_mask) / actions_mask.mean()
-    #     gen_acc = np.mean((tokens["predicted"] == tokens["target"]) * tokens["mask"]) / tokens["mask"].mean()
-                              
-    #     return {"eval_info":{
-    #         "gen_valid_pct": gen_valid_pct,
-    #         "gen_l2": gen_l2,
-    #         "gen_l1": gen_l1,
-    #         "gen_acc": gen_acc,},
-    #         "eval_data":{
-    #         "pred_actions": predicted_actions,
-    #         "gt_actions": gt_actions,}}
-
-        # return {
-        #     "gen_valid_pct": actions_mask.mean(),
-        #     "gen_l2": np.mean(np.square(predicted_actions - gt_actions) * actions_mask)
-        #     / actions_mask.mean(),
-        #     "gen_l1": np.mean(np.abs(predicted_actions - gt_actions) * actions_mask)
-        #     / actions_mask.mean(),
-        #     "gen_acc": np.mean(
-        #         (tokens["predicted"] == tokens["target"]) * tokens["mask"]
-        #     )
-        #     / tokens["mask"].mean(),
-        # }
-
-    # def predict(
-    #     self,
-    #     batch,
-    #     action_dim: int,
-    #     action_horizon: int, 
-    #     *,
-    #     use_ema_params: bool = False,
-    #     return_tokens: bool = False,
-    # ):
-    #     # Tokenize the batch and build sequences
-    #     sequences = self.sequence_builder.build_sequence(
-    #         batch,
-    #         self.language_tokenizer,
-    #         self.action_tokenizer,
-    #         boa_is_prompt=True,
-    #     )
-
-    #     # Shard the batch to devices
-    #     inputs = {
-    #         "sensors": batch["observation"],
-    #         "sensors_mask": batch["observation"]["pad_mask_dict"],
-    #         "prompt": sequences["prompt"],
-    #         "gen": sequences["gen"],
-    #     }
-    #     inputs = self.sharding.mesh.local_data_to_global_array(inputs)
-
-    #     # Run the train step
-    #     with self.sharding.mesh.mesh, nn.logical_axis_rules([("act_batch", "fsdp")]):
-    #         from palivla.predict_fns import _decode
-
-    #         params = self.train_state.get_params(use_ema_params=use_ema_params)
-    #         tokens = _decode(
-    #             params,
-    #             inputs,
-    #             model=self.train_state.model,
-    #             mesh=self.sharding.mesh.mesh,
-    #             out_sharding=PartitionSpec("fsdp"),
-    #             max_decode_len=sequences["gen"]["tokens"].shape[1],
-    #             eos_token=self.language_tokenizer.eos_token_id,
-    #         )
-    #         tokens = self.data_gather_fn(tokens)
-
-    #         actions, actions_mask = self.sequence_builder.batch_get_actions(
-    #             tokens,
-    #             self.language_tokenizer,
-    #             self.action_tokenizer,
-    #             boa_is_prompt=True,
-    #             action_dim=action_dim,
-    #             action_horizon=action_horizon,
-    #         )
-
-    #         if return_tokens:
-    #             return (
-    #                 actions,
-    #                 actions_mask,
-    #                 {
-    #                     "predicted": tokens,
-    #                     "target": sequences["gen"]["tokens"],
-    #                     "mask": sequences["gen"]["mask"],
-    #                 },
-    #             )
-    #         else:
-    #             return actions, actions_mask
-
-
     def predict(
         self,
         batch,
@@ -384,6 +284,7 @@ class ModelComponents:
                 max_decode_len=sequences["gen"]["tokens"].shape[1],
                 eos_token=self.language_tokenizer.eos_token_id,
             )
+            tokens = jax.lax.stop_gradient(tokens)
             # print(f"Time to decode: {time.time() - start_time}")
             tokens = self.data_gather_fn(tokens)
 
