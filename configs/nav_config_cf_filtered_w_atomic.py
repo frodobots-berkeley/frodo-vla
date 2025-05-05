@@ -240,7 +240,7 @@ def get_config():
                     "image_augment_kwargs": {},
                     "resize_size": {"primary": [224, 224]},
                 },
-                "balance_weights": True,
+                "balance_weights": False,
                 "shuffle_buffer_size": 50000,
                 "traj_transform_threads": 16,
                 "traj_read_threads": 16,
