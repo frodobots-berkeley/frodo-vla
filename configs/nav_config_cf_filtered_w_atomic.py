@@ -38,8 +38,8 @@ def get_config():
             # Overfit
             "overfit_dataset": False,
             # Training settings
-            "batch_size": 192,
-            "eval_batch_size": 192,
+            "batch_size": 384,
+            "eval_batch_size": 384,
             "num_steps": num_train_steps,
             # Checkpoint settings
             "save_path": "gs://cat-logs",
