@@ -213,6 +213,7 @@ class ModelComponents:
 
         # create a batch where the language conditioning is random
         batch_random = batch.copy()
+        breakpoint()
         batch_random["prompt"]["tokens"] = np.shuffle(batch_random["prompt"]["tokens"], axis=0)
         # predicted actions with random language conditioning
         predicted_actions_random, actions_mask_random, tokens_random = self.predict(batch_random, action_dim=gt_actions.shape[-1], action_horizon=gt_actions.shape[1], return_tokens=True)
