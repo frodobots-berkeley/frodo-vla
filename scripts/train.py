@@ -237,9 +237,6 @@ def main(_):
             if not config.overfit_dataset:
                 batch = next(train_it)
             info = model.train_step(batch)
-            with open("batch.pkl", "wb") as f:
-                pkl.dump(batch, f)
-            wandb.save("batch.pkl")
             info = jax.device_get(info)
             wandb_logs.append(info)
             pbar.set_postfix(
@@ -288,6 +285,9 @@ def main(_):
                 if jax.process_index() == 0:
                     wandb.log({"action_prediction": wandb_list}, commit=False)
                     wandb.log(eval_info, step=i + 1, commit=False)
+                    with open("batch.pkl", "wb") as f:
+                        pkl.dump(batch, f)
+                    wandb.save("batch.pkl")
 
             if (i + 1) % config.log_interval == 0:
                 avg_info = jax.tree.map(
