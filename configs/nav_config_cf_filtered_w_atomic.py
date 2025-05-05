@@ -39,7 +39,7 @@ def get_config():
             "overfit_dataset": False,
             # Training settings
             "batch_size": 192,
-            "eval_batch_size": 128,
+            "eval_batch_size": 192,
             "num_steps": num_train_steps,
             # Checkpoint settings
             "save_path": "gs://cat-logs",
