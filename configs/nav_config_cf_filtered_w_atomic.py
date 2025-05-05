@@ -67,16 +67,6 @@ def get_config():
             "dataset_kwargs": {
                 "oxe_kwargs": None,
                 "dataset_kwargs_list": {
-                    # "lcbc_kwargs": {
-                    #     "name": "lcbc_orig_dataset_128",
-                    #     "data_dir": "gs://cat-datasets/cleaned",
-                    #     "image_obs_keys": {"primary": "image"},
-                    #     "proprio_obs_key": "position",
-                    #     "language_key" : "language_instruction",
-                    #     "action_proprio_normalization_type": NormalizationType.NORMAL,
-                    #     "standardize_fn" : transform,   
-                    #     "force_recompute_dataset_statistics": False,
-                    # },
                     "lcbc_filtered_kwargs": {
                         "name": "lcbc_filtered_128",
                         "data_dir": "gs://cat-datasets/cleaned",
@@ -132,16 +122,6 @@ def get_config():
                         "force_recompute_dataset_statistics": False,
                         "skip_norm": True,
                     },
-                    # "outdoor_kwargs": {
-                    #     "name": "outdoor_dataset_128",
-                    #     "data_dir": "gs://cat-datasets/cleaned",
-                    #     "image_obs_keys": {"primary": "image"},
-                    #     "proprio_obs_key": "position",
-                    #     "language_key" : "language_instruction",
-                    #     "action_proprio_normalization_type": NormalizationType.NORMAL,
-                    #     "standardize_fn" : transform,   
-                    #     "force_recompute_dataset_statistics": False,
-                    # },
                     "outdoor_filtered_kwargs": {
                         "name": "outdoor_filtered_dataset_128",
                         "data_dir": "gs://cat-datasets/cleaned",
@@ -231,7 +211,7 @@ def get_config():
                         "skip_norm": True,
                     },
                 },
-                "sample_weights": [0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.4, 0.7, 0.7, 0.7, 0.7, 0.9],
+                "sample_weights": [0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.5, 0.5, 0.5, 0.7, 0.7, 0.7, 0.7],
                 "traj_transform_kwargs": {
                     "window_size": 1,
                     "action_horizon": action_horizon,
