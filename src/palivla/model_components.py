@@ -190,7 +190,7 @@ class ModelComponents:
             "prompt": sequences["prompt"],
             "gen": sequences["gen"],
         }
-        # batch = self.sharding.mesh.local_data_to_global_array(batch)
+        batch = self.sharding.mesh.local_data_to_global_array(batch)
         # Log the batch to wandb just before step 
 
         # Run the train step
