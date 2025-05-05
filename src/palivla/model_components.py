@@ -213,8 +213,11 @@ class ModelComponents:
 
         # create a batch where the language conditioning is random
         batch_random = batch.copy()
-        breakpoint()
-        batch_random["prompt"]["tokens"] = np.shuffle(batch_random["prompt"]["tokens"], axis=0)
+        perm = jax.random.permutation(self.rng, batch["task"]["language_instruction"].shape[0])
+        random_language_instruction = batch["task"]["language_instruction"][perm]
+        batch_random["task"]["language_instruction"] = random_language_instruction
+        batch_random["task"]["pad_mask_dict"]["language_instruction"] = batch["task"]["pad_mask_dict"]["language_instruction"][perm]
+        
         # predicted actions with random language conditioning
         predicted_actions_random, actions_mask_random, tokens_random = self.predict(batch_random, action_dim=gt_actions.shape[-1], action_horizon=gt_actions.shape[1], return_tokens=True)
         predicted_actions_random = np.nan_to_num(predicted_actions_random)
