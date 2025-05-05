@@ -218,6 +218,11 @@ class ModelComponents:
         batch_random["task"]["language_instruction"] = random_language_instruction
         batch_random["task"]["pad_mask_dict"]["language_instruction"] = batch["task"]["pad_mask_dict"]["language_instruction"][perm]
         
+        batch_random = jax.experimental.multihost_utils.host_local_array_to_global_array(
+            batch_random,
+            self.sharding.mesh,
+            PartitionSpec("fsdp")
+        )
         # predicted actions with random language conditioning
         predicted_actions_random, actions_mask_random, tokens_random = self.predict(batch_random, action_dim=gt_actions.shape[-1], action_horizon=gt_actions.shape[1], return_tokens=True)
         predicted_actions_random = np.nan_to_num(predicted_actions_random)
