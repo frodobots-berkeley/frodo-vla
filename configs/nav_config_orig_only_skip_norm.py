@@ -38,7 +38,7 @@ def get_config():
             "overfit_dataset": False,
             # Training settings
             "batch_size": 192,
-            "eval_batch_size": 128,
+            "eval_batch_size": 192,
             "num_steps": num_train_steps,
             # Checkpoint settings
 
@@ -169,7 +169,7 @@ def get_config():
                     "image_augment_kwargs": {},
                     "resize_size": {"primary": [224, 224]},
                 },
-                "balance_weights": True,
+                "balance_weights": False,
                 "shuffle_buffer_size": 50000,
                 "traj_transform_threads": 16,
                 "traj_read_threads": 16,
