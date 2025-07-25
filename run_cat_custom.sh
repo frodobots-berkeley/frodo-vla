@@ -9,7 +9,7 @@ fi
 TPU_VM_NAME=$1
 INIT=$2
 UPDATE=$3
-PROJECT="vlm-guidance"
+PROJECT="rail-tpus"
 ZONE="us-central2-b"
 API_KEY=$4
 CONFIG_NAME=$5
