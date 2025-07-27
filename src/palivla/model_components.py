@@ -208,10 +208,7 @@ class ModelComponents:
         predicted_actions, actions_mask, tokens = self.predict(
             batch, action_dim=gt_actions.shape[-1], action_horizon=gt_actions.shape[1], return_tokens=True
         )
-        print("predicted_actions from predict: ", predicted_actions)
         predicted_actions = np.nan_to_num(predicted_actions)
-        print("predicted_actions after nan_to_num: ", predicted_actions)
-
 
         # create a batch where the language conditioning is random
         batch_random = batch.copy()
@@ -235,6 +232,9 @@ class ModelComponents:
         print("predicted_tokens: ", tokens["predicted"])
         print("target_tokens: ", tokens["target"])
         gen_acc = np.mean((tokens["predicted"] == tokens["target"]) * tokens["mask"]) / tokens["mask"].mean()
+        breakpoint()
+        print("predicted_actions: ", predicted_actions)
+        print("gt_actions: ", gt_actions)
         
         gen_valid_pct_random = actions_mask_random.mean()
         gen_l2_random = np.mean(np.square(predicted_actions_random - gt_actions) * actions_mask_random) / actions_mask_random.mean()
