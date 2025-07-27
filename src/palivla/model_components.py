@@ -221,10 +221,10 @@ class ModelComponents:
         predicted_actions_random, actions_mask_random, tokens_random = self.predict(batch_random, action_dim=gt_actions.shape[-1], action_horizon=gt_actions.shape[1], return_tokens=True)
         predicted_actions_random = np.nan_to_num(predicted_actions_random)
 
-        gt_actions = jax.experimental.multihost_utils.process_allgather(gt_actions).reshape(predicted_actions.shape)
+        # gt_actions = jax.experimental.multihost_utils.process_allgather(gt_actions).reshape(predicted_actions.shape)
         
-        tokens["target"] = jax.experimental.multihost_utils.process_allgather(tokens["target"]).reshape(tokens["predicted"].shape)
-        tokens["mask"] = jax.experimental.multihost_utils.process_allgather(tokens["mask"]).reshape(tokens["predicted"].shape)
+        # tokens["target"] = jax.experimental.multihost_utils.process_allgather(tokens["target"]).reshape(tokens["predicted"].shape)
+        # tokens["mask"] = jax.experimental.multihost_utils.process_allgather(tokens["mask"]).reshape(tokens["predicted"].shape)
         
         gen_valid_pct = actions_mask.mean()
         gen_l2 = np.mean(np.square(predicted_actions - gt_actions) * actions_mask) / actions_mask.mean()
@@ -232,7 +232,8 @@ class ModelComponents:
         print("predicted_tokens: ", tokens["predicted"])
         print("target_tokens: ", tokens["target"])
         gen_acc = np.mean((tokens["predicted"] == tokens["target"]) * tokens["mask"]) / tokens["mask"].mean()
-        breakpoint()
+        if gen_acc > 0.4:
+            breakpoint()
         print("predicted_actions: ", predicted_actions)
         print("gt_actions: ", gt_actions)
         
@@ -295,18 +296,14 @@ class ModelComponents:
         with open("inputs.pkl", "wb") as f:
             pkl.dump(inputs, f)
         
-        if batch["action"].shape[0] == 1:
-            pass
-        else:
-            inputs = self.sharding.mesh.local_data_to_global_array(inputs)
+        # if batch["action"].shape[0] == 1:
+        #     pass
+        # else:
+        #     inputs = self.sharding.mesh.local_data_to_global_array(inputs)
         # Run the train step
         with self.sharding.mesh.mesh, nn.logical_axis_rules([("act_batch", "fsdp")]):
             from palivla.predict_fns import _decode
-            start_time = time.time()
             params = self.train_state.get_params(use_ema_params=use_ema_params)
-            # print(f"Time to get params: {time.time() - start_time}")
-            start_time = time.time()
-            # print(sequences["gen"]["tokens"].shape[1])
             tokens = _decode(
                 params,
                 inputs,
@@ -319,10 +316,8 @@ class ModelComponents:
                 eos_token=self.language_tokenizer.eos_token_id,
             )
             tokens = jax.lax.stop_gradient(tokens)
-            # print(f"Time to decode: {time.time() - start_time}")
-            tokens = self.data_gather_fn(tokens)
+            # tokens = self.data_gather_fn(tokens)
 
-            start_time = time.time()
             actions, actions_mask = self.sequence_builder.batch_get_actions(
                 tokens,
                 self.language_tokenizer,
@@ -331,7 +326,6 @@ class ModelComponents:
                 action_dim=action_dim,
                 action_horizon=action_horizon,
             )
-            # print(f"Time to get actions: {time.time() - start_time}")
 
             if return_tokens:
                 return (

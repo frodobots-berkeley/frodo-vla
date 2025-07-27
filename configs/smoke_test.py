@@ -12,9 +12,10 @@ def get_config(variant_config: str = "smoke_test"):
             "visualization": "viz.sanity_print",
         }
     }
-    transform = ModuleSpec.create(gnm_dataset_transform, action_horizon=8)
+    action_horizon = 1
+    transform = ModuleSpec.create(gnm_dataset_transform, action_horizon=action_horizon)
     config["overfit_dataset"] = True
-    config["action_tokenizer"] = f"action_tokenizer.bin(min_action_value=-1, max_action_value=1, action_vocab_size=128, action_horizon=8)"
+    config["action_tokenizer"] = f"action_tokenizer.bin(min_action_value=-1, max_action_value=1, action_vocab_size=128, action_horizon={action_horizon})"
     config["dataset_kwargs"]  = {
             "oxe_kwargs" : None, 
             "dataset_kwargs_list" : {
@@ -88,7 +89,7 @@ def get_config(variant_config: str = "smoke_test"):
         "sample_weights": [1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
         "traj_transform_kwargs": {
                 "window_size": 1, 
-                "action_horizon": 8,
+                "action_horizon": action_horizon,
         },
         "frame_transform_kwargs": {
                "image_augment_kwargs": {},

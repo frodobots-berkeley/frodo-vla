@@ -24,7 +24,6 @@ def compute_stats(
     # pred_valid_tokens = jnp.count_nonzero(jnp.logical_and(jnp.argmax(pred_logits, axis=-1) < 257153, jnp.argmax(pred_logits, axis=-1) > 255153))
     
     pred_valid_tokens = jnp.count_nonzero(jnp.argmax(pred_logits, axis=-1) > 257153)
-    print("VALID_TOKENS: ", pred_valid_tokens)
     valid_cnt = pred_valid_tokens / pred_logits.shape[-2] 
     metrics = {"loss": loss, "accuracy": accuracy, "valid_cnt": valid_cnt}
     return loss, metrics
