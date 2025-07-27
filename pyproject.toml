@@ -3,7 +3,7 @@ name = "big-vision"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
-requires-python = "==3.11.12"
+requires-python = ">=3.11"
 dependencies = [
 	"big-vision",
 	"chex>=0.1.90",
@@ -18,7 +18,7 @@ dependencies = [
 	"ml-collections>=1.1.0",
 	"numpy>=1.26.4",
 	"octo>=0.3.0",
-	"orbax-checkpoint==0.7.0",
+	"orbax-checkpoint==0.6.0",
 	"overrides>=7.7.0",
 	"pip>=25.1.1",
 	"prettytable>=3.16.0",
@@ -27,7 +27,6 @@ dependencies = [
 	"scikit-learn>=1.7.1",
 	"scipy>=1.16.0",
 	"tfds-nightly>=4.9.0",
-	"tensorflow==2.15.0",
 	"transformers>=4.54.0",
 	"wandb>=0.21.0",
 ]
