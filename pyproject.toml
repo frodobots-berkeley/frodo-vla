@@ -3,63 +3,58 @@ name = "big-vision"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
-requires-python = "==3.11.12"
+requires-python = ">=3.11.12"
 dependencies = [
-    "big-vision",
-    "chex>=0.1.86",
-    "distrax>=0.1.5",
-    "dlimp@git+https://github.com/kvablack/dlimp.git",
-    "einops>=0.8.0",
-    "flax==0.9.0",
-    "ipykernel",
-    "jax==0.4.34",
-    "matplotlib>=3.9.2",
-    "ml-collections>=0.1.1",
-    "numpy<2.0.0",
-    "octo",
-    "optax>=0.2.3",
-    "orbax-checkpoint==0.7.0",
-    "overrides>=7.7.0",
-    "pip",
-    "scalax>=0.2.4",
-    "scikit-learn>=1.5.2",
-    "scipy>=1.14.1",
-    "tfds-nightly>=4.9.0",
-    "tensorflow-text-nightly==2.19.0.dev20250210",
-    "tf-nightly==2.19.0.dev20250210",
-    "wandb>=0.18.3",
-    "protobuf>=3.20",
-    "huggingface-hub>=0.27.0",
-    "transformers>=4.47.1",
-    "prettytable>=3.12.0",
-    "zarr<3",
+	"big-vision",
+	"chex>=0.1.90",
+	"distrax>=0.1.5",
+	"dlimp",
+	"einops>=0.8.1",
+	"flax>=0.10.4",
+	"huggingface-hub>=0.34.1",
+	"ipykernel>=6.30.0",
+	"jax>=0.4.34",
+	"matplotlib>=3.10.3",
+	"ml-collections>=1.1.0",
+	"numpy>=1.26.4",
+	"octo>=0.3.0",
+	"orbax-checkpoint>=0.4.4",
+	"overrides>=7.7.0",
+	"pip>=25.1.1",
+	"prettytable>=3.16.0",
+	"protobuf>=4.25.8",
+	"scalax>=0.2.5",
+	"scikit-learn>=1.7.1",
+	"scipy>=1.16.0",
+	"tensorflow>=2.15.0",
+	"tensorflow-datasets>=4.9.9",
+	"transformers>=4.54.0",
+	"wandb>=0.21.0",
 ]
 
 [project.optional-dependencies]
 tpu = [
-    "jax[tpu]>=0.4.34",
-    "libtpu-nightly",
+	"jax[tpu]>=0.4.34",
+	"libtpu-nightly"
 ]
 gpu = [
-    "jax[cuda12]==0.4.34"
+	"jax[cuda12]>=0.4.34"
 ]
-
-
 
 [tool.uv]
 find-links = ["https://storage.googleapis.com/jax-releases/libtpu_releases.html"]
 prerelease = "allow"
 conflicts = [
-    [
-        { extra = "tpu" },
-        { extra = "gpu" },
-    ],
+	[
+		{extra = "tpu"},
+ 		{extra = "gpu"},
+	],
 ]
-override-dependencies = [
-    # Always use tf-nightly and tfds-nightly instead of tensorflow and tensorflow_datasets
-    "tensorflow ; sys_platform == 'never'",
-    "tensorflow_datasets ; sys_platform == 'never'",
-]
+
+[tool.uv.sources]
+dlimp = { git = "https://github.com/kvablack/dlimp.git" }
+big-vision = { workspace = true }
+octo = { path = "octo", editable = true }
 
 [build-system]
 requires = ["hatchling"]
@@ -67,15 +62,11 @@ build-backend = "hatchling.build"
 
 [dependency-groups]
 dev = [
-    "ipywidgets>=8.1.5",
-    "isort>=6.0.0b2",
-    "ruff>=0.8.4",
+	"ipywidgets>=8.1.5",
+	"isort>=6.0.0b2",
+        "ruff>=0.8.4",
 ]
 
 [tool.hatch.metadata]
 allow-direct-references = true
-
-[tool.uv.sources]
-big-vision = { workspace = true }
-octo = { path = "octo", editable = true }
 
