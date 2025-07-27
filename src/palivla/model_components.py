@@ -232,7 +232,7 @@ class ModelComponents:
         print("predicted_tokens: ", tokens["predicted"])
         print("target_tokens: ", tokens["target"])
         gen_acc = np.mean((tokens["predicted"] == tokens["target"]) * tokens["mask"]) / tokens["mask"].mean()
-        if gen_acc > 0.4:
+        if gen_acc > 0.9:
             breakpoint()
         print("predicted_actions: ", predicted_actions)
         print("gt_actions: ", gt_actions)
