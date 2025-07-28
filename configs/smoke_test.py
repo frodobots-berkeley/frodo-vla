@@ -12,7 +12,7 @@ def get_config(variant_config: str = "smoke_test"):
             "visualization": "viz.sanity_print",
         }
     }
-    action_horizon = 1
+    action_horizon = 8
     transform = ModuleSpec.create(gnm_dataset_transform, action_horizon=action_horizon)
     config["overfit_dataset"] = True
     config["action_tokenizer"] = f"action_tokenizer.bin(min_action_value=-1, max_action_value=1, action_vocab_size=128, action_horizon={action_horizon})"
