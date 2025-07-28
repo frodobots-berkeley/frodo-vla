@@ -229,13 +229,7 @@ class ModelComponents:
         gen_valid_pct = actions_mask.mean()
         gen_l2 = np.mean(np.square(predicted_actions - gt_actions) * actions_mask) / actions_mask.mean()
         gen_l1 = np.mean(np.abs(predicted_actions - gt_actions) * actions_mask) / actions_mask.mean()
-        print("predicted_tokens: ", tokens["predicted"])
-        print("target_tokens: ", tokens["target"])
         gen_acc = np.mean((tokens["predicted"] == tokens["target"]) * tokens["mask"]) / tokens["mask"].mean()
-        if gen_acc > 0.9:
-            breakpoint()
-        print("predicted_actions: ", predicted_actions)
-        print("gt_actions: ", gt_actions)
         
         gen_valid_pct_random = actions_mask_random.mean()
         gen_l2_random = np.mean(np.square(predicted_actions_random - gt_actions) * actions_mask_random) / actions_mask_random.mean()
