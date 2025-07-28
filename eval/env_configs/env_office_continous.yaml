@@ -1,8 +1,0 @@
-env_name: office_continous
-
-prompts: 
- - "Turn right"
- - "Turn left"
- - "Stop"
- - "Go forward"
- - ""

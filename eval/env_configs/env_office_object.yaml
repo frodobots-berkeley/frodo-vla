@@ -1,7 +1,0 @@
-env_name: office_object
-
-prompts: 
- - "Move to the table with chairs"
- - "Move to the blue trash can"
- - "Move to the white cabinet"
- - "random"

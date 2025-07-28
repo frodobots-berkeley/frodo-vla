@@ -52,21 +52,16 @@ def gen_action():
         FLAGS = flags.FLAGS
         FLAGS(sys.argv) 
         config = flags.FLAGS.config
-
-        # Overwrite the config with the one from input
-        config.resume_checkpoint_dir = f"gs://{flags.FLAGS.resume_checkpoint_dir}"
-        config.resume_checkpoint_step = flags.FLAGS.resume_checkpoint_step
-
         input_prompt = flags.FLAGS.prompt
 
         if flags.FLAGS.platform == "tpu":
             jax.distributed.initialize()
         sharding_metadata = make_sharding(config)
 
-        print("\nLoading model...", config.resume_checkpoint_dir)
-        model = ModelComponents.load_static(config.resume_checkpoint_dir, sharding_metadata, weights_only=True)
-        manager = ocp.CheckpointManager(config.resume_checkpoint_dir, options=ocp.CheckpointManagerOptions())
-        model.load_state(config.resume_checkpoint_step, manager, weights_only=True)
+        print("\nLoading model...", flags.FLAGS.checkpoint_dir)
+        model = ModelComponents.load_static(f"gs://{flags.FLAGS.checkpoint_dir}", sharding_metadata, weights_only=True)
+        manager = ocp.CheckpointManager(flags.FLAGS.checkpoint_dir, options=ocp.CheckpointManagerOptions())
+        model.load_state(flags.FLAGS.checkpoint_step, manager, weights_only=True)
         print("\nModel loaded!")
 
     # Receive data 
@@ -104,7 +99,7 @@ if __name__ == "__main__":
             "config", "configs/inference_config.py", "Path to the config file."
     )
     flags.DEFINE_string("platform", "gpu", "Platform to run on.")
-    flags.DEFINE_string("resume_checkpoint_dir", "", "Path to the checkpoint directory.")
-    flags.DEFINE_integer("resume_checkpoint_step", -1, "Step to resume from.")
+    flags.DEFINE_string("checkpoint_dir", "", "Path to the checkpoint directory.")
+    flags.DEFINE_integer("checkpoint_step", -1, "Step to resume from.")
     flags.DEFINE_string("prompt", "", "Prompt to generate action from.")
     app.run()
