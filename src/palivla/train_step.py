@@ -6,6 +6,7 @@ import jax.numpy as jnp
 import optax
 
 from palivla.components.train_state import TrainState
+from palivla import constants as c
 
 
 def compute_stats(
@@ -21,9 +22,8 @@ def compute_stats(
     accuracy = jnp.mean(
         target_mask_loss * (jnp.argmax(pred_logits, axis=-1) == target_tokens)
     ) / jnp.mean(target_mask_loss)
-    # pred_valid_tokens = jnp.count_nonzero(jnp.logical_and(jnp.argmax(pred_logits, axis=-1) < 257153, jnp.argmax(pred_logits, axis=-1) > 255153))
     
-    pred_valid_tokens = jnp.count_nonzero(jnp.argmax(pred_logits, axis=-1) > 257153)
+    pred_valid_tokens = jnp.count_nonzero(jnp.argmax(pred_logits, axis=-1) > c.ACTION_TOKEN_START)
     valid_cnt = pred_valid_tokens / pred_logits.shape[-2] 
     metrics = {"loss": loss, "accuracy": accuracy, "valid_cnt": valid_cnt}
     return loss, metrics

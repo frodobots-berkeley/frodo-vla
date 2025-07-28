@@ -93,17 +93,16 @@ class DCTActionTokenizer(ActionTokenizer):
 
     def __init__(
         self,
-        bpe_tokenizer: PreTrainedTokenizerFast = None,
+        # bpe_tokenizer: PreTrainedTokenizerFast = None,
         scale: float = 10,
         vocab_size: int = 4096,
         min_token: int = 0,
         *,
         action_dim: int | None = None,
         time_horizon: int | None = None,
-        save_path: str | None = "",
+        save_path: str | None = None,
         pretrained_path: str | None = "physical-intelligence/fast",
         do_fit: bool = False,
-        default_path: str ='gs://cat-logs/action-tokenizer-dct',
     ):
         self.action_dim = action_dim
         self.time_horizon = time_horizon
@@ -111,8 +110,6 @@ class DCTActionTokenizer(ActionTokenizer):
         self.save_path = save_path
         self.pretrained_path = pretrained_path
         self.do_fit = do_fit
-        print(f"Fit is {do_fit}")
-        self.default_path = default_path
 
         if self.pretrained_path:
             self.tokenizer = AutoProcessor.from_pretrained(self.pretrained_path, trust_remote_code=True)
@@ -127,7 +124,6 @@ class DCTActionTokenizer(ActionTokenizer):
                 time_horizon=time_horizon,
             )
             
-
     @property
     def num_tokens(self):
         return self.action_horizon * self.action_dim

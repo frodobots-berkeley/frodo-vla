@@ -4,7 +4,7 @@ import datetime, time
 import shutil
 
 from big_vision.utils import Registry
-from palivla.components.action_tokenizer import ActionTokenizer, DCTActionTokenizer, BinActionTokenizer
+from palivla.components.action_tokenizer import ActionTokenizer, DCTActionTokenizer
 from palivla.components.model import PaliVLAModel
 from palivla.components.sequence_builder import SequenceBuilder
 from palivla.components.train_state import ShardingMetadata
@@ -81,18 +81,20 @@ def create_model(config: ConfigDict, sharding_metadata: ShardingMetadata):
     language_tokenizer = AutoTokenizer.from_pretrained(config.language_tokenizer)
     action_tokenizer: ActionTokenizer = Registry.lookup(config.action_tokenizer)()
     sequence_builder: SequenceBuilder = Registry.lookup(config.sequence_builder)()
-    if isinstance(action_tokenizer, DCTActionTokenizer):
-        if action_tokenizer.pretrained_path is not None:
-            action_tokenizer.load(action_tokenizer.pretrained_path)
-        elif action_tokenizer.pretrained_path is None and not action_tokenizer.fit:
-            action_tokenizer.load(action_tokenizer.default_path)
     
+    if isinstance(action_tokenizer, DCTActionTokenizer):
+        raise NotImplementedError(
+            "DCTActionTokenizer is not yet implemented in the training script. Please use a different action tokenizer."
+        )
+    
+    # Add the extra tokens to the language tokenizer for actions
     extra_tokens = [
         "<begin_of_action>",
     ] + [f"<act{i}>" for i in range(action_tokenizer.vocab_size)]
     language_tokenizer.add_tokens(extra_tokens)
     language_tokenizer.add_bos_token = False
 
+    # Set up the model
     model_config = config.model_config.to_dict()
     model_config["llm_spec"]["config"]["vocab_size"] = len(language_tokenizer)
     model_spec = ModuleSpec(
@@ -149,19 +151,6 @@ def main(_):
     # Make the basic dataset
     # We have to do this first, since we need to know how the dataset is set up before we can construct the model
     train_ds = make_base_dataset(**config.dataset_kwargs.to_dict(), train=True)
-
-    # For the DCT tokenizer, we need to fit the tokenizer to the dataset
-    if isinstance(model.action_tokenizer, DCTActionTokenizer) and model.action_tokenizer.pretrained_path is None and model.action_tokenizer.fit:
-        # Convert the data into numpy for fitting the tokenizer
-        print("Fitting the action tokenizer")
-        action_data = train_ds.take(10000).as_numpy_iterator()
-        action_data = np.concatenate([batch["action"] for batch in action_data], axis=0)
-        model.action_tokenizer.fit(action_data)
-
-        # Save to temp directory
-        os.makedirs(model.action_tokenizer.save_path, exist_ok=True)
-        print(f"Saving the action tokenizer to {model.action_tokenizer.save_path}")
-        model.action_tokenizer.tokenizer.save_pretrained(model.action_tokenizer.save_path)
         
     # Construct the final dataset
     # We need to do this after the model is constructed, since we need to have a tokenizer
@@ -202,23 +191,6 @@ def main(_):
         )
 
         model.save_static(tf.io.gfile.join(checkpoint_save_path))
-    
-    # Save the action tokenizer
-    if isinstance(model.action_tokenizer, DCTActionTokenizer):
-        tf.io.gfile.makedirs(tf.io.gfile.join(checkpoint_save_path, "action_tokenizer"))
-        if not tf.io.gfile.exists(model.action_tokenizer.default_path):
-            tf.io.gfile.makedirs(tf.io.gfile.join(model.action_tokenizer.default_path))
-        # If the tokenizer is not pretrained, save the tokenizer to the checkpoint
-        if model.action_tokenizer.pretrained_path is None:
-            for file in tf.io.gfile.listdir(model.action_tokenizer.save_path):
-                if tf.io.gfile.exists(tf.io.gfile.join(model.action_tokenizer.default_path, file)):
-                    tf.io.gfile.remove(tf.io.gfile.join(model.action_tokenizer.default_path, file))
-                tf.io.gfile.copy(tf.io.gfile.join(model.action_tokenizer.save_path, file), tf.io.gfile.join(checkpoint_save_path, "action_tokenizer", file))
-                tf.io.gfile.copy(tf.io.gfile.join(model.action_tokenizer.save_path, file), tf.io.gfile.join(model.action_tokenizer.default_path, file))
-        elif model.action_tokenizer.pretrained_path is not None:
-            for file in tf.io.gfile.listdir(model.action_tokenizer.pretrained_path):
-                tf.io.gfile.copy(tf.io.gfile.join(model.action_tokenizer.pretrained_path, file), tf.io.gfile.join(checkpoint_save_path, "action_tokenizer", file))
-        shutil.rmtree(model.action_tokenizer.save_path, ignore_errors=True)
 
     wandb_logs = []
 
@@ -227,8 +199,13 @@ def main(_):
 
     if config.overfit_dataset:
         batch = next(train_it)
-        
-    os.makedirs("images", exist_ok=True)
+    
+    if config.visualize:
+        # Create a directory for saving images
+        if jax.process_index() == 0:
+            if os.path.exists("images"):
+                shutil.rmtree("images")
+            os.makedirs("images", exist_ok=True)
 
     with tqdm.trange(
         start_step, config.num_steps, desc="Training", dynamic_ncols=True
@@ -245,49 +222,52 @@ def main(_):
             
             if (i + 1) % config.eval_interval == 0:
 
+                # Get eval info
                 eval_data = model.eval_step(batch)
                 eval_info = eval_data["eval_info"]
                 eval_plots = eval_data["eval_data"]
 
-                # Select random subset of the batch
-                wandb_list = []
-                idxs = np.random.choice(np.arange(eval_plots["pred_actions"].shape[0]//jax.process_count()), 5)
-                gt_viz = eval_plots["gt_actions"][idxs, ...]
-                gt_viz = np.cumsum(gt_viz, axis=1)
-                try:
-                    gt_viz = gt_viz - gt_viz[:, 0, :].reshape(-1, 1, model.action_tokenizer.action_dim)
-                except:
-                    gt_viz = gt_viz - gt_viz[:, 0, :].reshape(-1, 1, 2)
+                # Select random subset of the batch to visualize
+                if config.visualize:
+                    if jax.process_index() == 0:
+                        print("Visualizing evaluation results...")
+                        
+                        wandb_list = []
+                        idxs = np.random.choice(np.arange(eval_plots["pred_actions"].shape[0]//jax.process_count()), 5)
+                        
+                        # Get the ground truth and predicted actions
+                        gt_viz = eval_plots["gt_actions"][idxs, ...]
+                        gt_viz = np.cumsum(gt_viz, axis=1)
+                        gt_viz = gt_viz - gt_viz[:, 0, :].reshape(-1, 1, model.action_tokenizer.action_dim)
 
-                pred_viz = eval_plots["pred_actions"][idxs, ...]
-                pred_viz = np.cumsum(pred_viz, axis=1)
-                try:
-                    pred_viz = pred_viz - pred_viz[:, 0, :].reshape(-1, 1, model.action_tokenizer.action_dim)
-                except:
-                    pred_viz = pred_viz - pred_viz[:, 0, :].reshape(-1, 1, 2)
-                
-                context = batch["observation"]["image_primary"][idxs, ...]
-                prompts = [model.sequence_builder.prepare_prompt(p) for p in batch["task"]["language_instruction"][idxs]]
-                for j in range(pred_viz.shape[0]):
-                    fig, ax = plt.subplots(1,2)
-                    ax[0].plot(gt_viz[j,:,0], gt_viz[j,:,1], 'r')
-                    ax[0].plot(gt_viz[j,-1,0], gt_viz[j,-1,1], 'ro')
-                    ax[0].plot(pred_viz[j,:,0], pred_viz[j,:,1], 'b')
-                    ax[0].plot(gt_viz[j,-1,0], gt_viz[j,-1,1], 'ro')
-                    ax[1].imshow(context[j, ...].squeeze(0))
-                    ax[1].set_title(prompts[j])
-                    plt.legend()
-                    save_path = f"images/eval_gt_{i+1}_{j}.png"
-                    plt.savefig(save_path)
-                    wandb_list.append(wandb.Image(save_path))
-                    plt.close()
-                    
-                if jax.process_index() == 0:
-                    wandb.log({"action_prediction": wandb_list}, commit=False)
-                    wandb.log(eval_info, step=i + 1, commit=False)
-                    with open("batch.pkl", "wb") as f:
-                        pkl.dump(batch, f)
-                    wandb.save("batch.pkl")
+                        pred_viz = eval_plots["pred_actions"][idxs, ...]
+                        pred_viz = np.cumsum(pred_viz, axis=1)
+                        try:
+                            pred_viz = pred_viz - pred_viz[:, 0, :].reshape(-1, 1, model.action_tokenizer.action_dim)
+                        except:
+                            pred_viz = pred_viz - pred_viz[:, 0, :].reshape(-1, 1, 2)
+                        
+                        context = batch["observation"]["image_primary"][idxs, ...]
+                        prompts = [model.sequence_builder.prepare_prompt(p) for p in batch["task"]["language_instruction"][idxs]]
+                        for j in range(pred_viz.shape[0]):
+                            fig, ax = plt.subplots(1,2)
+                            ax[0].plot(gt_viz[j,:,0], gt_viz[j,:,1], 'r')
+                            ax[0].plot(gt_viz[j,-1,0], gt_viz[j,-1,1], 'ro')
+                            ax[0].plot(pred_viz[j,:,0], pred_viz[j,:,1], 'b')
+                            ax[0].plot(gt_viz[j,-1,0], gt_viz[j,-1,1], 'ro')
+                            ax[1].imshow(context[j, ...].squeeze(0))
+                            ax[1].set_title(prompts[j])
+                            plt.legend()
+                            save_path = f"images/eval_gt_{i+1}_{j}.png"
+                            plt.savefig(save_path)
+                            wandb_list.append(wandb.Image(save_path))
+                            plt.close()
+                            
+                            wandb.log({"action_prediction": wandb_list}, commit=False)
+                            wandb.log(eval_info, step=i + 1, commit=False)
+                            with open("batch.pkl", "wb") as f:
+                                pkl.dump(batch, f)
+                            wandb.save("batch.pkl")
 
             if (i + 1) % config.log_interval == 0:
                 avg_info = jax.tree.map(

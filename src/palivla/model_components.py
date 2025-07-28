@@ -139,16 +139,15 @@ class ModelComponents:
             io.gfile.join(path, "language_tokenizer")
         ) as temp_dir:
             language_tokenizer = AutoTokenizer.from_pretrained(temp_dir)
-        try:
-            action_tokenizer = ActionTokenizer.load(path)
-        except:
-            action_tokenizer = DCTActionTokenizer
+        
+        action_tokenizer = ActionTokenizer.load(path)
         sequence_builder = SequenceBuilder.load(path)
 
         with io.gfile.GFile(io.gfile.join(path, "example_batch.pkl"), "rb") as f:
             example_batch = cloudpickle.load(f)
         with io.gfile.GFile(io.gfile.join(path, "rng.pkl"), "rb") as f:
             rng = cloudpickle.load(f)
+        
         print("Loading train state")
         train_state = TrainState.load_static(
             path,
@@ -201,30 +200,25 @@ class ModelComponents:
 
         return info
 
-    def eval_step(self, batch, batch_random=None):
+    def eval_step(self, batch):
         gt_actions = batch["action"][:, -1, :, :]
 
-        # predicted actions with language conditioning
+        # Predicted actions with language conditioning
         predicted_actions, actions_mask, tokens = self.predict(
             batch, action_dim=gt_actions.shape[-1], action_horizon=gt_actions.shape[1], return_tokens=True
         )
         predicted_actions = np.nan_to_num(predicted_actions)
 
-        # create a batch where the language conditioning is random
+        # Create a batch where the language conditioning is random
         batch_random = batch.copy()
         perm = jax.random.permutation(self.rng, batch["task"]["language_instruction"].shape[0])
         random_language_instruction = batch["task"]["language_instruction"][perm]
         batch_random["task"]["language_instruction"] = random_language_instruction
         batch_random["task"]["pad_mask_dict"]["language_instruction"] = batch["task"]["pad_mask_dict"]["language_instruction"][perm]
         
-        # predicted actions with random language conditioning
+        # Predicted actions with random language conditioning
         predicted_actions_random, actions_mask_random, tokens_random = self.predict(batch_random, action_dim=gt_actions.shape[-1], action_horizon=gt_actions.shape[1], return_tokens=True)
         predicted_actions_random = np.nan_to_num(predicted_actions_random)
-
-        # gt_actions = jax.experimental.multihost_utils.process_allgather(gt_actions).reshape(predicted_actions.shape)
-        
-        # tokens["target"] = jax.experimental.multihost_utils.process_allgather(tokens["target"]).reshape(tokens["predicted"].shape)
-        # tokens["mask"] = jax.experimental.multihost_utils.process_allgather(tokens["mask"]).reshape(tokens["predicted"].shape)
         
         gen_valid_pct = actions_mask.mean()
         gen_l2 = np.mean(np.square(predicted_actions - gt_actions) * actions_mask) / actions_mask.mean()
@@ -236,7 +230,7 @@ class ModelComponents:
         gen_l1_random = np.mean(np.abs(predicted_actions_random - gt_actions) * actions_mask_random) / actions_mask_random.mean()
         gen_acc_random = np.mean((tokens_random["predicted"] == tokens_random["target"]) * tokens_random["mask"]) / tokens_random["mask"].mean()
         
-        # compare the two predicted actions 
+        # Compare the two predicted actions 
         diff_l2 = (gen_l2_random - gen_l2) / gen_l2_random
         diff_l1 = (gen_l1_random - gen_l1) / gen_l1_random
         diff_acc = (gen_acc - gen_acc_random) / gen_acc_random 
@@ -287,13 +281,6 @@ class ModelComponents:
             "gen": sequences["gen"],
         }
         
-        with open("inputs.pkl", "wb") as f:
-            pkl.dump(inputs, f)
-        
-        # if batch["action"].shape[0] == 1:
-        #     pass
-        # else:
-        #     inputs = self.sharding.mesh.local_data_to_global_array(inputs)
         # Run the train step
         with self.sharding.mesh.mesh, nn.logical_axis_rules([("act_batch", "fsdp")]):
             from palivla.predict_fns import _decode
@@ -310,7 +297,6 @@ class ModelComponents:
                 eos_token=self.language_tokenizer.eos_token_id,
             )
             tokens = jax.lax.stop_gradient(tokens)
-            # tokens = self.data_gather_fn(tokens)
 
             actions, actions_mask = self.sequence_builder.batch_get_actions(
                 tokens,
