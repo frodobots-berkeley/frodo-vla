@@ -8,6 +8,8 @@ from palivla.components.action_tokenizer import ActionTokenizer, DCTActionTokeni
 from palivla.components.model import PaliVLAModel
 from palivla.components.sequence_builder import SequenceBuilder
 from palivla.components.train_state import ShardingMetadata
+from jax_torch_adapter import TorchToJaxDataset
+from palivla.frodo_dataset import FrodbotDataset_MBRA
 
 os.environ["PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION"] = "python"
 
@@ -150,8 +152,34 @@ def main(_):
 
     # Make the basic dataset
     # We have to do this first, since we need to know how the dataset is set up before we can construct the model
-    train_ds = make_base_dataset(**config.dataset_kwargs.to_dict(), train=True)
-        
+    # TODO
+    # train_ds = make_base_dataset(**config.dataset_kwargs.to_dict(), train=True)
+    
+    torch_train_ds = FrodbotDataset_MBRA(
+        repo_id=config.dataset_kwargs.repo_id,
+        video=config.dataset_kwargs.video,
+        root=config.dataset_kwargs.root,
+        split="train",
+        action_format=config.dataset_kwargs.action_format,
+        action_horizon=config.dataset_kwargs.action_horizon,
+        action_spacing=config.dataset_kwargs.action_spacing,
+        goal_horizon=config.dataset_kwargs.goal_horizon,
+        context_size=config.dataset_kwargs.context_size,
+        context_spacing=config.dataset_kwargs.context_spacing,
+        dataset_framerate=config.dataset_kwargs.dataset_framerate,
+        image_size=tuple(config.dataset_kwargs.image_size),
+        image_transforms=None,  # your current transform pipeline
+        sacson=getattr(config.dataset_kwargs, "sacson", False),
+    )
+
+    train_ds = TorchToJaxDataset(
+        dataset=torch_train_ds,
+        sampler=sampler_or_none,
+        num_workers=getattr(config, "num_workers", 8),  # tune
+        pin_memory=True,
+        seed=getattr(config, "seed", None),
+    )
+
     # Construct the final dataset
     # We need to do this after the model is constructed, since we need to have a tokenizer
     per_host_train_batch_size = config.batch_size // jax.process_count()
@@ -159,10 +187,16 @@ def main(_):
     def make_training_batch(batch):
         return batch
 
-    train_it = map(
-        make_training_batch,
-        train_ds.batch(per_host_train_batch_size).iterator(),
-    )
+    # train_it = map(
+    #     make_training_batch,
+    #     train_ds.batch(per_host_train_batch_size).iterator(),
+    # )
+    train_it = train_ds.batch(
+        per_host_train_batch_size,
+        shard_for_pmap=True,   # or False for pjit
+        prefetch_host=2,
+        prefetch_device=2,
+    ).iterator()
 
     # W&B setup
     if jax.process_index() == 0:
