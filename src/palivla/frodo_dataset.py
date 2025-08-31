@@ -7,6 +7,7 @@ from pathlib import Path
 import einops
 import xarray as xr
 import zarr
+import fsspec
 
 import torch
 import torch.utils.data
@@ -271,8 +272,10 @@ class FrodbotDataset_MBRA(LeRobotDataset):
         else:
             print("Using local dataset or GCP bucket...")
             # with tf.io.gfile.GFile(Path(root) / "frodobots_dataset" / "dataset_cache.zarr") as f:
-            print(root)
-            self.dataset_cache = xr.open_groups(f"{root}/frodobots_dataset/dataset_cache.zarr", engine="zarr")
+            zarr_path = f"{root}/frodobots_dataset/dataset_cache.zarr"
+            fs = fsspec.filesystem("gcs")
+            store = fs.get_mapper(zarr_path)
+            self.dataset_cache = zarr.open_group(store, mode='r')
             breakpoint()
 
         super().__init__(
