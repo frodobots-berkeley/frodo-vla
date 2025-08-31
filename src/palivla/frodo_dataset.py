@@ -11,7 +11,7 @@ import torch
 import torch.utils.data
 import torchvision.transforms.functional as TF
 import torchvision.transforms as transforms
-import huggingfac_hub as hf_hub
+import huggingface_hub as hf_hub
 
 from lerobot.common.datasets.lerobot_dataset import LeRobotDataset
 from lerobot.common.datasets.utils import (
