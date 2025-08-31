@@ -13,11 +13,11 @@ import torchvision.transforms.functional as TF
 import torchvision.transforms as transforms
 import huggingface_hub as hf_hub
 
-from palivla.lerobot.src.lerobot.common.datasets.lerobot_dataset import LeRobotDataset
-from palivla.lerobot.src.lerobot.common.datasets.utils import (
+from palivla.lerobot.src.lerobot.datasets.lerobot_dataset import LeRobotDataset
+from palivla.lerobot.src.lerobot.datasets.utils import (
     load_previous_and_future_frames,
 )
-from palivla.lerobot.src.lerobot.common.datasets.video_utils import load_from_videos
+# from palivla.lerobot.src.lerobot.datasets.video_utils import load_from_videos
 
 from typing import Iterator
 import random
@@ -374,28 +374,28 @@ class FrodbotDataset_MBRA(LeRobotDataset):
         )
         
         flip_tf = random.random() > 0.5 
-        image_obs = self._image_transforms(load_from_videos(
-            {"observation.images.front": item["observation.images.front"][:-1]},
-            ["observation.images.front"],
-            self.videos_dir,
-            self.tolerance_s,
-            self.video_backend,
-        )["observation.images.front"], flip_tf)
-        image_goal = self._image_transforms(load_from_videos(
-            {"observation.images.front": item["observation.images.front"][-1]},
-            ["observation.images.front"],
-            self.videos_dir,
-            self.tolerance_s,
-            self.video_backend,
-        )["observation.images.front"], flip_tf)
+        # image_obs = self._image_transforms(load_from_videos(
+        #     {"observation.images.front": item["observation.images.front"][:-1]},
+        #     ["observation.images.front"],
+        #     self.videos_dir,
+        #     self.tolerance_s,
+        #     self.video_backend,
+        # )["observation.images.front"], flip_tf)
+        # image_goal = self._image_transforms(load_from_videos(
+        #     {"observation.images.front": item["observation.images.front"][-1]},
+        #     ["observation.images.front"],
+        #     self.videos_dir,
+        #     self.tolerance_s,
+        #     self.video_backend,
+        # )["observation.images.front"], flip_tf)
 
-        image_current, image_raw = self._image_transforms_depth(load_from_videos(
-            {"observation.images.front": item["observation.images.front"][-2]},
-            ["observation.images.front"],
-            self.videos_dir,
-            self.tolerance_s,
-            self.video_backend,
-        )["observation.images.front"], flip_tf)
+        # image_current, image_raw = self._image_transforms_depth(load_from_videos(
+        #     {"observation.images.front": item["observation.images.front"][-2]},
+        #     ["observation.images.front"],
+        #     self.videos_dir,
+        #     self.tolerance_s,
+        #     self.video_backend,
+        # )["observation.images.front"], flip_tf)
 
         ped_list_no_trans = [0.0] #dummy
         ped_local_slice = [0.0] #dummy
@@ -628,37 +628,37 @@ class FrodbotDataset_LogoNav(LeRobotDataset):
         )
         
         flip_tf = random.random() > 0.5     
-        image_obs = self._image_transforms(load_from_videos(
-            {"observation.images.front": item["observation.images.front"][:-3]},
-            ["observation.images.front"],
-            self.videos_dir,
-            self.tolerance_s,
-            self.video_backend,
-        )["observation.images.front"], flip_tf)
+        # image_obs = self._image_transforms(load_from_videos(
+        #     {"observation.images.front": item["observation.images.front"][:-3]},
+        #     ["observation.images.front"],
+        #     self.videos_dir,
+        #     self.tolerance_s,
+        #     self.video_backend,
+        # )["observation.images.front"], flip_tf)
         
-        image_goal2 = self._image_transforms(load_from_videos(
-            {"observation.images.front": item["observation.images.front"][-2]},
-            ["observation.images.front"],
-            self.videos_dir,
-            self.tolerance_s,
-            self.video_backend,
-        )["observation.images.front"], flip_tf) #for inverse dynamics model
+        # image_goal2 = self._image_transforms(load_from_videos(
+        #     {"observation.images.front": item["observation.images.front"][-2]},
+        #     ["observation.images.front"],
+        #     self.videos_dir,
+        #     self.tolerance_s,
+        #     self.video_backend,
+        # )["observation.images.front"], flip_tf) #for inverse dynamics model
                 
-        image_goal = self._image_transforms(load_from_videos(
-            {"observation.images.front": item["observation.images.front"][-3]},
-            ["observation.images.front"],
-            self.videos_dir,
-            self.tolerance_s,
-            self.video_backend,
-        )["observation.images.front"], flip_tf)        
+        # image_goal = self._image_transforms(load_from_videos(
+        #     {"observation.images.front": item["observation.images.front"][-3]},
+        #     ["observation.images.front"],
+        #     self.videos_dir,
+        #     self.tolerance_s,
+        #     self.video_backend,
+        # )["observation.images.front"], flip_tf)        
         
-        image_current, image_raw = self._image_transforms_depth(load_from_videos(
-            {"observation.images.front": item["observation.images.front"][-4]},
-            ["observation.images.front"],
-            self.videos_dir,
-            self.tolerance_s,
-            self.video_backend,
-        )["observation.images.front"], flip_tf)
+        # image_current, image_raw = self._image_transforms_depth(load_from_videos(
+        #     {"observation.images.front": item["observation.images.front"][-4]},
+        #     ["observation.images.front"],
+        #     self.videos_dir,
+        #     self.tolerance_s,
+        #     self.video_backend,
+        # )["observation.images.front"], flip_tf)
         
         ped_list_no_trans = [0.0] #dummy
         ped_local_slice = [0.0] #dummy
