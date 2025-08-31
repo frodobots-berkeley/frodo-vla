@@ -65,7 +65,7 @@ def get_config():
                 },
             },
             "dataset_kwargs": {
-                "root": "/home/catherineglossop",
+                "root": "gs://frodo-bucket-c2/frodobots_v2_export",
                 "repo_id" : "frodobots/Berkeley-Frodobots-7K",
                 "data_dir": "gs://frodo-bucket-c2",
                 "image_obs_keys": {"primary": "image"},
