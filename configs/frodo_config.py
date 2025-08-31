@@ -67,6 +67,7 @@ def get_config():
             "dataset_kwargs": {
                 "root": "gs://frodo-bucket-c2/frodobots_v2_export",
                 "repo_id" : "frodobots/Berkeley-Frodobots-7K",
+                "video": "gs://frodo-bucket-c2/frodobots_v2_export/videos",
                 "data_dir": "gs://frodo-bucket-c2",
                 "image_obs_keys": {"primary": "image"},
                 "proprio_obs_key": "position",
