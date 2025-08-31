@@ -76,7 +76,7 @@ def get_config():
                 "goal_horizon": 30,
                 "context_size": 2,
                 "context_spacing": 4,
-                "dataset_frame_rate": 5,
+                "dataset_framerate": 5,
                 "image_size": (224, 224),
                 "image_obs_keys": {"primary": "image"},
                 "proprio_obs_key": "position",
