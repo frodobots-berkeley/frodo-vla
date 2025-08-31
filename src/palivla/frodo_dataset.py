@@ -272,7 +272,7 @@ class FrodbotDataset_MBRA(LeRobotDataset):
             print("Using local dataset or GCP bucket...")
             # with tf.io.gfile.GFile(Path(root) / "frodobots_dataset" / "dataset_cache.zarr") as f:
             print(root)
-            self.dataset_cache = xr.open_zarr(root / "frodobots_dataset" / "dataset_cache.zarr")
+            self.dataset_cache = xr.open_zarr(f"{root}/frodobots_dataset/dataset_cache.zarr")
             breakpoint()
 
         super().__init__(
