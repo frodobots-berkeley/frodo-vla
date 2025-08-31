@@ -5,7 +5,7 @@ import numpy as np
 from typing import Tuple, Callable
 from pathlib import Path
 import einops
-import zarr
+import xarray as xr
 
 import torch
 import torch.utils.data
