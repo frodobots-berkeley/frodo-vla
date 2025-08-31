@@ -13,11 +13,11 @@ import torchvision.transforms.functional as TF
 import torchvision.transforms as transforms
 import huggingface_hub as hf_hub
 
-from lerobot.common.datasets.lerobot_dataset import LeRobotDataset
-from lerobot.common.datasets.utils import (
+from lerobot.src.lerobot.common.datasets.lerobot_dataset import LeRobotDataset
+from lerobot.src.lerobot.common.datasets.utils import (
     load_previous_and_future_frames,
 )
-from lerobot.common.datasets.video_utils import load_from_videos
+from lerobot.src.lerobot.common.datasets.video_utils import load_from_videos
 
 from typing import Iterator
 import random
