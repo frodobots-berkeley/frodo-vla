@@ -4,6 +4,7 @@ from functools import partial
 from palivla.components.model import get_default_config
 from palivla.standardization_transforms import gnm_dataset_transform
 from octo.utils.spec import ModuleSpec
+from palivla.frodo_dataset import ActionFormat
 
 placeholder(int)._value
 
@@ -69,6 +70,7 @@ def get_config():
                 "repo_id" : "frodobots/Berkeley-Frodobots-7K",
                 "video": "gs://frodo-bucket-c2/frodobots_v2_export/videos",
                 "data_dir": "gs://frodo-bucket-c2",
+                "action_format": ActionFormat.WAYPOINT,
                 "image_obs_keys": {"primary": "image"},
                 "proprio_obs_key": "position",
                 "language_key" : "language_instruction",
