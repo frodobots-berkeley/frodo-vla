@@ -6,6 +6,7 @@ from typing import Tuple, Callable
 from pathlib import Path
 import einops
 import xarray as xr
+import zarr
 
 import torch
 import torch.utils.data
@@ -119,26 +120,26 @@ class ActionFormat(Enum):
     def from_str(s: str) -> "ActionFormat":
         return ActionFormat[s.upper()]
 
-def load_pickle(
-    dataset: zarr.Array,
-    index: int,
-    episode_data_index: dict[str, torch.Tensor],  
-    delta_timestamps: dict[str, list[float]],      
-    ) -> dict[torch.Tensor]:
-    #
-    ep_id = dataset["episode_index"][index].item()
-    ep_data_id_from = episode_data_index["from"][ep_id].item()
-    ep_data_id_to = episode_data_index["to"][ep_id].item()
-    ep_data_ids = torch.arange(ep_data_id_from, ep_data_id_to, 1)    
+# def load_pickle(
+#     dataset: zarr.Array,
+#     index: int,
+#     episode_data_index: dict[str, torch.Tensor],  
+#     delta_timestamps: dict[str, list[float]],      
+#     ) -> dict[torch.Tensor]:
+#     #
+#     ep_id = dataset["episode_index"][index].item()
+#     ep_data_id_from = episode_data_index["from"][ep_id].item()
+#     ep_data_id_to = episode_data_index["to"][ep_id].item()
+#     ep_data_ids = torch.arange(ep_data_id_from, ep_data_id_to, 1)    
     
-    for key, delta_ts in delta_timestamps.items():
-        current_ts = dataset["timestamp"][index]
-        query_ts = current_ts + torch.tensor(delta_ts)
-        ep_timestamps = torch.from_numpy(dataset["timestamp"][ep_data_id_from:ep_data_id_to]).float()
-        dist = torch.cdist(query_ts[:, None], ep_timestamps[:, None], p=1)
-        min_, argmin_ = dist.min(1)
-        data_ids = ep_data_ids[argmin_].numpy() 
-    return data_ids
+#     for key, delta_ts in delta_timestamps.items():
+#         current_ts = dataset["timestamp"][index]
+#         query_ts = current_ts + torch.tensor(delta_ts)
+#         ep_timestamps = torch.from_numpy(dataset["timestamp"][ep_data_id_from:ep_data_id_to]).float()
+#         dist = torch.cdist(query_ts[:, None], ep_timestamps[:, None], p=1)
+#         min_, argmin_ = dist.min(1)
+#         data_ids = ep_data_ids[argmin_].numpy() 
+#     return data_ids
                 
 def load_frames_zarr(
     dataset: zarr.Array,
