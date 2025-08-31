@@ -38,6 +38,7 @@ dependencies = [
 	"google-cloud-storage>=3.3.0",
 	"zarr>=3.1.2",
 	"torch>=2.8.0",
+	"torch-xla[tpu]>=2.5.1",
 ]
 
 [project.optional-dependencies]
