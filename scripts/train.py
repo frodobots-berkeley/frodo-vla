@@ -8,7 +8,7 @@ from palivla.components.action_tokenizer import ActionTokenizer, DCTActionTokeni
 from palivla.components.model import PaliVLAModel
 from palivla.components.sequence_builder import SequenceBuilder
 from palivla.components.train_state import ShardingMetadata
-from jax_torch_adapter import TorchToJaxDataset
+from palivla.jax_torch_adapter import TorchToJaxDataset
 from palivla.frodo_dataset import FrodbotDataset_MBRA
 
 os.environ["PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION"] = "python"
