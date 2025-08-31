@@ -1,3 +1,6 @@
 [submodule "octo"]
 	path = octo
 	url = git@github.com:catglossop/octo
+[submodule "src/palivla/lerobot"]
+	path = src/palivla/lerobot
+	url = https://github.com/huggingface/lerobot
