@@ -11,6 +11,7 @@ import torch
 import torch.utils.data
 import torchvision.transforms.functional as TF
 import torchvision.transforms as transforms
+import huggingfac_hub as hf_hub
 
 from lerobot.common.datasets.lerobot_dataset import LeRobotDataset
 from lerobot.common.datasets.utils import (
@@ -226,10 +227,11 @@ class FrodbotDataset_MBRA(LeRobotDataset):
         dataset_framerate: int = 10,
         image_size: Tuple[int, int] = (120, 160),
         image_transforms: Callable | None = None,
-        sacson: bool = False
+        sacson: bool = False,
+        download_from_hf: bool = False,
     ):
         """
-        Main ViNT dataset class
+        Maake Frodo dataset class
         """
         if isinstance(action_format, str):
             action_format = ActionFormat.from_str(action_format)
@@ -250,22 +252,41 @@ class FrodbotDataset_MBRA(LeRobotDataset):
         self.context_spacing = context_spacing
         self.image_size = image_size
         self.sacson = sacson
-
-        print("root_init", root)
-        super().__init__(
-            repo_id=repo_id,
-            video=video,
-            root=root,
-            split=split,
-            image_transforms=image_transforms,
-            delta_timestamps={
-                "observation.filtered_position": [0.0],
-                "observation.relative_position": [0.0],
-                "observation.filtered_heading": [0.0],
-                "observation.images.front": [i * context_spacing * self.dt for i in range(-context_size, 1)],
-                "action": [i * action_spacing * self.dt for i in range(action_horizon)],                
-            },
-        )
+        
+        if download_from_hf: 
+            
+            print("Downloading dataset from HF...")
+            
+            for hf_file in tqdm(hf_hub.list_repo_files(repo_id)):
+                hf_hub.download_file_from_repo(
+                    repo_id=repo_id,
+                    filename=hf_file,
+                    local_dir=Path(root) / "frodobots_dataset" / hf_file,
+                    local_dir_create=True,
+                    repo_type="dataset",
+                    revision="main",
+                )
+        else:
+            print("Using local dataset or GCP bucket...")
+            with tf.io.gfile.GFile(Path(root) / "frodobots_dataset" / "dataset_cache.zarr") as f:
+                # load all the files in the dataset_cache.zarr 
+                
+                
+                
+        # super().__init__(
+        #     repo_id=repo_id,
+        #     video=video,
+        #     root=root,
+        #     split=split,
+        #     image_transforms=image_transforms,
+        #     delta_timestamps={
+        #         "observation.filtered_position": [0.0],
+        #         "observation.relative_position": [0.0],
+        #         "observation.filtered_heading": [0.0],
+        #         "observation.images.front": [i * context_spacing * self.dt for i in range(-context_size, 1)],
+        #         "action": [i * action_spacing * self.dt for i in range(action_horizon)],                
+        #     },
+        # )
 
         # Build a cache of episode data indices
         self.dataset_cache = zarr.load(Path(root) / "frodobots_dataset" / "dataset_cache.zarr")

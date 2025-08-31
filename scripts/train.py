@@ -151,10 +151,6 @@ def main(_):
             load_fn(model, **load_fn_kwargs)
 
     # Make the basic dataset
-    # We have to do this first, since we need to know how the dataset is set up before we can construct the model
-    # TODO
-    # train_ds = make_base_dataset(**config.dataset_kwargs.to_dict(), train=True)
-    
     torch_train_ds = FrodbotDataset_MBRA(
         repo_id=config.dataset_kwargs.repo_id,
         video=config.dataset_kwargs.video,
@@ -187,10 +183,6 @@ def main(_):
     def make_training_batch(batch):
         return batch
 
-    # train_it = map(
-    #     make_training_batch,
-    #     train_ds.batch(per_host_train_batch_size).iterator(),
-    # )
     train_it = train_ds.batch(
         per_host_train_batch_size,
         shard_for_pmap=True,   # or False for pjit
