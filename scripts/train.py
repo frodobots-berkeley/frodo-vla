@@ -144,12 +144,14 @@ def main(_):
         )
         model.load_state(config.resume_checkpoint_step, restore_manager)
     else:
+        pass
         # Otherwise, create the model from scratch and apply any load_fns
-        model = create_model(config, sharding_metadata)
-        for load_fn, load_fn_kwargs in config.load_fns:
-            load_fn = Registry.lookup(load_fn)
-            load_fn(model, **load_fn_kwargs)
+        # model = create_model(config, sharding_metadata)
+        # for load_fn, load_fn_kwargs in config.load_fns:
+        #     load_fn = Registry.lookup(load_fn)
+        #     load_fn(model, **load_fn_kwargs)
 
+    print("Loading dataset...")
     # Make the basic dataset
     torch_train_ds = FrodbotDataset_MBRA(
         repo_id=config.dataset_kwargs.repo_id,
