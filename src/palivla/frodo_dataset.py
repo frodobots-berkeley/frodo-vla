@@ -276,18 +276,18 @@ class FrodbotDataset_MBRA(LeRobotDataset):
             store = fs.get_mapper(zarr_path)
             self.dataset_cache = zarr.open_group(store, mode='r')
 
-        super().__init__(
-            repo_id=repo_id,
-            root=root,
-            # image_transforms=image_transforms,
-            # delta_timestamps={
-            #     "observation.filtered_position": [0.0],
-            #     "observation.relative_position": [0.0],
-            #     "observation.filtered_heading": [0.0],
-            #     "observation.images.front": [i * context_spacing * self.dt for i in range(-context_size, 1)],
-            #     "action": [i * action_spacing * self.dt for i in range(action_horizon)],                
-            # },
-        )
+        # super().__init__(
+        #     repo_id=repo_id,
+        #     root=root,
+        #     # image_transforms=image_transforms,
+        #     # delta_timestamps={
+        #     #     "observation.filtered_position": [0.0],
+        #     #     "observation.relative_position": [0.0],
+        #     #     "observation.filtered_heading": [0.0],
+        #     #     "observation.images.front": [i * context_spacing * self.dt for i in range(-context_size, 1)],
+        #     #     "action": [i * action_spacing * self.dt for i in range(action_horizon)],                
+        #     # },
+        # )
 
         # Build a cache of episode data indices
         self.dataset_cache = zarr.load(Path(root) / "frodobots_dataset" / "dataset_cache.zarr")
