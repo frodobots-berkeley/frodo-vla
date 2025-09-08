@@ -54,7 +54,10 @@ def _shard_and_put(x: Any, devices: Sequence[jax.Device]) -> Any:
     if isinstance(x, dict): return {k: _shard_and_put(v, devices) for k, v in x.items()}
     if isinstance(x, (list, tuple)): return type(x)(_shard_and_put(v, devices) for v in x)
     return _split_put(x)
-
+def worker_init_fn(worker_id):
+    import fsspec
+    global fs
+    fs = fsspec.filesystem("gcs", asynchronous=False)
 # ---- the adapter ----
 class TorchToJaxDataset:
     """
@@ -120,6 +123,7 @@ class TorchToJaxDataset:
                 persistent_workers=self.outer.persistent_workers,
                 collate_fn=collate,
                 generator=self.outer._generator,
+                worker_init_fn=worker_init_fn
             )
 
             host_prefetch = _BackgroundPrefetch(loader, prefetch=self.prefetch_host)
