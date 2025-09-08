@@ -277,8 +277,8 @@ class FrodbotDataset_MBRA:
             print("Using local dataset or GCP bucket...")
             zarr_path = f"{root}/frodobots_dataset/dataset_cache.zarr"
             fs = fsspec.filesystem("gcs")
-            store = fs.get_mapper(zarr_path)
-            self.dataset_cache = zarr.open_group(store, mode='r')
+            with fs.get_mapper(zarr_path) as store:
+                self.dataset_cache = zarr.open_group(store, mode='r')
 
         # super().__init__(
         #     repo_id=repo_id,
@@ -354,7 +354,6 @@ class FrodbotDataset_MBRA:
 
     def __len__(self):
         obs = self.dataset_cache["observation.images.front.path"]
-        breakpoint()
         return obs.shape[0]
 
     def __iter__(self) -> Iterator:
