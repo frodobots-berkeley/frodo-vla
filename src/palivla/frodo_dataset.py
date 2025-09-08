@@ -214,7 +214,7 @@ def load_frames_zarr(
     return item
 
 
-class FrodbotDataset_MBRA(LeRobotDataset):
+class FrodbotDataset_MBRA:
     def __init__(
         self,
         repo_id: str,
@@ -352,6 +352,11 @@ class FrodbotDataset_MBRA(LeRobotDataset):
 
         return positions
 
+    def __len__(self):
+        return len(self.dataset_cache["observation.images.front.path"])
+    def __iter__(self) -> Iterator:ß
+        for i in range(len(self)):
+            yield self[i]
     def __getitem__(self, idx):
         # Sample a goal timestamp        
         ep_id = self.dataset_cache["episode_index"][idx].item()
