@@ -353,7 +353,10 @@ class FrodbotDataset_MBRA:
         return positions
 
     def __len__(self):
-        return len(self.dataset_cache["observation.images.front.path"])
+        obs = self.dataset_cache["observation.images.front.path"]
+        breakpoint()
+        return len(obs)
+
     def __iter__(self) -> Iterator:
         for i in range(len(self)):
             yield self[i]
