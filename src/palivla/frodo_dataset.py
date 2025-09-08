@@ -354,7 +354,7 @@ class FrodbotDataset_MBRA:
 
     def __len__(self):
         return len(self.dataset_cache["observation.images.front.path"])
-    def __iter__(self) -> Iterator:ß
+    def __iter__(self) -> Iterator:
         for i in range(len(self)):
             yield self[i]
     def __getitem__(self, idx):
