@@ -8,7 +8,7 @@ import einops
 import xarray as xr
 import zarr
 import fsspec
-from zarr.core import SyncMapping
+from zarr.core.sync import SyncMapping
 import torch
 import torch.utils.data
 import torchvision.transforms.functional as TF
