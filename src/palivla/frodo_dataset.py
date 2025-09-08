@@ -355,7 +355,7 @@ class FrodbotDataset_MBRA:
     def __len__(self):
         obs = self.dataset_cache["observation.images.front.path"]
         breakpoint()
-        return len(obs)
+        return obs.shape[0]
 
     def __iter__(self) -> Iterator:
         for i in range(len(self)):
