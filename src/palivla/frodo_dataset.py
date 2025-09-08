@@ -8,7 +8,7 @@ import einops
 import xarray as xr
 import zarr
 import fsspec
-
+from zarr.core import SyncMapping
 import torch
 import torch.utils.data
 import torchvision.transforms.functional as TF
@@ -277,11 +277,11 @@ class FrodbotDataset_MBRA:
             print("Using local dataset or GCP bucket...")
             zarr_path = f"{root}/frodobots_dataset/dataset_cache.zarr"
             fs = fsspec.filesystem("gcs", asynchronous=False)
-            store = fs.get_mapper(zarr_path)
+            store = SyncMapping(fs.get_mapper(zarr_path))
             self.dataset_cache = zarr.open_group(store, mode='r')
 
         # super().__init__(
-        #     repo_id=repo_id,
+        #     repo_id=repo_id,ß
         #     root=root,
         #     # image_transforms=image_transforms,
         #     # delta_timestamps={
