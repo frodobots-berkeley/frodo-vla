@@ -234,7 +234,7 @@ class FrodbotDataset_MBRA(LeRobotDataset):
         download_from_hf: bool = False,
     ):
         """
-        Maake Frodo dataset class
+        Make Frodo dataset class
         """
         if isinstance(action_format, str):
             action_format = ActionFormat.from_str(action_format)
@@ -255,6 +255,8 @@ class FrodbotDataset_MBRA(LeRobotDataset):
         self.context_spacing = context_spacing
         self.image_size = image_size
         self.sacson = sacson
+        
+        self.hf_dataset = None
         
         if download_from_hf: 
             
