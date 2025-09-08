@@ -290,10 +290,10 @@ class FrodbotDataset_MBRA(LeRobotDataset):
         # )
 
         # Build a cache of episode data indices
-        self.dataset_cache = zarr.load(Path(root) / "frodobots_dataset" / "dataset_cache.zarr")
-        self.dataset_cache = {
-            k: np.asarray(v) for k, v in self.dataset_cache.items()
-        }
+        # self.dataset_cache = zarr.load_group(Path(root) / "frodobots_dataset" / "dataset_cache.zarr")
+        # self.dataset_cache = {
+        #     k: np.asarray(v) for k, v in self.dataset_cache.items()
+        # }
 
     def _image_transforms(self, img: torch.Tensor, flip) -> torch.Tensor:
         """
