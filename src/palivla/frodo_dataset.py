@@ -278,7 +278,6 @@ class FrodbotDataset_MBRA(LeRobotDataset):
 
         super().__init__(
             repo_id=repo_id,
-            video=video,
             root=root,
             split=split,
             image_transforms=image_transforms,
