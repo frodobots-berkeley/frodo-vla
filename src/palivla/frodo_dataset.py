@@ -269,6 +269,8 @@ class FrodbotDataset_MBRA(LeRobotDataset):
                     repo_type="dataset",
                     revision="main",
                 )
+            
+            # TODO: automatically merge all the tar.gz parts
         else:
             print("Using local dataset or GCP bucket...")
             zarr_path = f"{root}/frodobots_dataset/dataset_cache.zarr"

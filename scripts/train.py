@@ -172,7 +172,7 @@ def main(_):
 
     train_ds = TorchToJaxDataset(
         dataset=torch_train_ds,
-        sampler=sampler_or_none,
+        sampler=None,
         num_workers=getattr(config, "num_workers", 8),  # tune
         pin_memory=True,
         seed=getattr(config, "seed", None),
