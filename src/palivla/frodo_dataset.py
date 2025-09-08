@@ -276,8 +276,8 @@ class FrodbotDataset_MBRA:
         else:
             print("Using local dataset or GCP bucket...")
             zarr_path = f"{root}/frodobots_dataset/dataset_cache.zarr"
-            fs = fsspec.filesystem("gcs")
-            store = fsspec.get_mapper(zarr_path, asynchronous=False)
+            fs = fsspec.filesystem("gcs", asynchronous=False)
+            store = fs.get_mapper(zarr_path)
             self.dataset_cache = zarr.open_group(store, mode='r')
 
         # super().__init__(
